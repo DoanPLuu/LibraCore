@@ -1,2 +1,2 @@
 # LibraCore
-A library management system for the Language Java Subject of SGUNI
+A Library Management System Project for the Java Programming Course at SGUNI
