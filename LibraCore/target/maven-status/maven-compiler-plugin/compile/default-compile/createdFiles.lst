@@ -1,0 +1,6 @@
+com\libracoreteam\libracore\BUS\BookBUS.class
+com\libracoreteam\libracore\Entity\Book.class
+com\libracoreteam\libracore\Util\DBConnection.class
+com\libracoreteam\libracore\GUI\MainFrame.class
+com\libracoreteam\libracore\DAO\BookDAO.class
+com\libracoreteam\libracore\Main.class
