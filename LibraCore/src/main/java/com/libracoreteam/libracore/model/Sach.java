@@ -1,0 +1,129 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.libracoreteam.libracore.model;
+
+import java.util.List;
+
+/**
+ *
+ * @author luuis
+ */
+public class Sach {
+    private int idSach;
+    private Integer idNXB;  
+    private Integer namXuatBan;
+    private String tenSach;
+    private String moTa;
+    private Integer soTrang;
+    
+    private List<TacGia> danhSachTacGia;
+    private List<TheLoai> danhSachTheLoai;
+    private NXB nhaXuatBan;
+    
+    public Sach() {
+    }
+    
+    public Sach(int idSach, Integer idNXB, Integer namXuatBan, String tenSach, String moTa, Integer soTrang) {
+        this.idSach = idSach;
+        this.idNXB = idNXB;
+        this.namXuatBan = namXuatBan;
+        this.tenSach = tenSach;
+        this.moTa = moTa;
+        this.soTrang = soTrang;
+    }
+    
+    public Sach(Integer idNXB, Integer namXuatBan, String tenSach, String moTa, Integer soTrang) {
+        this.idNXB = idNXB;
+        this.namXuatBan = namXuatBan;
+        this.tenSach = tenSach;
+        this.moTa = moTa;
+        this.soTrang = soTrang;
+    }
+
+    //getter
+    public int getIdSach() {
+        return idSach;
+    }
+
+    public Integer getIdNXB() {
+        return idNXB;
+    }
+
+    public Integer getNamXuatBan() {
+        return namXuatBan;
+    }
+
+    public String getTenSach() {
+        return tenSach;
+    }
+
+    public String getMoTa() {
+        return moTa;
+    }
+
+    public Integer getSoTrang() {
+        return soTrang;
+    }
+
+    public List<TacGia> getDanhSachTacGia() {
+        return danhSachTacGia;
+    }
+
+    public List<TheLoai> getDanhSachTheLoai() {
+        return danhSachTheLoai;
+    }
+
+    public NXB getNhaXuatBan() {
+        return nhaXuatBan;
+    }
+    
+    //setter
+
+    public void setIdSach(int idSach) {
+        this.idSach = idSach;
+    }
+
+    public void setIdNXB(Integer idNXB) {
+        this.idNXB = idNXB;
+    }
+
+    public void setNamXuatBan(Integer namXuatBan) {
+        this.namXuatBan = namXuatBan;
+    }
+
+    public void setTenSach(String tenSach) {
+        this.tenSach = tenSach;
+    }
+
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
+    }
+
+    public void setSoTrang(Integer soTrang) {
+        this.soTrang = soTrang;
+    }
+
+    public void setDanhSachTacGia(List<TacGia> danhSachTacGia) {
+        this.danhSachTacGia = danhSachTacGia;
+    }
+
+    public void setDanhSachTheLoai(List<TheLoai> danhSachTheLoai) {
+        this.danhSachTheLoai = danhSachTheLoai;
+    }
+
+    public void setNhaXuatBan(NXB nhaXuatBan) {
+        this.nhaXuatBan = nhaXuatBan;
+    }
+    
+    @Override
+    public String toString() {
+        return "Sach{" +
+                "idSach=" + idSach +
+                ", tenSach='" + tenSach + '\'' +
+                ", namXuatBan=" + namXuatBan +
+                '}';
+    }
+}
+

@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.libracoreteam.libracore.BUS;
+package com.libracoreteam.libracore.gui;
 
 /**
  *
  * @author luuis
  */
-public class BookBUS {
+public class MainFrame {
     
 }

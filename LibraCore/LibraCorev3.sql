@@ -134,15 +134,15 @@ CREATE TABLE IF NOT EXISTS `Sach_TacGia` (
 
 
 CREATE TABLE IF NOT EXISTS `CuonSach` (
-	`id_CuonSaoSach` INTEGER NOT NULL AUTO_INCREMENT,
+	`id_CuonSach` INTEGER NOT NULL AUTO_INCREMENT,
 	`id_Sach` INTEGER NOT NULL,
 	`TinhTrangSach` ENUM('Tot', 'Hong', 'Mat') DEFAULT 'Tot',
 	`TrangThaiMuon` ENUM('Ranh', 'DangMuon') DEFAULT 'Ranh',
-	PRIMARY KEY(`id_CuonSaoSach`)
+	PRIMARY KEY(`id_CuonSach`)
 );
 
 
-CREATE INDEX `idx_bansao_sach`
+CREATE INDEX `idx_cuon_sach`
 ON `CuonSach` (`id_Sach`);
 CREATE TABLE IF NOT EXISTS `PhieuNhap` (
 	`id_PhieuNhap` INTEGER NOT NULL AUTO_INCREMENT,
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `PhieuNhap` (
 	`SoLuongSach` INTEGER,
 	`LoaiPhieuNhap` ENUM('Mua', 'Tang') DEFAULT 'Mua',
 	`id_NhanVien` INTEGER NOT NULL,
-	PRIMARY KEY(`id_PhieuNhap`, `id_NhanVien`)
+	PRIMARY KEY(`id_PhieuNhap`)
 );
 
 
@@ -172,13 +172,13 @@ CREATE INDEX `idx_ctpn_sach`
 ON `ChiTietPhieuNhap` (`id_Sach`);
 CREATE TABLE IF NOT EXISTS `PhieuMuon` (
 	`id_PhieuMuon` INTEGER NOT NULL AUTO_INCREMENT,
-	`id_NhanVien` INTEGER,
+	`id_NhanVien` INTEGER NOT NULL,
 	`id_TheThanhVien` INTEGER,
 	`NgayMuon` DATE,
 	`NgayHenTra` DATE,
 	`TrangThai` ENUM('DangMuon', 'DaTra', 'QuaHen') DEFAULT 'DangMuon',
 	`TongSoSachMuon` INTEGER NOT NULL,
-	PRIMARY KEY(`id_PhieuMuon`, `id_NhanVien`)
+	PRIMARY KEY(`id_PhieuMuon`)
 );
 
 
@@ -194,8 +194,8 @@ CREATE TABLE IF NOT EXISTS `ChiTietPhieuMuon` (
 );
 
 
-CREATE INDEX `idx_ctpm_bansao`
-ON `ChiTietPhieuMuon` (`id_BanSaoSach`);
+CREATE INDEX `idx_ctpm_cuonsach`
+ON `ChiTietPhieuMuon` (`id_CuonSach`);
 CREATE INDEX `idx_ctpm_phieumuon`
 ON `ChiTietPhieuMuon` (`id_PhieuMuon`);
 CREATE TABLE IF NOT EXISTS `PhieuPhat` (
@@ -205,7 +205,7 @@ CREATE TABLE IF NOT EXISTS `PhieuPhat` (
 	`LyDoPhat` VARCHAR(255),
 	`TrangThai` ENUM('DaThu', 'ChuaThu') DEFAULT 'ChuaThu',
 	`id_NhanVien` INTEGER NOT NULL,
-	PRIMARY KEY(`id_PhieuPhat`, `id_NhanVien`)
+	PRIMARY KEY(`id_PhieuPhat`)
 );
 
 
@@ -276,7 +276,7 @@ ALTER TABLE `ChiTietPhieuMuon`
 ADD FOREIGN KEY(`id_PhieuMuon`) REFERENCES `PhieuMuon`(`id_PhieuMuon`)
 ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE `ChiTietPhieuMuon`
-ADD FOREIGN KEY(`id_CuonSach`) REFERENCES `CuonSach`(`id_CuonSaoSach`)
+ADD FOREIGN KEY(`id_CuonSach`) REFERENCES `CuonSach`(`id_CuonSach`)
 ON UPDATE CASCADE ON DELETE RESTRICT;
 ALTER TABLE `ChiTietPhieuPhat`
 ADD FOREIGN KEY(`id_PhieuPhat`) REFERENCES `PhieuPhat`(`id_PhieuPhat`)
