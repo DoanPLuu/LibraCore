@@ -17,6 +17,7 @@ public class Sach {
     private String tenSach;
     private String moTa;
     private Integer soTrang;
+    private boolean hoatDong;
     
     private List<TacGia> danhSachTacGia;
     private List<TheLoai> danhSachTheLoai;
@@ -25,13 +26,14 @@ public class Sach {
     public Sach() {
     }
     
-    public Sach(int idSach, Integer idNXB, Integer namXuatBan, String tenSach, String moTa, Integer soTrang) {
+    public Sach(int idSach, Integer idNXB, Integer namXuatBan, String tenSach, String moTa, Integer soTrang, boolean hoatDong) {
         this.idSach = idSach;
         this.idNXB = idNXB;
         this.namXuatBan = namXuatBan;
         this.tenSach = tenSach;
         this.moTa = moTa;
         this.soTrang = soTrang;
+        this.hoatDong = hoatDong;
     }
     
     public Sach(Integer idNXB, Integer namXuatBan, String tenSach, String moTa, Integer soTrang) {
@@ -40,6 +42,7 @@ public class Sach {
         this.tenSach = tenSach;
         this.moTa = moTa;
         this.soTrang = soTrang;
+        this.hoatDong = true;
     }
 
     //getter
@@ -80,7 +83,6 @@ public class Sach {
     }
     
     //setter
-
     public void setIdSach(int idSach) {
         this.idSach = idSach;
     }
@@ -115,6 +117,14 @@ public class Sach {
 
     public void setNhaXuatBan(NXB nhaXuatBan) {
         this.nhaXuatBan = nhaXuatBan;
+    }
+    
+    public boolean isHoatDong() {
+        return hoatDong;
+    }
+    
+    public void setHoatDong(boolean hoatDong) {
+        this.hoatDong = hoatDong;
     }
     
     @Override

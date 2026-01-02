@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `NXB` (
 	`TenNXB` VARCHAR(255),
 	`DiaChi` VARCHAR(255),
 	`SDT` VARCHAR(20),
+	`HoatDong` BOOLEAN NOT NULL,
 	PRIMARY KEY(`id_NXB`)
 );
 
@@ -10,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `NXB` (
 CREATE TABLE IF NOT EXISTS `TheLoai` (
 	`id_TheLoai` INTEGER NOT NULL AUTO_INCREMENT,
 	`TenTheLoai` VARCHAR(255),
+	`HoatDong` BOOLEAN NOT NULL,
 	PRIMARY KEY(`id_TheLoai`)
 );
 
@@ -20,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `TacGia` (
 	`NgaySinh` DATE,
 	`NoiSinh` VARCHAR(255),
 	`SDT` VARCHAR(20),
+	`HoatDong` BOOLEAN NOT NULL,
 	PRIMARY KEY(`id_TacGia`)
 );
 
@@ -30,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `MucPhat` (
 	`LoaiPhat` ENUM('PerDay', 'Fixed') NOT NULL DEFAULT 'PerDay',
 	`SoTienPhat` DECIMAL(12,2) NOT NULL,
 	`MoTa` VARCHAR(255),
+	`HoatDong` BOOLEAN NOT NULL DEFAULT 1, 
 	PRIMARY KEY(`id_MucPhat`)
 );
 
@@ -79,6 +83,7 @@ CREATE TABLE IF NOT EXISTS `NhanVien` (
 	`DiaChi` VARCHAR(255),
 	`SDT` VARCHAR(20),
 	`Email` VARCHAR(255),
+	`HoatDong` BOOLEAN NOT NULL,
 	PRIMARY KEY(`id_NhanVien`)
 );
 
@@ -90,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `DocGia` (
 	`NgaySinh` DATE,
 	`SDT` VARCHAR(20),
 	`Email` VARCHAR(255),
+	`HoatDong` BOOLEAN NOT NULL,
 	PRIMARY KEY(`id_DocGia`)
 );
 
@@ -113,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `Sach` (
 	`TenSach` VARCHAR(255),
 	`MoTa` VARCHAR(1000),
 	`SoTrang` INTEGER,
+	`HoatDong` BOOLEAN NOT NULL,
 	PRIMARY KEY(`id_Sach`)
 );
 
@@ -138,11 +145,12 @@ CREATE TABLE IF NOT EXISTS `CuonSach` (
 	`id_Sach` INTEGER NOT NULL,
 	`TinhTrangSach` ENUM('Tot', 'Hong', 'Mat') DEFAULT 'Tot',
 	`TrangThaiMuon` ENUM('Ranh', 'DangMuon') DEFAULT 'Ranh',
+	`DaHuy` BOOLEAN,
 	PRIMARY KEY(`id_CuonSach`)
 );
 
 
-CREATE INDEX `idx_cuon_sach`
+CREATE INDEX `idx_cuonsach_sach`
 ON `CuonSach` (`id_Sach`);
 CREATE TABLE IF NOT EXISTS `PhieuNhap` (
 	`id_PhieuNhap` INTEGER NOT NULL AUTO_INCREMENT,
@@ -151,6 +159,7 @@ CREATE TABLE IF NOT EXISTS `PhieuNhap` (
 	`SoLuongSach` INTEGER,
 	`LoaiPhieuNhap` ENUM('Mua', 'Tang') DEFAULT 'Mua',
 	`id_NhanVien` INTEGER NOT NULL,
+	`TrangThai` ENUM('DaNhap', 'DaHuy', 'ChuaNhap') NOT NULL DEFAULT 'ChuaNhap',
 	PRIMARY KEY(`id_PhieuNhap`)
 );
 
@@ -176,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `PhieuMuon` (
 	`id_TheThanhVien` INTEGER,
 	`NgayMuon` DATE,
 	`NgayHenTra` DATE,
-	`TrangThai` ENUM('DangMuon', 'DaTra', 'QuaHen') DEFAULT 'DangMuon',
+	`TrangThai` ENUM('DangMuon', 'DaTra', 'QuaHen', 'DaHuy') DEFAULT 'DangMuon',
 	`TongSoSachMuon` INTEGER NOT NULL,
 	PRIMARY KEY(`id_PhieuMuon`)
 );
@@ -203,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `PhieuPhat` (
 	`NgayLap` DATE,
 	`TienPhatPhaiNop` DECIMAL(12,2) DEFAULT 0.00,
 	`LyDoPhat` VARCHAR(255),
-	`TrangThai` ENUM('DaThu', 'ChuaThu') DEFAULT 'ChuaThu',
+	`TrangThai` ENUM('DaThu', 'ChuaThu', 'DaHuy') DEFAULT 'ChuaThu',
 	`id_NhanVien` INTEGER NOT NULL,
 	PRIMARY KEY(`id_PhieuPhat`)
 );
@@ -268,7 +277,7 @@ ADD FOREIGN KEY(`id_Sach`) REFERENCES `Sach`(`id_Sach`)
 ON UPDATE CASCADE ON DELETE RESTRICT;
 ALTER TABLE `PhieuMuon`
 ADD FOREIGN KEY(`id_NhanVien`) REFERENCES `NhanVien`(`id_NhanVien`)
-ON UPDATE CASCADE ON DELETE SET NULL;
+ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE `PhieuMuon`
 ADD FOREIGN KEY(`id_TheThanhVien`) REFERENCES `TheThanhVien`(`id_TheThanhVien`)
 ON UPDATE CASCADE ON DELETE RESTRICT;
