@@ -1,0 +1,31 @@
+# Compiled files
+*.class
+
+# Maven
+/target/
+
+# Logs
+*.log
+
+# NetBeans
+/nbproject/private/
+/build/
+/dist/
+/nbactions.xml
+/.nb-gradle/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.bak
+*.swp
+
+config.properties
