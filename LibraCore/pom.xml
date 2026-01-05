@@ -87,6 +87,20 @@
             <artifactId>HikariCP</artifactId>
             <version>7.0.2</version>
           </dependency>
+          
+        <!-- MigLayout -->
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout-swing</artifactId>
+            <version>5.3</version>
+        </dependency>
+        
+        <!-- TimingFramework cho animation -->
+        <dependency>
+    <groupId>net.java.timingframework</groupId>
+    <artifactId>timingframework-swing</artifactId>
+    <version>7.3.1</version>
+</dependency>
 
         
         <!-- (Optional) Lombok - Giảm boilerplate code -->
