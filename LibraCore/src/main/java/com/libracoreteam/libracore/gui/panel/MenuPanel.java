@@ -63,7 +63,7 @@ public class MenuPanel extends JPanel {
     private void initComponents() {
         layout = new MigLayout("wrap 1, fillx, gapy 0, insets 0", "[fill]");
         setLayout(layout);
-        setPreferredSize(new Dimension(250, 0));
+        setPreferredSize(new Dimension(200, 0));
         setBackground(new Color(21, 110, 71));
         setOpaque(true);
 
