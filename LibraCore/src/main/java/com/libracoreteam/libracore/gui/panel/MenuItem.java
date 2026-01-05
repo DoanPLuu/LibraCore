@@ -88,34 +88,47 @@ public class MenuItem extends JButton {
     }
     
     @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        // Vẽ background nếu selected hoặc hover
-        if (isSelected || isOpaque()) {
-            g2.setColor(getBackground());
-            g2.fillRect(0, 0, getWidth(), getHeight());
-        }
-        
-        // Vẽ arrow nếu có submenu (chưa animate, sẽ làm ở Phase 3)
-        if (hasSubMenu && !isSubMenu()) {
-            g2.setColor(getForeground());
-            int arrowWidth = 8;
-            int arrowHeight = 4;
-            int x = getWidth() - arrowWidth - 15;
-            int y = (getHeight() - arrowHeight) / 2;
-            
-            Path2D arrow = new Path2D.Double();
+protected void paintComponent(Graphics g) {
+    // Gọi super trước để vẽ background và text
+    super.paintComponent(g);
+    
+    // Sau đó vẽ border indicator lên trên
+    Graphics2D g2 = (Graphics2D) g.create();
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    
+    // Vẽ border indicator bên trái khi selected (vẽ SAU super để không bị che)
+    if (isSelected) {
+        g2.setColor(new Color(255, 215, 0)); // Màu vàng sáng
+        // Vẽ hình chữ nhật dày 4px bên trái (rõ ràng hơn line)
+        g2.fillRect(0, 0, 4, getHeight());
+    }
+    
+    // Vẽ arrow nếu có submenu
+    if (hasSubMenu && !isSubMenu()) {
+        g2.setColor(getForeground());
+        int arrowWidth = 8;
+        int arrowHeight = 4;
+        int x = getWidth() - arrowWidth - 15;
+        int y = (getHeight() - arrowHeight) / 2;
+
+        // Xoay arrow dựa trên animation value
+        Path2D arrow = new Path2D.Double();
+        if (arrowAnimation < 0.5f) {
+            // Arrow xuống (chưa mở)
             arrow.moveTo(x, y);
             arrow.lineTo(x + arrowWidth / 2, y + arrowHeight);
             arrow.lineTo(x + arrowWidth, y);
-            g2.fill(arrow);
+        } else {
+            // Arrow ngang (đã mở)
+            arrow.moveTo(x, y + arrowHeight / 2);
+            arrow.lineTo(x + arrowWidth, y + arrowHeight / 2);
+            arrow.lineTo(x + arrowWidth / 2, y + arrowHeight);
         }
-        
-        g2.dispose();
-        super.paintComponent(g);
+        g2.fill(arrow);
     }
+    
+    g2.dispose();
+}
     
     private boolean isSubMenu() {
         // Kiểm tra xem có phải submenu item không (dựa vào border)
