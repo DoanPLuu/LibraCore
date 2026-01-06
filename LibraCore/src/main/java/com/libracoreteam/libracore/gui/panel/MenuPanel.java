@@ -39,13 +39,23 @@ public class MenuPanel extends JPanel {
     }
     
     // Cấu trúc menu items
+    // 0: Dashboard
+    // 1: Quản lý sách          -> Sách, Quyển sách, Tác giả, Nhà xuất bản, Thể loại
+    // 2: Quản lý thành viên    -> Thành viên, Thẻ thành viên
+    // 3: Quản lý mượn - trả    -> Mượn - trả sách
+    // 4: Quản lý phạt - trả phạt -> Phạt, Mức phạt
+    // 5: Quản lý nhập sách     -> Nhập sách, Nhà cung cấp
+    // 6: Quản lý người dùng    -> Người dùng, Tài khoản, Vai trò
+    // 7: Thống kê báo cáo      -> Thống kê sách, Thống kê mượn trả, Thống kê tiền phạt
     private String[][] menuItems = {
         {"Dashboard"},
-        {"Quản lý sách", "Danh sách sách", "Thêm sách mới", "Thống kê sách"},
-        {"Quản lý độc giả", "Danh sách độc giả", "Thêm độc giả", "Thẻ thành viên"},
-        {"Mượn trả", "Phiếu mượn", "Phiếu trả", "Quá hạn"},
-        {"Báo cáo", "Báo cáo mượn trả", "Báo cáo tồn kho", "Báo cáo doanh thu"},
-        {"Hệ thống", "Cài đặt", "Người dùng", "Phân quyền"}
+        {"Quản lý sách", "Sách", "Quyển sách", "Tác giả", "Nhà xuất bản", "Thể loại"},
+        {"Quản lý thành viên", "Thành viên", "Thẻ thành viên"},
+        {"Quản lý mượn - trả", "Mượn - trả sách"},
+        {"Quản lý phạt - trả phạt", "Phạt", "Mức phạt"},
+        {"Quản lý nhập sách", "Nhập sách", "Nhà cung cấp"},
+        {"Quản lý người dùng", "Người dùng", "Tài khoản", "Vai trò"},
+        {"Thống kê báo cáo", "Thống kê sách", "Thống kê mượn trả sách", "Thống kê tiền phạt"}
     };
     
     public MenuPanel(MainFrame mainFrame) {
@@ -58,6 +68,33 @@ public class MenuPanel extends JPanel {
         spacer.setOpaque(false);
         spacer.setPreferredSize(new Dimension(0, 2));
         return spacer;
+    }
+
+    private JPanel createBottomPanel() {
+        JPanel panel = new JPanel(new net.miginfocom.swing.MigLayout(
+                "wrap 1, fillx, insets 8 8 8 8", "[fill]"));
+        panel.setOpaque(false);
+    
+        // Nút Tài khoản
+        MenuItem accountBtn = new MenuItem("Tài khoản", false);
+        accountBtn.setIcon(FontIcon.of(FontAwesomeSolid.USER_CIRCLE, 18, Color.WHITE));
+        accountBtn.setToolTipText("Thông tin cá nhân, đổi mật khẩu");
+        accountBtn.setHorizontalAlignment(SwingConstants.LEFT);
+    
+        // Nút Đăng xuất
+        MenuItem logoutBtn = new MenuItem("Đăng xuất", false);
+        logoutBtn.setIcon(FontIcon.of(FontAwesomeSolid.SIGN_OUT_ALT, 18, Color.WHITE));
+        logoutBtn.setToolTipText("Đăng xuất khỏi hệ thống");
+        logoutBtn.setHorizontalAlignment(SwingConstants.LEFT);
+    
+        // Chưa gắn chức năng, chỉ UI
+        // accountBtn.addActionListener(e -> { ... });
+        // logoutBtn.addActionListener(e -> { ... });
+    
+        panel.add(accountBtn);
+        panel.add(logoutBtn, "gapy 4");
+    
+        return panel;
     }
     
     private void initComponents() {
@@ -79,16 +116,22 @@ public class MenuPanel extends JPanel {
                 add(createSpacer(), "h 2!");
             }
         }
+        JPanel spacer = new JPanel();
+        spacer.setOpaque(false);
+        add(spacer, "grow, push");
+        add(createBottomPanel(), "h pref!");
     }
     
     private FontIcon getIcon(int index) {
         switch (index) {
-            case 0: return FontIcon.of(FontAwesomeSolid.HOME, 18, Color.WHITE);
-            case 1: return FontIcon.of(FontAwesomeSolid.BOOK, 18, Color.WHITE);
-            case 2: return FontIcon.of(FontAwesomeSolid.USERS, 18, Color.WHITE);
-            case 3: return FontIcon.of(FontAwesomeSolid.BOOK_READER, 18, Color.WHITE);
-            case 4: return FontIcon.of(FontAwesomeSolid.CHART_BAR, 18, Color.WHITE);
-            case 5: return FontIcon.of(FontAwesomeSolid.COG, 18, Color.WHITE);
+            case 0: return FontIcon.of(FontAwesomeSolid.HOME, 18, Color.WHITE);           // Dashboard
+            case 1: return FontIcon.of(FontAwesomeSolid.BOOK, 18, Color.WHITE);           // Quản lý sách
+            case 2: return FontIcon.of(FontAwesomeSolid.USER_FRIENDS, 18, Color.WHITE);   // Quản lý thành viên
+            case 3: return FontIcon.of(FontAwesomeSolid.BOOK_READER, 18, Color.WHITE);    // Mượn - trả
+            case 4: return FontIcon.of(FontAwesomeSolid.MONEY_CHECK_ALT, 18, Color.WHITE);// Phạt - trả phạt
+            case 5: return FontIcon.of(FontAwesomeSolid.TRUCK_LOADING, 18, Color.WHITE);  // Nhập sách
+            case 6: return FontIcon.of(FontAwesomeSolid.USER_COG, 18, Color.WHITE);       // Người dùng
+            case 7: return FontIcon.of(FontAwesomeSolid.CHART_BAR, 18, Color.WHITE);      // Thống kê báo cáo
             default: return null;
         }
     }
@@ -96,53 +139,63 @@ public class MenuPanel extends JPanel {
     private String getMenuTooltip(int index) {
         switch (index) {
             case 0: return "Trang chủ - Tổng quan hệ thống";
-            case 1: return "Quản lý sách - Thêm, sửa, xóa, tìm kiếm sách";
-            case 2: return "Quản lý độc giả - Thông tin độc giả và thẻ thành viên";
-            case 3: return "Mượn trả - Quản lý phiếu mượn và trả sách";
-            case 4: return "Báo cáo - Thống kê và báo cáo hệ thống";
-            case 5: return "Hệ thống - Cài đặt và quản lý người dùng";
+            case 1: return "Quản lý sách - Sách, quyển sách, tác giả, NXB, thể loại";
+            case 2: return "Quản lý thành viên - Thành viên và thẻ thành viên";
+            case 3: return "Quản lý mượn - trả sách";
+            case 4: return "Quản lý phạt và trả phạt";
+            case 5: return "Quản lý nhập sách và nhà cung cấp";
+            case 6: return "Quản lý người dùng, tài khoản, vai trò";
+            case 7: return "Thống kê sách, mượn trả và tiền phạt";
             default: return "";
         }
     }
     
     private String getSubMenuTooltip(int parentIndex, int subIndex) {
-        String parent = menuItems[parentIndex][0];
-        String sub = menuItems[parentIndex][subIndex];
-
         switch (parentIndex) {
             case 1: // Quản lý sách
                 switch (subIndex) {
-                    case 1: return "Xem danh sách tất cả sách trong thư viện";
-                    case 2: return "Thêm sách mới vào hệ thống";
-                    case 3: return "Thống kê số lượng sách, sách mượn nhiều nhất";
+                    case 1: return "Quản lý danh mục sách";
+                    case 2: return "Quản lý từng quyển sách (bản thể hiện)";
+                    case 3: return "Quản lý tác giả";
+                    case 4: return "Quản lý nhà xuất bản";
+                    case 5: return "Quản lý thể loại sách";
                     default: return "";
                 }
-            case 2: // Quản lý độc giả
+            case 2: // Quản lý thành viên
                 switch (subIndex) {
-                    case 1: return "Xem danh sách tất cả độc giả";
-                    case 2: return "Đăng ký độc giả mới";
-                    case 3: return "Quản lý thẻ thành viên";
+                    case 1: return "Quản lý thông tin thành viên/độc giả";
+                    case 2: return "Quản lý thẻ thành viên";
                     default: return "";
                 }
-            case 3: // Mượn trả
+            case 3: // Quản lý mượn - trả
                 switch (subIndex) {
-                    case 1: return "Tạo và quản lý phiếu mượn sách";
-                    case 2: return "Xử lý phiếu trả sách";
-                    case 3: return "Danh sách sách quá hạn";
+                    case 1: return "Tạo và quản lý phiếu mượn - trả sách";
                     default: return "";
                 }
-            case 4: // Báo cáo
+            case 4: // Quản lý phạt - trả phạt
                 switch (subIndex) {
-                    case 1: return "Báo cáo chi tiết về mượn trả";
-                    case 2: return "Báo cáo tồn kho sách";
-                    case 3: return "Báo cáo doanh thu";
+                    case 1: return "Quản lý phiếu phạt";
+                    case 2: return "Quản lý mức phạt";
                     default: return "";
                 }
-            case 5: // Hệ thống
+            case 5: // Quản lý nhập sách
                 switch (subIndex) {
-                    case 1: return "Cài đặt hệ thống";
-                    case 2: return "Quản lý người dùng";
-                    case 3: return "Phân quyền người dùng";
+                    case 1: return "Quản lý phiếu nhập sách";
+                    case 2: return "Quản lý nhà cung cấp";
+                    default: return "";
+                }
+            case 6: // Quản lý người dùng
+                switch (subIndex) {
+                    case 1: return "Quản lý thông tin người dùng";
+                    case 2: return "Quản lý tài khoản đăng nhập";
+                    case 3: return "Quản lý vai trò/quyền hạn";
+                    default: return "";
+                }
+            case 7: // Thống kê báo cáo
+                switch (subIndex) {
+                    case 1: return "Thống kê sách theo nhiều tiêu chí";
+                    case 2: return "Thống kê mượn trả sách";
+                    case 3: return "Thống kê tiền phạt";
                     default: return "";
                 }
             default: return "";
@@ -298,11 +351,13 @@ public class MenuPanel extends JPanel {
     private String mapToScreenName(int index) {
         switch (index) {
             case 0: return "DASHBOARD";
-            case 1: return "BOOK";
-            case 2: return "MEMBER";
-            case 3: return "BORROW";
-            case 4: return "REPORT";
-            case 5: return "SYSTEM";
+            case 1: return "BOOK";     // Quản lý sách
+            case 2: return "MEMBER";   // Quản lý thành viên
+            case 3: return "BORROW";   // Quản lý mượn - trả
+            case 4: return "FINE";     // Quản lý phạt - trả phạt
+            case 5: return "IMPORT";   // Quản lý nhập sách
+            case 6: return "USER";     // Quản lý người dùng
+            case 7: return "REPORT";   // Thống kê báo cáo
             default: return "DASHBOARD";
         }
     }

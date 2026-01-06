@@ -29,6 +29,7 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         
+        
         // Panel trái - Menu
         menuPanel = new MenuPanel(this);
         add(menuPanel, BorderLayout.WEST);
@@ -48,7 +49,9 @@ public class MainFrame extends javax.swing.JFrame {
         add(contentPanel, BorderLayout.CENTER);
         
         setMinimumSize(new Dimension(1200, 700));
+        setSize(1600, 900);
         setLocationRelativeTo(null);
+       
     }
     
     /**
