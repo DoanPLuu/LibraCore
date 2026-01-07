@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -11,7 +11,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="3"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,0,0,0,3,112"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,-14,0,0,4,118"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -34,11 +34,11 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="jPanelTimKiem">
+            <Container class="javax.swing.JPanel" name="jPanelCongCu">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                    <EmptyBorder bottom="0" left="20" right="0" top="10"/>
+                    <EmptyBorder bottom="0" left="20" right="20" top="10"/>
                   </Border>
                 </Property>
               </Properties>
@@ -48,18 +48,80 @@
                 </Constraint>
               </Constraints>
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jLabel1">
+                <Container class="javax.swing.JPanel" name="jPanelTimKiem">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="jLabel1"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[500, 32]"/>
+                    </Property>
                   </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="jTextField1">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="jTextField1"/>
-                  </Properties>
-                </Component>
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                      <BorderConstraints direction="West"/>
+                    </Constraint>
+                  </Constraints>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="jLabel1">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="T&#xec;m ki&#x1ebf;m:"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[52, 30]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextField1">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="g&#xf5; enter &#x111;&#x1ec3; b&#x1eaf;t &#x111;&#x1ea7;u t&#xec;m ki&#x1ebf;m"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[200, 30]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="jComboBox1">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="2">
+                            <StringItem index="0" value="Theo t&#xea;n s&#xe1;ch"/>
+                            <StringItem index="1" value="Theo t&#xea;n t&#xe1;c gi&#x1ea3;"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[118, 30]"/>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanelChucNang">
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                      <BorderConstraints direction="East"/>
+                    </Constraint>
+                  </Constraints>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JButton" name="jButtonThem">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Th&#xea;m s&#xe1;ch m&#x1edb;i"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[111, 30]"/>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonThemActionPerformed"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanelNutThem">
@@ -70,13 +132,6 @@
               </Constraints>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
-              <SubComponents>
-                <Component class="javax.swing.JButton" name="jButtonThem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="jButton1"/>
-                  </Properties>
-                </Component>
-              </SubComponents>
             </Container>
           </SubComponents>
         </Container>
@@ -118,6 +173,9 @@
                         <Column editable="true" title="Title 4" type="java.lang.Object"/>
                       </Table>
                     </Property>
+                    <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                      <TableHeader reorderingAllowed="false" resizingAllowed="false"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -130,8 +188,14 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-            <EmptyBorder bottom="50" left="40" right="40" top="10"/>
+            <EmptyBorder bottom="50" left="0" right="20" top="10"/>
           </Border>
+        </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[300, 306]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[306, 306]"/>
         </Property>
       </Properties>
       <Constraints>
@@ -153,7 +217,10 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="jLabelTitle">
               <Properties>
-                <Property name="text" type="java.lang.String" value="THONG TIN SACH"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="20" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="TH&#xd4;NG TIN S&#xc1;CH"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -185,13 +252,13 @@
                   <SubComponents>
                     <Component class="javax.swing.JLabel" name="jLabelTen8">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jLabel2"/>
+                        <Property name="text" type="java.lang.String" value="M&#xe3; s&#xe1;ch:"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextFieldTen8">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField2"/>
-                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTen8ActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -204,13 +271,10 @@
                   <SubComponents>
                     <Component class="javax.swing.JLabel" name="jLabelTen9">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jLabel2"/>
+                        <Property name="text" type="java.lang.String" value="T&#xea;n s&#xe1;ch:"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextFieldTen9">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField2"/>
-                      </Properties>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -223,13 +287,10 @@
                   <SubComponents>
                     <Component class="javax.swing.JLabel" name="jLabelTen10">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jLabel2"/>
+                        <Property name="text" type="java.lang.String" value="T&#xe1;c gi&#x1ea3;"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextFieldTen10">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField2"/>
-                      </Properties>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -242,13 +303,108 @@
                   <SubComponents>
                     <Component class="javax.swing.JLabel" name="jLabelTen11">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jLabel2"/>
+                        <Property name="text" type="java.lang.String" value="Th&#x1ec3; lo&#x1ea1;i"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextFieldTen11">
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTen11ActionPerformed"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanelTen12">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                    <Property name="columns" type="int" value="1"/>
+                    <Property name="rows" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="jLabelTen12">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField2"/>
+                        <Property name="text" type="java.lang.String" value="Nh&#xe0; xu&#x1ea5;t b&#x1ea3;n:"/>
                       </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldTen12">
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTen12ActionPerformed"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanelTen13">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                    <Property name="columns" type="int" value="1"/>
+                    <Property name="rows" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="jLabelTen13">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="N&#x103;m xu&#x1ea5;t b&#x1ea3;n:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldTen13">
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTen13ActionPerformed"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanelTen14">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                    <Property name="columns" type="int" value="1"/>
+                    <Property name="rows" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="jLabelTen14">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="S&#x1ed1; trang:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldTen14">
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTen14ActionPerformed"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanelTen15">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                    <Property name="columns" type="int" value="1"/>
+                    <Property name="rows" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="jLabelTen15">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="M&#xf4; t&#x1ea3;:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldTen15">
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTen15ActionPerformed"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanelTen16">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                    <Property name="columns" type="int" value="1"/>
+                    <Property name="rows" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="jLabelTen16">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Gi&#xe1; s&#xe1;ch:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="jTextFieldTen16">
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTen16ActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -262,23 +418,52 @@
               </Layout>
               <SubComponents>
                 <Container class="javax.swing.JPanel" name="jPanelThem">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                        <EmptyBorder bottom="1" left="1" right="1" top="20"/>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[102, 30]"/>
+                    </Property>
+                  </Properties>
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
                   <SubComponents>
                     <Component class="javax.swing.JButton" name="jButton1">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jButton1"/>
+                        <Property name="text" type="java.lang.String" value="X&#xe1;c nh&#x1ead;n"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[90, 30]"/>
+                        </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanelThem1">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                        <EmptyBorder bottom="1" left="1" right="1" top="20"/>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[102, 30]"/>
+                    </Property>
+                  </Properties>
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
                   <SubComponents>
                     <Component class="javax.swing.JButton" name="jButton2">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jButton1"/>
+                        <Property name="text" type="java.lang.String" value="Hu&#x1ef7;"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[90, 30]"/>
+                        </Property>
                       </Properties>
                     </Component>
                   </SubComponents>
