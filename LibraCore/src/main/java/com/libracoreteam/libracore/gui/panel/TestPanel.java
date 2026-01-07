@@ -44,15 +44,15 @@ public class TestPanel extends javax.swing.JPanel {
         jPanelTen8 = new javax.swing.JPanel();
         jLabelTen8 = new javax.swing.JLabel();
         jTextFieldTen8 = new javax.swing.JTextField();
-        jPanelTen12 = new javax.swing.JPanel();
-        jLabelTen12 = new javax.swing.JLabel();
-        jTextFieldTen12 = new javax.swing.JTextField();
-        jPanelTen13 = new javax.swing.JPanel();
-        jLabelTen13 = new javax.swing.JLabel();
-        jTextFieldTen13 = new javax.swing.JTextField();
-        jPanelTen14 = new javax.swing.JPanel();
-        jLabelTen14 = new javax.swing.JLabel();
-        jTextFieldTen14 = new javax.swing.JTextField();
+        jPanelTen9 = new javax.swing.JPanel();
+        jLabelTen9 = new javax.swing.JLabel();
+        jTextFieldTen9 = new javax.swing.JTextField();
+        jPanelTen10 = new javax.swing.JPanel();
+        jLabelTen10 = new javax.swing.JLabel();
+        jTextFieldTen10 = new javax.swing.JTextField();
+        jPanelTen11 = new javax.swing.JPanel();
+        jLabelTen11 = new javax.swing.JLabel();
+        jTextFieldTen11 = new javax.swing.JTextField();
         jPanelButtons = new javax.swing.JPanel();
         jPanelThem = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -65,6 +65,7 @@ public class TestPanel extends javax.swing.JPanel {
 
         jPanelLeftTop.setLayout(new java.awt.BorderLayout());
 
+        jPanelTimKiem.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 0, 0));
         jPanelTimKiem.setLayout(new javax.swing.BoxLayout(jPanelTimKiem, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel1.setText("jLabel1");
@@ -84,6 +85,7 @@ public class TestPanel extends javax.swing.JPanel {
 
         jPanelLeft.add(jPanelLeftTop, java.awt.BorderLayout.NORTH);
 
+        jPanelBoard.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         jPanelBoard.setLayout(new java.awt.BorderLayout());
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -105,6 +107,7 @@ public class TestPanel extends javax.swing.JPanel {
 
         add(jPanelLeft, java.awt.BorderLayout.CENTER);
 
+        jPanelRight.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 40, 50, 40));
         jPanelRight.setLayout(new java.awt.BorderLayout());
 
         jLabelTitle.setText("THONG TIN SACH");
@@ -114,9 +117,9 @@ public class TestPanel extends javax.swing.JPanel {
 
         jPanelBottom.setLayout(new javax.swing.BoxLayout(jPanelBottom, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanelFields.setLayout(new javax.swing.BoxLayout(jPanelFields, javax.swing.BoxLayout.Y_AXIS));
+        jPanelFields.setLayout(new java.awt.GridLayout(0, 1));
 
-        jPanelTen8.setLayout(new javax.swing.BoxLayout(jPanelTen8, javax.swing.BoxLayout.Y_AXIS));
+        jPanelTen8.setLayout(new java.awt.GridLayout(0, 1));
 
         jLabelTen8.setText("jLabel2");
         jPanelTen8.add(jLabelTen8);
@@ -126,39 +129,39 @@ public class TestPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelTen8);
 
-        jPanelTen12.setLayout(new javax.swing.BoxLayout(jPanelTen12, javax.swing.BoxLayout.Y_AXIS));
+        jPanelTen9.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen12.setText("jLabel2");
-        jPanelTen12.add(jLabelTen12);
+        jLabelTen9.setText("jLabel2");
+        jPanelTen9.add(jLabelTen9);
 
-        jTextFieldTen12.setText("jTextField2");
-        jPanelTen12.add(jTextFieldTen12);
+        jTextFieldTen9.setText("jTextField2");
+        jPanelTen9.add(jTextFieldTen9);
 
-        jPanelFields.add(jPanelTen12);
+        jPanelFields.add(jPanelTen9);
 
-        jPanelTen13.setLayout(new javax.swing.BoxLayout(jPanelTen13, javax.swing.BoxLayout.Y_AXIS));
+        jPanelTen10.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen13.setText("jLabel2");
-        jPanelTen13.add(jLabelTen13);
+        jLabelTen10.setText("jLabel2");
+        jPanelTen10.add(jLabelTen10);
 
-        jTextFieldTen13.setText("jTextField2");
-        jPanelTen13.add(jTextFieldTen13);
+        jTextFieldTen10.setText("jTextField2");
+        jPanelTen10.add(jTextFieldTen10);
 
-        jPanelFields.add(jPanelTen13);
+        jPanelFields.add(jPanelTen10);
 
-        jPanelTen14.setLayout(new javax.swing.BoxLayout(jPanelTen14, javax.swing.BoxLayout.Y_AXIS));
+        jPanelTen11.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen14.setText("jLabel2");
-        jPanelTen14.add(jLabelTen14);
+        jLabelTen11.setText("jLabel2");
+        jPanelTen11.add(jLabelTen11);
 
-        jTextFieldTen14.setText("jTextField2");
-        jPanelTen14.add(jTextFieldTen14);
+        jTextFieldTen11.setText("jTextField2");
+        jPanelTen11.add(jTextFieldTen11);
 
-        jPanelFields.add(jPanelTen14);
+        jPanelFields.add(jPanelTen11);
 
         jPanelBottom.add(jPanelFields);
 
-        jPanelButtons.setLayout(new javax.swing.BoxLayout(jPanelButtons, javax.swing.BoxLayout.Y_AXIS));
+        jPanelButtons.setLayout(new java.awt.GridLayout());
 
         jButton1.setText("jButton1");
         jPanelThem.add(jButton1);
@@ -183,10 +186,10 @@ public class TestPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabelTen12;
-    private javax.swing.JLabel jLabelTen13;
-    private javax.swing.JLabel jLabelTen14;
+    private javax.swing.JLabel jLabelTen10;
+    private javax.swing.JLabel jLabelTen11;
     private javax.swing.JLabel jLabelTen8;
+    private javax.swing.JLabel jLabelTen9;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
@@ -196,10 +199,10 @@ public class TestPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanelLeftTop;
     private javax.swing.JPanel jPanelNutThem;
     private javax.swing.JPanel jPanelRight;
-    private javax.swing.JPanel jPanelTen12;
-    private javax.swing.JPanel jPanelTen13;
-    private javax.swing.JPanel jPanelTen14;
+    private javax.swing.JPanel jPanelTen10;
+    private javax.swing.JPanel jPanelTen11;
     private javax.swing.JPanel jPanelTen8;
+    private javax.swing.JPanel jPanelTen9;
     private javax.swing.JPanel jPanelThem;
     private javax.swing.JPanel jPanelThem1;
     private javax.swing.JPanel jPanelTimKiem;
@@ -207,9 +210,9 @@ public class TestPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextFieldTen12;
-    private javax.swing.JTextField jTextFieldTen13;
-    private javax.swing.JTextField jTextFieldTen14;
+    private javax.swing.JTextField jTextFieldTen10;
+    private javax.swing.JTextField jTextFieldTen11;
     private javax.swing.JTextField jTextFieldTen8;
+    private javax.swing.JTextField jTextFieldTen9;
     // End of variables declaration//GEN-END:variables
 }
