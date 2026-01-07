@@ -8,12 +8,12 @@ package com.libracoreteam.libracore.gui.panel;
  *
  * @author luuis
  */
-public class TestPanel extends javax.swing.JPanel {
+public class SachPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form TestPanel
      */
-    public TestPanel() {
+    public SachPanel() {
         initComponents();
     }
 
@@ -25,17 +25,17 @@ public class TestPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanelLeft = new javax.swing.JPanel();
         jPanelLeftTop = new javax.swing.JPanel();
         jPanelCongCu = new javax.swing.JPanel();
-        jPanelTimKiem = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jPanelChucNang = new javax.swing.JPanel();
-        jButtonThem = new javax.swing.JButton();
         jPanelNutThem = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jPanel1 = new javax.swing.JPanel();
+        jButton3 = new javax.swing.JButton();
+        jButtonThem = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -81,39 +81,42 @@ public class TestPanel extends javax.swing.JPanel {
 
         jPanelLeft.setLayout(new java.awt.BorderLayout());
 
+        jPanelLeftTop.setBackground(new java.awt.Color(255, 153, 153));
         jPanelLeftTop.setLayout(new java.awt.BorderLayout());
 
         jPanelCongCu.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 0, 20));
-        jPanelCongCu.setLayout(new java.awt.BorderLayout());
-
-        jPanelTimKiem.setPreferredSize(new java.awt.Dimension(500, 32));
-        jPanelTimKiem.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-
-        jLabel1.setText("Tìm kiếm:");
-        jLabel1.setPreferredSize(new java.awt.Dimension(52, 30));
-        jPanelTimKiem.add(jLabel1);
+        jPanelCongCu.setLayout(new java.awt.GridBagLayout());
 
         jTextField1.setText("gõ enter để bắt đầu tìm kiếm");
         jTextField1.setPreferredSize(new java.awt.Dimension(200, 30));
-        jPanelTimKiem.add(jTextField1);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanelCongCu.add(jTextField1, gridBagConstraints);
+
+        jPanelNutThem.setLayout(new javax.swing.BoxLayout(jPanelNutThem, javax.swing.BoxLayout.LINE_AXIS));
+        jPanelCongCu.add(jPanelNutThem, new java.awt.GridBagConstraints());
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo tên sách", "Theo tên tác giả" }));
         jComboBox1.setPreferredSize(new java.awt.Dimension(118, 30));
-        jPanelTimKiem.add(jComboBox1);
+        jPanelCongCu.add(jComboBox1, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.weightx = 1.0;
+        jPanelCongCu.add(jPanel1, gridBagConstraints);
 
-        jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
+        jButton3.setText("Xuất danh sách");
+        jButton3.setPreferredSize(new java.awt.Dimension(111, 30));
+        jButton3.addActionListener(this::jButton3ActionPerformed);
+        jPanelCongCu.add(jButton3, new java.awt.GridBagConstraints());
 
         jButtonThem.setText("Thêm sách mới");
         jButtonThem.setPreferredSize(new java.awt.Dimension(111, 30));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
-        jPanelChucNang.add(jButtonThem);
-
-        jPanelCongCu.add(jPanelChucNang, java.awt.BorderLayout.EAST);
+        jPanelCongCu.add(jButtonThem, new java.awt.GridBagConstraints());
 
         jPanelLeftTop.add(jPanelCongCu, java.awt.BorderLayout.CENTER);
-
-        jPanelNutThem.setLayout(new javax.swing.BoxLayout(jPanelNutThem, javax.swing.BoxLayout.LINE_AXIS));
-        jPanelLeftTop.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
         jPanelLeft.add(jPanelLeftTop, java.awt.BorderLayout.NORTH);
 
@@ -308,13 +311,17 @@ public class TestPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldTen16ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelTen10;
     private javax.swing.JLabel jLabelTen11;
     private javax.swing.JLabel jLabelTen12;
@@ -325,10 +332,10 @@ public class TestPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelTen8;
     private javax.swing.JLabel jLabelTen9;
     private javax.swing.JLabel jLabelTitle;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
     private javax.swing.JPanel jPanelButtons;
-    private javax.swing.JPanel jPanelChucNang;
     private javax.swing.JPanel jPanelCongCu;
     private javax.swing.JPanel jPanelFields;
     private javax.swing.JPanel jPanelLeft;
@@ -346,7 +353,6 @@ public class TestPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanelTen9;
     private javax.swing.JPanel jPanelThem;
     private javax.swing.JPanel jPanelThem1;
-    private javax.swing.JPanel jPanelTimKiem;
     private javax.swing.JPanel jPanelTop;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

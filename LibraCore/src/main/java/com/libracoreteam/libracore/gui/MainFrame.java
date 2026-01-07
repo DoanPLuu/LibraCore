@@ -3,7 +3,7 @@ package com.libracoreteam.libracore.gui;
 import com.libracoreteam.libracore.gui.panel.MenuPanel;
 import com.libracoreteam.libracore.gui.panel.DashboardPanel;
 import com.libracoreteam.libracore.gui.panel.BookManagementPanel;
-import com.libracoreteam.libracore.gui.panel.TestPanel;
+import com.libracoreteam.libracore.gui.panel.SachPanel;
 import javax.swing.*;
 import java.awt.*;
 
@@ -19,6 +19,7 @@ public class MainFrame extends javax.swing.JFrame {
     // Các panel sẽ được thêm vào CardLayout
     private DashboardPanel dashboardPanel;
     private BookManagementPanel bookPanel;
+    private SachPanel sachPanel;
     // Các panel khác sẽ thêm sau...
     
     public MainFrame() {
@@ -60,7 +61,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     private void createContentPanels() {
         // Dashboard panel
-        TestPanel testPanel = new TestPanel();
+        SachPanel testPanel = new SachPanel();
         contentPanel.add(testPanel, "DASHBOARD"); // Thay thế DashboardPanel
         
         // Book management panel (tạm thời là placeholder)
