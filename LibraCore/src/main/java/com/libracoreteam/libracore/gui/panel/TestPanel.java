@@ -26,64 +26,190 @@ public class TestPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        jPanelLeft = new javax.swing.JPanel();
+        jPanelLeftTop = new javax.swing.JPanel();
+        jPanelTimKiem = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jPanelNutThem = new javax.swing.JPanel();
+        jButtonThem = new javax.swing.JButton();
+        jPanelBoard = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jPanelRight = new javax.swing.JPanel();
+        jPanelTop = new javax.swing.JPanel();
+        jLabelTitle = new javax.swing.JLabel();
+        jPanelBottom = new javax.swing.JPanel();
+        jPanelFields = new javax.swing.JPanel();
+        jPanelTen8 = new javax.swing.JPanel();
+        jLabelTen8 = new javax.swing.JLabel();
+        jTextFieldTen8 = new javax.swing.JTextField();
+        jPanelTen12 = new javax.swing.JPanel();
+        jLabelTen12 = new javax.swing.JLabel();
+        jTextFieldTen12 = new javax.swing.JTextField();
+        jPanelTen13 = new javax.swing.JPanel();
+        jLabelTen13 = new javax.swing.JLabel();
+        jTextFieldTen13 = new javax.swing.JTextField();
+        jPanelTen14 = new javax.swing.JPanel();
+        jLabelTen14 = new javax.swing.JLabel();
+        jTextFieldTen14 = new javax.swing.JTextField();
+        jPanelButtons = new javax.swing.JPanel();
+        jPanelThem = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jPanelThem1 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
 
-        jSplitPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jSplitPane1.setDividerLocation(250);
-        jSplitPane1.setDividerSize(10);
+        setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(250, 250));
+        jPanelLeft.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 648, Short.MAX_VALUE)
-        );
+        jPanelLeftTop.setLayout(new java.awt.BorderLayout());
 
-        jSplitPane1.setLeftComponent(jPanel1);
+        jPanelTimKiem.setLayout(new javax.swing.BoxLayout(jPanelTimKiem, javax.swing.BoxLayout.LINE_AXIS));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1047, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 648, Short.MAX_VALUE)
-        );
+        jLabel1.setText("jLabel1");
+        jPanelTimKiem.add(jLabel1);
 
-        jSplitPane1.setRightComponent(jPanel2);
+        jTextField1.setText("jTextField1");
+        jPanelTimKiem.add(jTextField1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(77, 77, 77)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1061, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(59, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(53, Short.MAX_VALUE)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 652, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52))
-        );
+        jPanelLeftTop.add(jPanelTimKiem, java.awt.BorderLayout.CENTER);
+
+        jPanelNutThem.setLayout(new javax.swing.BoxLayout(jPanelNutThem, javax.swing.BoxLayout.LINE_AXIS));
+
+        jButtonThem.setText("jButton1");
+        jPanelNutThem.add(jButtonThem);
+
+        jPanelLeftTop.add(jPanelNutThem, java.awt.BorderLayout.EAST);
+
+        jPanelLeft.add(jPanelLeftTop, java.awt.BorderLayout.NORTH);
+
+        jPanelBoard.setLayout(new java.awt.BorderLayout());
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jPanelBoard.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jPanelLeft.add(jPanelBoard, java.awt.BorderLayout.CENTER);
+
+        add(jPanelLeft, java.awt.BorderLayout.CENTER);
+
+        jPanelRight.setLayout(new java.awt.BorderLayout());
+
+        jLabelTitle.setText("THONG TIN SACH");
+        jPanelTop.add(jLabelTitle);
+
+        jPanelRight.add(jPanelTop, java.awt.BorderLayout.PAGE_START);
+
+        jPanelBottom.setLayout(new javax.swing.BoxLayout(jPanelBottom, javax.swing.BoxLayout.Y_AXIS));
+
+        jPanelFields.setLayout(new javax.swing.BoxLayout(jPanelFields, javax.swing.BoxLayout.Y_AXIS));
+
+        jPanelTen8.setLayout(new javax.swing.BoxLayout(jPanelTen8, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabelTen8.setText("jLabel2");
+        jPanelTen8.add(jLabelTen8);
+
+        jTextFieldTen8.setText("jTextField2");
+        jPanelTen8.add(jTextFieldTen8);
+
+        jPanelFields.add(jPanelTen8);
+
+        jPanelTen12.setLayout(new javax.swing.BoxLayout(jPanelTen12, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabelTen12.setText("jLabel2");
+        jPanelTen12.add(jLabelTen12);
+
+        jTextFieldTen12.setText("jTextField2");
+        jPanelTen12.add(jTextFieldTen12);
+
+        jPanelFields.add(jPanelTen12);
+
+        jPanelTen13.setLayout(new javax.swing.BoxLayout(jPanelTen13, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabelTen13.setText("jLabel2");
+        jPanelTen13.add(jLabelTen13);
+
+        jTextFieldTen13.setText("jTextField2");
+        jPanelTen13.add(jTextFieldTen13);
+
+        jPanelFields.add(jPanelTen13);
+
+        jPanelTen14.setLayout(new javax.swing.BoxLayout(jPanelTen14, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabelTen14.setText("jLabel2");
+        jPanelTen14.add(jLabelTen14);
+
+        jTextFieldTen14.setText("jTextField2");
+        jPanelTen14.add(jTextFieldTen14);
+
+        jPanelFields.add(jPanelTen14);
+
+        jPanelBottom.add(jPanelFields);
+
+        jPanelButtons.setLayout(new javax.swing.BoxLayout(jPanelButtons, javax.swing.BoxLayout.Y_AXIS));
+
+        jButton1.setText("jButton1");
+        jPanelThem.add(jButton1);
+
+        jPanelButtons.add(jPanelThem);
+
+        jButton2.setText("jButton1");
+        jPanelThem1.add(jButton2);
+
+        jPanelButtons.add(jPanelThem1);
+
+        jPanelBottom.add(jPanelButtons);
+
+        jPanelRight.add(jPanelBottom, java.awt.BorderLayout.CENTER);
+
+        add(jPanelRight, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonThem;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelTen12;
+    private javax.swing.JLabel jLabelTen13;
+    private javax.swing.JLabel jLabelTen14;
+    private javax.swing.JLabel jLabelTen8;
+    private javax.swing.JLabel jLabelTitle;
+    private javax.swing.JPanel jPanelBoard;
+    private javax.swing.JPanel jPanelBottom;
+    private javax.swing.JPanel jPanelButtons;
+    private javax.swing.JPanel jPanelFields;
+    private javax.swing.JPanel jPanelLeft;
+    private javax.swing.JPanel jPanelLeftTop;
+    private javax.swing.JPanel jPanelNutThem;
+    private javax.swing.JPanel jPanelRight;
+    private javax.swing.JPanel jPanelTen12;
+    private javax.swing.JPanel jPanelTen13;
+    private javax.swing.JPanel jPanelTen14;
+    private javax.swing.JPanel jPanelTen8;
+    private javax.swing.JPanel jPanelThem;
+    private javax.swing.JPanel jPanelThem1;
+    private javax.swing.JPanel jPanelTimKiem;
+    private javax.swing.JPanel jPanelTop;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextFieldTen12;
+    private javax.swing.JTextField jTextFieldTen13;
+    private javax.swing.JTextField jTextFieldTen14;
+    private javax.swing.JTextField jTextFieldTen8;
     // End of variables declaration//GEN-END:variables
 }
