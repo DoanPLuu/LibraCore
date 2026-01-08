@@ -2,7 +2,6 @@ package com.libracoreteam.libracore.gui;
 
 import com.libracoreteam.libracore.gui.panel.MenuPanel;
 import com.libracoreteam.libracore.gui.panel.DashboardPanel;
-import com.libracoreteam.libracore.gui.panel.BookManagementPanel;
 import com.libracoreteam.libracore.gui.panel.SachPanel;
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +17,25 @@ public class MainFrame extends javax.swing.JFrame {
     
     // Các panel sẽ được thêm vào CardLayout
     private DashboardPanel dashboardPanel;
-    private BookManagementPanel bookPanel;
     private SachPanel sachPanel;
-    // Các panel khác sẽ thêm sau...
+    // TODO: Khai báo các panel khác khi tạo
+    // private CuonSachPanel cuonSachPanel;
+    // private TacGiaPanel tacGiaPanel;
+    // private NXBPanel nxbPanel;
+    // private TheLoaiPanel theLoaiPanel;
+    // private ThanhVienPanel thanhVienPanel;
+    // private TheThanhVienPanel theThanhVienPanel;
+    // private MuonTraSachPanel muonTraSachPanel;
+    // private PhatPanel phatPanel;
+    // private MucPhatPanel mucPhatPanel;
+    // private NhapSachPanel nhapSachPanel;
+    // private NCCPanel nccPanel;
+    // private NguoiDungPanel nguoiDungPanel;
+    // private TaiKhoanPanel taiKhoanPanel;
+    // private VaiTroPanel vaiTroPanel;
+    // private ThongKeSachPanel thongKeSachPanel;
+    // private ThongKeMuonTraPanel thongKeMuonTraPanel;
+    // private ThongKeTienPhatPanel thongKeTienPhatPanel;
     
     public MainFrame() {
         initComponents();
@@ -50,7 +65,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         add(contentPanel, BorderLayout.CENTER);
         
-        setMinimumSize(new Dimension(1200, 700));
+        setMinimumSize(new Dimension(1200, 800));
         setSize(1600, 900);
         setLocationRelativeTo(null);
        
@@ -58,28 +73,172 @@ public class MainFrame extends javax.swing.JFrame {
     
     /**
      * Tạo các content panels và thêm vào CardLayout
+     * Mapping theo MenuPanel:
+     * - DASHBOARD: Dashboard
+     * - BOOK: Quản lý sách (parent menu, có thể không dùng)
+     * - BOOK_1: Sách
+     * - BOOK_2: Quyển sách
+     * - BOOK_3: Tác giả
+     * - BOOK_4: Nhà xuất bản
+     * - BOOK_5: Thể loại
+     * - MEMBER: Quản lý thành viên (parent menu)
+     * - MEMBER_1: Thành viên
+     * - MEMBER_2: Thẻ thành viên
+     * - BORROW: Quản lý mượn - trả (parent menu)
+     * - BORROW_1: Mượn - trả sách
+     * - FINE: Quản lý phạt - trả phạt (parent menu)
+     * - FINE_1: Phạt
+     * - FINE_2: Mức phạt
+     * - IMPORT: Quản lý nhập sách (parent menu)
+     * - IMPORT_1: Nhập sách
+     * - IMPORT_2: Nhà cung cấp
+     * - USER: Quản lý người dùng (parent menu)
+     * - USER_1: Người dùng
+     * - USER_2: Tài khoản
+     * - USER_3: Vai trò
+     * - REPORT: Thống kê báo cáo (parent menu)
+     * - REPORT_1: Thống kê sách
+     * - REPORT_2: Thống kê mượn trả sách
+     * - REPORT_3: Thống kê tiền phạt
      */
     private void createContentPanels() {
-        // Dashboard panel
-        SachPanel testPanel = new SachPanel();
-        contentPanel.add(testPanel, "DASHBOARD"); // Thay thế DashboardPanel
+        // ========== DASHBOARD ==========
+        dashboardPanel = new DashboardPanel();
+        contentPanel.add(dashboardPanel, "DASHBOARD");
         
-        // Book management panel (tạm thời là placeholder)
-        bookPanel = new BookManagementPanel();
-        contentPanel.add(bookPanel, "BOOK");
+        // ========== QUẢN LÝ SÁCH ==========
+        // BOOK: Parent menu (có thể không cần dùng, nhưng thêm để đảm bảo)
+        contentPanel.add(createPlaceholderPanel("Quản lý sách"), "BOOK");
         
-        // Các panel khác sẽ thêm sau (Member, Borrow, Report, System)
-        // Tạm thời tạo placeholder panels
-        contentPanel.add(createPlaceholderPanel("Quản lý độc giả"), "MEMBER");
-        contentPanel.add(createPlaceholderPanel("Mượn trả"), "BORROW");
-        contentPanel.add(createPlaceholderPanel("Báo cáo"), "REPORT");
-        contentPanel.add(createPlaceholderPanel("Hệ thống"), "SYSTEM");
+        // BOOK_1: Sách
+        sachPanel = new SachPanel();
+        contentPanel.add(sachPanel, "BOOK_1");
         
-        // Các submenu panels (tạm thời)
-        contentPanel.add(createPlaceholderPanel("Danh sách sách"), "BOOK_1");
-        contentPanel.add(createPlaceholderPanel("Thêm sách mới"), "BOOK_2");
-        contentPanel.add(createPlaceholderPanel("Thống kê sách"), "BOOK_3");
-        // ... các submenu khác sẽ thêm sau
+        // BOOK_2: Quyển sách
+        // TODO: Uncomment khi tạo CuonSachPanel
+        // cuonSachPanel = new CuonSachPanel();
+        // contentPanel.add(cuonSachPanel, "BOOK_2");
+        contentPanel.add(createPlaceholderPanel("Quyển sách"), "BOOK_2");
+        
+        // BOOK_3: Tác giả
+        // TODO: Uncomment khi tạo TacGiaPanel
+        // tacGiaPanel = new TacGiaPanel();
+        // contentPanel.add(tacGiaPanel, "BOOK_3");
+        contentPanel.add(createPlaceholderPanel("Tác giả"), "BOOK_3");
+        
+        // BOOK_4: Nhà xuất bản
+        // TODO: Uncomment khi tạo NXBPanel
+        // nxbPanel = new NXBPanel();
+        // contentPanel.add(nxbPanel, "BOOK_4");
+        contentPanel.add(createPlaceholderPanel("Nhà xuất bản"), "BOOK_4");
+        
+        // BOOK_5: Thể loại
+        // TODO: Uncomment khi tạo TheLoaiPanel
+        // theLoaiPanel = new TheLoaiPanel();
+        // contentPanel.add(theLoaiPanel, "BOOK_5");
+        contentPanel.add(createPlaceholderPanel("Thể loại"), "BOOK_5");
+        
+        // ========== QUẢN LÝ THÀNH VIÊN ==========
+        // MEMBER: Parent menu
+        contentPanel.add(createPlaceholderPanel("Quản lý thành viên"), "MEMBER");
+        
+        // MEMBER_1: Thành viên
+        // TODO: Uncomment khi tạo ThanhVienPanel
+        // thanhVienPanel = new ThanhVienPanel();
+        // contentPanel.add(thanhVienPanel, "MEMBER_1");
+        contentPanel.add(createPlaceholderPanel("Thành viên"), "MEMBER_1");
+        
+        // MEMBER_2: Thẻ thành viên
+        // TODO: Uncomment khi tạo TheThanhVienPanel
+        // theThanhVienPanel = new TheThanhVienPanel();
+        // contentPanel.add(theThanhVienPanel, "MEMBER_2");
+        contentPanel.add(createPlaceholderPanel("Thẻ thành viên"), "MEMBER_2");
+        
+        // ========== QUẢN LÝ MƯỢN - TRẢ ==========
+        // BORROW: Parent menu
+        contentPanel.add(createPlaceholderPanel("Quản lý mượn - trả"), "BORROW");
+        
+        // BORROW_1: Mượn - trả sách
+        // TODO: Uncomment khi tạo MuonTraSachPanel
+        // muonTraSachPanel = new MuonTraSachPanel();
+        // contentPanel.add(muonTraSachPanel, "BORROW_1");
+        contentPanel.add(createPlaceholderPanel("Mượn - trả sách"), "BORROW_1");
+        
+        // ========== QUẢN LÝ PHẠT - TRẢ PHẠT ==========
+        // FINE: Parent menu
+        contentPanel.add(createPlaceholderPanel("Quản lý phạt - trả phạt"), "FINE");
+        
+        // FINE_1: Phạt
+        // TODO: Uncomment khi tạo PhatPanel
+        // phatPanel = new PhatPanel();
+        // contentPanel.add(phatPanel, "FINE_1");
+        contentPanel.add(createPlaceholderPanel("Phạt"), "FINE_1");
+        
+        // FINE_2: Mức phạt
+        // TODO: Uncomment khi tạo MucPhatPanel
+        // mucPhatPanel = new MucPhatPanel();
+        // contentPanel.add(mucPhatPanel, "FINE_2");
+        contentPanel.add(createPlaceholderPanel("Mức phạt"), "FINE_2");
+        
+        // ========== QUẢN LÝ NHẬP SÁCH ==========
+        // IMPORT: Parent menu
+        contentPanel.add(createPlaceholderPanel("Quản lý nhập sách"), "IMPORT");
+        
+        // IMPORT_1: Nhập sách
+        // TODO: Uncomment khi tạo NhapSachPanel
+        // nhapSachPanel = new NhapSachPanel();
+        // contentPanel.add(nhapSachPanel, "IMPORT_1");
+        contentPanel.add(createPlaceholderPanel("Nhập sách"), "IMPORT_1");
+        
+        // IMPORT_2: Nhà cung cấp
+        // TODO: Uncomment khi tạo NCCPanel
+        // nccPanel = new NCCPanel();
+        // contentPanel.add(nccPanel, "IMPORT_2");
+        contentPanel.add(createPlaceholderPanel("Nhà cung cấp"), "IMPORT_2");
+        
+        // ========== QUẢN LÝ NGƯỜI DÙNG ==========
+        // USER: Parent menu
+        contentPanel.add(createPlaceholderPanel("Quản lý người dùng"), "USER");
+        
+        // USER_1: Người dùng
+        // TODO: Uncomment khi tạo NguoiDungPanel
+        // nguoiDungPanel = new NguoiDungPanel();
+        // contentPanel.add(nguoiDungPanel, "USER_1");
+        contentPanel.add(createPlaceholderPanel("Người dùng"), "USER_1");
+        
+        // USER_2: Tài khoản
+        // TODO: Uncomment khi tạo TaiKhoanPanel
+        // taiKhoanPanel = new TaiKhoanPanel();
+        // contentPanel.add(taiKhoanPanel, "USER_2");
+        contentPanel.add(createPlaceholderPanel("Tài khoản"), "USER_2");
+        
+        // USER_3: Vai trò
+        // TODO: Uncomment khi tạo VaiTroPanel
+        // vaiTroPanel = new VaiTroPanel();
+        // contentPanel.add(vaiTroPanel, "USER_3");
+        contentPanel.add(createPlaceholderPanel("Vai trò"), "USER_3");
+        
+        // ========== THỐNG KÊ BÁO CÁO ==========
+        // REPORT: Parent menu
+        contentPanel.add(createPlaceholderPanel("Thống kê báo cáo"), "REPORT");
+        
+        // REPORT_1: Thống kê sách
+        // TODO: Uncomment khi tạo ThongKeSachPanel
+        // thongKeSachPanel = new ThongKeSachPanel();
+        // contentPanel.add(thongKeSachPanel, "REPORT_1");
+        contentPanel.add(createPlaceholderPanel("Thống kê sách"), "REPORT_1");
+        
+        // REPORT_2: Thống kê mượn trả sách
+        // TODO: Uncomment khi tạo ThongKeMuonTraPanel
+        // thongKeMuonTraPanel = new ThongKeMuonTraPanel();
+        // contentPanel.add(thongKeMuonTraPanel, "REPORT_2");
+        contentPanel.add(createPlaceholderPanel("Thống kê mượn trả sách"), "REPORT_2");
+        
+        // REPORT_3: Thống kê tiền phạt
+        // TODO: Uncomment khi tạo ThongKeTienPhatPanel
+        // thongKeTienPhatPanel = new ThongKeTienPhatPanel();
+        // contentPanel.add(thongKeTienPhatPanel, "REPORT_3");
+        contentPanel.add(createPlaceholderPanel("Thống kê tiền phạt"), "REPORT_3");
     }
     
     /**
@@ -102,28 +261,13 @@ public class MainFrame extends javax.swing.JFrame {
      * Được gọi từ MenuPanel khi click menu item
      */
     public void showScreen(String screenName) {
-        // Kiểm tra xem card có tồn tại không
-        Component card = null;
-        for (Component comp : contentPanel.getComponents()) {
-            if (comp.getName() != null && comp.getName().equals(screenName)) {
-                card = comp;
-                break;
-            }
-        }
-        
-        // Nếu không tìm thấy, thử tìm bằng cách khác
-        if (card == null) {
-            try {
-                cardLayout.show(contentPanel, screenName);
-                System.out.println("✓ Đã chuyển sang màn hình: " + screenName);
-            } catch (Exception e) {
-                System.err.println("✗ Không tìm thấy màn hình: " + screenName);
-                // Fallback về Dashboard
-                cardLayout.show(contentPanel, "DASHBOARD");
-            }
-        } else {
+        try {
             cardLayout.show(contentPanel, screenName);
             System.out.println("✓ Đã chuyển sang màn hình: " + screenName);
+        } catch (Exception e) {
+            System.err.println("✗ Không tìm thấy màn hình: " + screenName);
+            // Fallback về Dashboard
+            cardLayout.show(contentPanel, "DASHBOARD");
         }
     }
 }

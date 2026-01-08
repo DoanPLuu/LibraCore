@@ -4,6 +4,10 @@
  */
 package com.libracoreteam.libracore.gui.panel;
 
+import org.kordamp.ikonli.swing.FontIcon;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import java.awt.Color;
+
 /**
  *
  * @author luuis
@@ -15,6 +19,7 @@ public class SachPanel extends javax.swing.JPanel {
      */
     public SachPanel() {
         initComponents();
+        setupIcons();
     }
 
     /**
@@ -25,20 +30,20 @@ public class SachPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanelLeft = new javax.swing.JPanel();
         jPanelLeftTop = new javax.swing.JPanel();
         jPanelCongCu = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        jPanelTimKiem = new javax.swing.JPanel();
+        jComboBoxTimKiem = new javax.swing.JComboBox<>();
+        jTextFieldTimKiem = new javax.swing.JTextField();
+        jButtonTimKiem = new javax.swing.JButton();
         jPanelNutThem = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jPanel1 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
+        jButtonXuat = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableSach = new javax.swing.JTable();
         jPanelRight = new javax.swing.JPanel();
         jPanelTop = new javax.swing.JPanel();
         jLabelTitle = new javax.swing.JLabel();
@@ -73,9 +78,9 @@ public class SachPanel extends javax.swing.JPanel {
         jTextFieldTen16 = new javax.swing.JTextField();
         jPanelButtons = new javax.swing.JPanel();
         jPanelThem = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jPanelThem1 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        jButtonXacNhan = new javax.swing.JButton();
+        jPanelHuy = new javax.swing.JPanel();
+        jButtonHuy = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -85,36 +90,33 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelLeftTop.setLayout(new java.awt.BorderLayout());
 
         jPanelCongCu.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 0, 20));
-        jPanelCongCu.setLayout(new java.awt.GridBagLayout());
+        jPanelCongCu.setLayout(new java.awt.BorderLayout());
 
-        jTextField1.setText("gõ enter để bắt đầu tìm kiếm");
-        jTextField1.setPreferredSize(new java.awt.Dimension(200, 30));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanelCongCu.add(jTextField1, gridBagConstraints);
+        jComboBoxTimKiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo tên sách", "Theo tên tác giả" }));
+        jComboBoxTimKiem.setPreferredSize(new java.awt.Dimension(118, 40));
+        jPanelTimKiem.add(jComboBoxTimKiem);
 
-        jPanelNutThem.setLayout(new javax.swing.BoxLayout(jPanelNutThem, javax.swing.BoxLayout.LINE_AXIS));
-        jPanelCongCu.add(jPanelNutThem, new java.awt.GridBagConstraints());
+        jTextFieldTimKiem.setText("Tìm kiếm...");
+        jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(200, 40));
+        jPanelTimKiem.add(jTextFieldTimKiem);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo tên sách", "Theo tên tác giả" }));
-        jComboBox1.setPreferredSize(new java.awt.Dimension(118, 30));
-        jPanelCongCu.add(jComboBox1, new java.awt.GridBagConstraints());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.weightx = 1.0;
-        jPanelCongCu.add(jPanel1, gridBagConstraints);
+        jButtonTimKiem.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonTimKiem.addActionListener(this::jButtonTimKiemActionPerformed);
+        jPanelTimKiem.add(jButtonTimKiem);
 
-        jButton3.setText("Xuất danh sách");
-        jButton3.setPreferredSize(new java.awt.Dimension(111, 30));
-        jButton3.addActionListener(this::jButton3ActionPerformed);
-        jPanelCongCu.add(jButton3, new java.awt.GridBagConstraints());
+        jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
-        jButtonThem.setText("Thêm sách mới");
-        jButtonThem.setPreferredSize(new java.awt.Dimension(111, 30));
+        jButtonThem.setText("Thêm mới");
+        jButtonThem.setPreferredSize(new java.awt.Dimension(111, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
-        jPanelCongCu.add(jButtonThem, new java.awt.GridBagConstraints());
+        jPanelNutThem.add(jButtonThem);
+
+        jButtonXuat.setText("Xuất");
+        jButtonXuat.setPreferredSize(new java.awt.Dimension(111, 40));
+        jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
+        jPanelNutThem.add(jButtonXuat);
+
+        jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
         jPanelLeftTop.add(jPanelCongCu, java.awt.BorderLayout.CENTER);
 
@@ -123,7 +125,7 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelBoard.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         jPanelBoard.setLayout(new java.awt.BorderLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableSach.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -133,10 +135,20 @@ public class SachPanel extends javax.swing.JPanel {
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
-        jTable1.getTableHeader().setResizingAllowed(false);
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableSach.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTableSach.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTableSach.getTableHeader().setResizingAllowed(false);
+        jTableSach.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(jTableSach);
 
         jPanelBoard.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
@@ -252,21 +264,21 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelThem.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
         jPanelThem.setPreferredSize(new java.awt.Dimension(102, 30));
 
-        jButton1.setText("Xác nhận");
-        jButton1.setPreferredSize(new java.awt.Dimension(90, 30));
-        jButton1.addActionListener(this::jButton1ActionPerformed);
-        jPanelThem.add(jButton1);
+        jButtonXacNhan.setText("Xác nhận");
+        jButtonXacNhan.setPreferredSize(new java.awt.Dimension(130, 30));
+        jButtonXacNhan.addActionListener(this::jButtonXacNhanActionPerformed);
+        jPanelThem.add(jButtonXacNhan);
 
         jPanelButtons.add(jPanelThem);
 
-        jPanelThem1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
-        jPanelThem1.setPreferredSize(new java.awt.Dimension(102, 30));
+        jPanelHuy.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
+        jPanelHuy.setPreferredSize(new java.awt.Dimension(102, 30));
 
-        jButton2.setText("Huỷ");
-        jButton2.setPreferredSize(new java.awt.Dimension(90, 30));
-        jPanelThem1.add(jButton2);
+        jButtonHuy.setText("Huỷ");
+        jButtonHuy.setPreferredSize(new java.awt.Dimension(130, 30));
+        jPanelHuy.add(jButtonHuy);
 
-        jPanelButtons.add(jPanelThem1);
+        jPanelButtons.add(jPanelHuy);
 
         jPanelBottom.add(jPanelButtons);
 
@@ -275,12 +287,41 @@ public class SachPanel extends javax.swing.JPanel {
         add(jPanelRight, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void setupIcons() {
+            // Cấu hình tập trung tại đây giúp dễ bảo trì màu sắc/kích thước đồng bộ
+            int iconSize = 16;
+
+            jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
+            jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
+            jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(40, 167, 69)));
+            jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(220, 53, 69)));
+            jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
+            
+            jButtonXacNhan.setVisible(false);
+            jButtonHuy.setVisible(false);
+        }
+    
+    private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonXacNhanActionPerformed
 
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
-        // TODO add your handling code here:
+    javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+    
+    // 2. Khởi tạo Dialog với parentFrame vừa tìm được
+    // true = modal (chặn tương tác với frame cha)
+    ThemSachDialog dialog = new ThemSachDialog(parentFrame, true);
+    
+    // 3. Căn giữa Dialog (nếu muốn nó nằm giữa màn hình thì để null, giữa app thì để this)
+    dialog.setLocationRelativeTo(null); 
+    
+    // 4. Hiện Dialog lên. 
+    // LƯU Ý: Dòng code này sẽ BLOCK luồng chạy cho đến khi Dialog bị đóng (dispose)
+    dialog.setVisible(true);
+    
+    // 5. Code đoạn này sẽ chạy SAU KHI Dialog đóng lại
+    System.out.println("Dialog đã đóng, tiến hành reload lại bảng...");
+    // loadDataToTable(); // Gọi hàm refresh bảng ở đây
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jTextFieldTen8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTen8ActionPerformed
@@ -311,17 +352,22 @@ public class SachPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldTen16ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_jButtonXuatActionPerformed
+
+    private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTimKiemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonTimKiemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButtonHuy;
     private javax.swing.JButton jButtonThem;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton jButtonTimKiem;
+    private javax.swing.JButton jButtonXacNhan;
+    private javax.swing.JButton jButtonXuat;
+    private javax.swing.JComboBox<String> jComboBoxTimKiem;
     private javax.swing.JLabel jLabelTen10;
     private javax.swing.JLabel jLabelTen11;
     private javax.swing.JLabel jLabelTen12;
@@ -332,12 +378,12 @@ public class SachPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelTen8;
     private javax.swing.JLabel jLabelTen9;
     private javax.swing.JLabel jLabelTitle;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
     private javax.swing.JPanel jPanelButtons;
     private javax.swing.JPanel jPanelCongCu;
     private javax.swing.JPanel jPanelFields;
+    private javax.swing.JPanel jPanelHuy;
     private javax.swing.JPanel jPanelLeft;
     private javax.swing.JPanel jPanelLeftTop;
     private javax.swing.JPanel jPanelNutThem;
@@ -352,11 +398,10 @@ public class SachPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanelTen8;
     private javax.swing.JPanel jPanelTen9;
     private javax.swing.JPanel jPanelThem;
-    private javax.swing.JPanel jPanelThem1;
+    private javax.swing.JPanel jPanelTimKiem;
     private javax.swing.JPanel jPanelTop;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable jTableSach;
     private javax.swing.JTextField jTextFieldTen10;
     private javax.swing.JTextField jTextFieldTen11;
     private javax.swing.JTextField jTextFieldTen12;
@@ -366,5 +411,6 @@ public class SachPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldTen16;
     private javax.swing.JTextField jTextFieldTen8;
     private javax.swing.JTextField jTextFieldTen9;
+    private javax.swing.JTextField jTextFieldTimKiem;
     // End of variables declaration//GEN-END:variables
 }
