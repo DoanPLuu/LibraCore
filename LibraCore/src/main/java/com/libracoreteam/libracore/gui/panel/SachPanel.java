@@ -4,6 +4,7 @@
  */
 package com.libracoreteam.libracore.gui.panel;
 
+import com.libracoreteam.libracore.gui.dialog.ThemSachDialog;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import java.awt.Color;
@@ -306,22 +307,19 @@ public class SachPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonXacNhanActionPerformed
 
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
-    javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
-    
-    // 2. Khởi tạo Dialog với parentFrame vừa tìm được
-    // true = modal (chặn tương tác với frame cha)
-    ThemSachDialog dialog = new ThemSachDialog(parentFrame, true);
-    
-    // 3. Căn giữa Dialog (nếu muốn nó nằm giữa màn hình thì để null, giữa app thì để this)
-    dialog.setLocationRelativeTo(null); 
-    
-    // 4. Hiện Dialog lên. 
-    // LƯU Ý: Dòng code này sẽ BLOCK luồng chạy cho đến khi Dialog bị đóng (dispose)
-    dialog.setVisible(true);
-    
-    // 5. Code đoạn này sẽ chạy SAU KHI Dialog đóng lại
-    System.out.println("Dialog đã đóng, tiến hành reload lại bảng...");
-    // loadDataToTable(); // Gọi hàm refresh bảng ở đây
+        // 1. Lấy frame cha (MainFrame) chứa SachPanel
+        javax.swing.JFrame parentFrame =
+                (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        // 2. Khởi tạo Dialog "Thêm sách" (modal)
+        ThemSachDialog dialog = new ThemSachDialog(parentFrame, true);
+
+        // 3. Hiển thị dialog (block cho tới khi dispose)
+        dialog.setVisible(true);
+
+        // 4. Sau khi dialog đóng, có thể reload lại bảng
+        System.out.println("Dialog Thêm sách đã đóng, tiến hành reload lại bảng...");
+        // TODO: loadDataToTable(); // Gọi hàm refresh bảng ở đây
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jTextFieldTen8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTen8ActionPerformed

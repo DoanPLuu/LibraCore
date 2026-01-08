@@ -92,7 +92,7 @@
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-swing</artifactId>
-            <version>5.3</version>
+            <version>11.4.2</version>
         </dependency>
 
         
