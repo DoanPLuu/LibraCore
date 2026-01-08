@@ -1,13 +1,15 @@
 package com.libracoreteam.libracore.gui.dialog;
 
+import com.libracoreteam.libracore.util.checklist.CheckListItem;
+import com.libracoreteam.libracore.util.checklist.CheckListUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ThemSachDialog extends JDialog {
 
-    // ===== Fields =====
+public class ThemSachDialog extends JDialog {
+ // ===== Field cơ bản =====
     private JTextField txtTenSach;
     private JTextField txtNamXB;
     private JTextField txtSoTrang;
@@ -17,8 +19,12 @@ public class ThemSachDialog extends JDialog {
 
     private JComboBox<String> cboNXB;
 
-    private JList<String> lstTacGia;
-    private JList<String> lstTheLoai;
+    // ===== Checkbox list =====
+    private DefaultListModel<CheckListItem> tacGiaModel;
+    private DefaultListModel<CheckListItem> theLoaiModel;
+
+    private JList<CheckListItem> lstTacGia;
+    private JList<CheckListItem> lstTheLoai;
 
     private JButton btnLuu;
     private JButton btnHuy;
@@ -43,37 +49,36 @@ public class ThemSachDialog extends JDialog {
         formPanel.add(new JLabel("Tên sách:"));
         formPanel.add(txtTenSach);
 
-        // ===== Tác giả (nhiều) =====
-        lstTacGia = new JList<>(new DefaultListModel<>());
-        lstTacGia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        lstTacGia.setVisibleRowCount(3);
+        // ===== Tác giả (checkbox list) =====
+        tacGiaModel = new DefaultListModel<>();
+        // TODO: thay id mock này bằng id_TacGia lấy từ DB
+        tacGiaModel.addElement(new CheckListItem(1, "Nguyễn Nhật Ánh"));
+        tacGiaModel.addElement(new CheckListItem(2, "J.K. Rowling"));
+        tacGiaModel.addElement(new CheckListItem(3, "Haruki Murakami"));
 
-        // mock data
-        DefaultListModel<String> tacGiaModel = (DefaultListModel<String>) lstTacGia.getModel();
-        tacGiaModel.addElement("Nguyễn Nhật Ánh");
-        tacGiaModel.addElement("J.K. Rowling");
-        tacGiaModel.addElement("Haruki Murakami");
+        lstTacGia = CheckListUtils.createCheckList(tacGiaModel);
+        lstTacGia.setVisibleRowCount(3);
 
         JScrollPane spTacGia = new JScrollPane(lstTacGia);
 
         formPanel.add(new JLabel("Tác giả:"));
-        formPanel.add(spTacGia, "hmin 70");
+        formPanel.add(spTacGia, "hmin 80");
 
-        // ===== Thể loại (nhiều) =====
-        lstTheLoai = new JList<>(new DefaultListModel<>());
-        lstTheLoai.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        // ===== Thể loại (checkbox list) =====
+        theLoaiModel = new DefaultListModel<>();
+        // TODO: thay id mock này bằng id_TheLoai lấy từ DB
+        theLoaiModel.addElement(new CheckListItem(1, "Văn học"));
+        theLoaiModel.addElement(new CheckListItem(2, "Thiếu nhi"));
+        theLoaiModel.addElement(new CheckListItem(3, "Giả tưởng"));
+        theLoaiModel.addElement(new CheckListItem(4, "Khoa học"));
+
+        lstTheLoai = CheckListUtils.createCheckList(theLoaiModel);
         lstTheLoai.setVisibleRowCount(3);
-
-        DefaultListModel<String> theLoaiModel = (DefaultListModel<String>) lstTheLoai.getModel();
-        theLoaiModel.addElement("Văn học");
-        theLoaiModel.addElement("Thiếu nhi");
-        theLoaiModel.addElement("Khoa học");
-        theLoaiModel.addElement("Giả tưởng");
 
         JScrollPane spTheLoai = new JScrollPane(lstTheLoai);
 
         formPanel.add(new JLabel("Thể loại:"));
-        formPanel.add(spTheLoai, "hmin 70");
+        formPanel.add(spTheLoai, "hmin 80");
 
         // ===== Nhà xuất bản =====
         cboNXB = new JComboBox<>();
@@ -94,7 +99,7 @@ public class ThemSachDialog extends JDialog {
         formPanel.add(new JLabel("Số trang:"));
         formPanel.add(txtSoTrang);
 
-        // ===== Mô tả (cao + scroll) =====
+        // ===== Mô tả =====
         txtMoTa = new JTextArea(4, 25);
         txtMoTa.setLineWrap(true);
         txtMoTa.setWrapStyleWord(true);
@@ -106,7 +111,7 @@ public class ThemSachDialog extends JDialog {
         );
 
         formPanel.add(new JLabel("Mô tả:"));
-        formPanel.add(spMoTa, "hmin 90");
+        formPanel.add(spMoTa, "hmin 100");
 
         // ===== Giá sách =====
         txtGiaSach = new JTextField(10);
@@ -142,14 +147,16 @@ public class ThemSachDialog extends JDialog {
         System.out.println("Giá: " + txtGiaSach.getText());
         System.out.println("Mô tả: " + txtMoTa.getText());
 
-        System.out.println("Tác giả:");
-        for (String tg : lstTacGia.getSelectedValuesList()) {
-            System.out.println(" - " + tg);
+        System.out.println("Tác giả đã chọn:");
+        for (CheckListItem item : CheckListUtils.getSelectedItems(tacGiaModel)) {
+            System.out.println(" - (" + item.getId() + ") " + item.getLabel());
+            // TODO: insert Sach_TacGia với item.getId()
         }
 
-        System.out.println("Thể loại:");
-        for (String tl : lstTheLoai.getSelectedValuesList()) {
-            System.out.println(" - " + tl);
+        System.out.println("Thể loại đã chọn:");
+        for (CheckListItem item : CheckListUtils.getSelectedItems(theLoaiModel)) {
+            System.out.println(" - (" + item.getId() + ") " + item.getLabel());
+            // TODO: insert Sach_TheLoai với item.getId()
         }
 
         dispose();
