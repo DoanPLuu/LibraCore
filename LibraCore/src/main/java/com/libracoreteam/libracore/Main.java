@@ -4,6 +4,7 @@
 
 package com.libracoreteam.libracore;
 
+import com.libracoreteam.libracore.gui.MainFrame;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.libracoreteam.libracore.util.DBConnection;
 import java.sql.Connection;
@@ -24,27 +25,14 @@ public class Main {
         
         // 3. Launch application
         java.awt.EventQueue.invokeLater(() -> {
-            // new LoginFrame().setVisible(true);
+            new MainFrame().setVisible(true);  
             System.out.println("Application started!");
         });
     }
     
     private static void setupLookAndFeel() {
         try {
-            // Chọn 1 trong các theme sau:
-            
-            // Option 1: FlatLaf Light (sáng, đẹp)
             FlatLightLaf.setup();
-            
-            // Option 2: FlatLaf Dark (tối, đẹp)
-            // FlatDarkLaf.setup();
-            
-            // Option 3: Arc Dark (IntelliJ theme)
-            // FlatArcDarkIJTheme.setup();
-            
-            // Option 4: Các theme khác
-            // UIManager.setLookAndFeel(new FlatDarculaLaf());
-            
             System.out.println("FlatLaf theme đã áp dụng!");
             
         } catch (Exception e) {
