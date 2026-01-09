@@ -5,6 +5,7 @@
 package com.libracoreteam.libracore.gui.panel;
 
 import com.libracoreteam.libracore.gui.dialog.ThemSachDialog;
+import com.libracoreteam.libracore.gui.dialog.SuaSachDialog;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import java.awt.Color;
@@ -40,8 +41,9 @@ public class SachPanel extends javax.swing.JPanel {
         jTextFieldTimKiem = new javax.swing.JTextField();
         jButtonTimKiem = new javax.swing.JButton();
         jPanelNutThem = new javax.swing.JPanel();
-        jButtonThem = new javax.swing.JButton();
+        jButtonTestSua = new javax.swing.JButton();
         jButtonXuat = new javax.swing.JButton();
+        jButtonThem = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -107,15 +109,20 @@ public class SachPanel extends javax.swing.JPanel {
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
-        jButtonThem.setText("Thêm mới");
-        jButtonThem.setPreferredSize(new java.awt.Dimension(111, 40));
-        jButtonThem.addActionListener(this::jButtonThemActionPerformed);
-        jPanelNutThem.add(jButtonThem);
+        jButtonTestSua.setText("Test form sửa");
+        jButtonTestSua.setPreferredSize(new java.awt.Dimension(111, 40));
+        jButtonTestSua.addActionListener(this::jButtonTestSuaActionPerformed);
+        jPanelNutThem.add(jButtonTestSua);
 
         jButtonXuat.setText("Xuất");
         jButtonXuat.setPreferredSize(new java.awt.Dimension(111, 40));
         jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
         jPanelNutThem.add(jButtonXuat);
+
+        jButtonThem.setText("Thêm mới");
+        jButtonThem.setPreferredSize(new java.awt.Dimension(111, 40));
+        jButtonThem.addActionListener(this::jButtonThemActionPerformed);
+        jPanelNutThem.add(jButtonThem);
 
         jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
@@ -358,9 +365,19 @@ public class SachPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonTimKiemActionPerformed
 
+    private void jButtonTestSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTestSuaActionPerformed
+        javax.swing.JFrame parentFrame =
+                (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        // Mở dialog sửa (mock) để test
+        SuaSachDialog dialog = new SuaSachDialog(parentFrame, true);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_jButtonTestSuaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonHuy;
+    private javax.swing.JButton jButtonTestSua;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXacNhan;
