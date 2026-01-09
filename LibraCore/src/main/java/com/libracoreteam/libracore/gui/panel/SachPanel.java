@@ -69,12 +69,12 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelNhaXuatBan = new javax.swing.JPanel();
         jLabelNXB = new javax.swing.JLabel();
         jTextFieldNXB = new javax.swing.JTextField();
-        jPanelNamXuatBan = new javax.swing.JPanel();
-        jLabelNamXuatBan = new javax.swing.JLabel();
-        jTextFieldNamXuatBan = new javax.swing.JTextField();
         jPanelSoTrang = new javax.swing.JPanel();
         jLabelSoTrang = new javax.swing.JLabel();
         jTextFieldSoTrang = new javax.swing.JTextField();
+        jPanelNamXuatBan = new javax.swing.JPanel();
+        jLabelNamXuatBan = new javax.swing.JLabel();
+        jTextFieldNamXuatBan = new javax.swing.JTextField();
         jPanelMoTa = new javax.swing.JPanel();
         jLabelMoTa = new javax.swing.JLabel();
         jScrollPaneMoTa = new javax.swing.JScrollPane();
@@ -82,6 +82,7 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelGiaSach = new javax.swing.JPanel();
         jLabelGiaSach = new javax.swing.JLabel();
         jTextFieldGiaSach = new javax.swing.JTextField();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
 
         setLayout(new java.awt.BorderLayout());
 
@@ -174,110 +175,144 @@ public class SachPanel extends javax.swing.JPanel {
 
         jPanelBottom.setLayout(new javax.swing.BoxLayout(jPanelBottom, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanelFields.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelFields.setLayout(new javax.swing.BoxLayout(jPanelFields, javax.swing.BoxLayout.Y_AXIS));
 
+        jPanelMaSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelMaSach.setLayout(new java.awt.GridLayout(0, 1));
 
         jLabelMaSach.setText("Mã sách:");
         jPanelMaSach.add(jLabelMaSach);
 
+        jTextFieldMaSach.setEditable(false);
+        jTextFieldMaSach.setFocusable(false);
         jTextFieldMaSach.addActionListener(this::jTextFieldMaSachActionPerformed);
         jPanelMaSach.add(jTextFieldMaSach);
 
         jPanelFields.add(jPanelMaSach);
 
+        jPanelTenSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelTenSach.setLayout(new java.awt.GridLayout(0, 1));
 
         jLabelTenSach.setText("Tên sách:");
         jPanelTenSach.add(jLabelTenSach);
+
+        jTextFieldTenSach.setEditable(false);
+        jTextFieldTenSach.setFocusable(false);
         jPanelTenSach.add(jTextFieldTenSach);
 
         jPanelFields.add(jPanelTenSach);
 
-        jPanelTacGia.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTacGia.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTacGia.setMaximumSize(new java.awt.Dimension(2147483647, 200));
+        jPanelTacGia.setLayout(new java.awt.BorderLayout());
 
         jLabelTacGia.setText("Tác giả");
-        jPanelTacGia.add(jLabelTacGia);
+        jPanelTacGia.add(jLabelTacGia, java.awt.BorderLayout.NORTH);
 
+        jTextAreaTacGia.setEditable(false);
         jTextAreaTacGia.setColumns(20);
         jTextAreaTacGia.setLineWrap(true);
-        jTextAreaTacGia.setRows(5);
+        jTextAreaTacGia.setRows(3);
         jTextAreaTacGia.setWrapStyleWord(true);
+        jTextAreaTacGia.setFocusable(false);
         jScrollPaneTacGia.setViewportView(jTextAreaTacGia);
 
-        jPanelTacGia.add(jScrollPaneTacGia);
+        jPanelTacGia.add(jScrollPaneTacGia, java.awt.BorderLayout.CENTER);
 
         jPanelFields.add(jPanelTacGia);
 
-        jPanelTheLoai.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTheLoai.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTheLoai.setMaximumSize(new java.awt.Dimension(2147483647, 200));
+        jPanelTheLoai.setLayout(new java.awt.BorderLayout());
 
         jLabelTheLoai.setText("Thể loại");
-        jPanelTheLoai.add(jLabelTheLoai);
+        jPanelTheLoai.add(jLabelTheLoai, java.awt.BorderLayout.NORTH);
 
+        jTextAreaTheLoai.setEditable(false);
         jTextAreaTheLoai.setColumns(20);
         jTextAreaTheLoai.setLineWrap(true);
-        jTextAreaTheLoai.setRows(5);
+        jTextAreaTheLoai.setRows(4);
         jTextAreaTheLoai.setWrapStyleWord(true);
+        jTextAreaTheLoai.setFocusable(false);
+        jTextAreaTheLoai.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         jScrollPaneTheLoai.setViewportView(jTextAreaTheLoai);
 
-        jPanelTheLoai.add(jScrollPaneTheLoai);
+        jPanelTheLoai.add(jScrollPaneTheLoai, java.awt.BorderLayout.CENTER);
 
         jPanelFields.add(jPanelTheLoai);
 
+        jPanelNhaXuatBan.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelNhaXuatBan.setLayout(new java.awt.GridLayout(0, 1));
 
         jLabelNXB.setText("Nhà xuất bản:");
         jPanelNhaXuatBan.add(jLabelNXB);
 
+        jTextFieldNXB.setEditable(false);
+        jTextFieldNXB.setFocusable(false);
         jTextFieldNXB.addActionListener(this::jTextFieldNXBActionPerformed);
         jPanelNhaXuatBan.add(jTextFieldNXB);
 
         jPanelFields.add(jPanelNhaXuatBan);
 
-        jPanelNamXuatBan.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelNamXuatBan.setText("Năm xuất bản:");
-        jPanelNamXuatBan.add(jLabelNamXuatBan);
-
-        jTextFieldNamXuatBan.addActionListener(this::jTextFieldNamXuatBanActionPerformed);
-        jPanelNamXuatBan.add(jTextFieldNamXuatBan);
-
-        jPanelFields.add(jPanelNamXuatBan);
-
+        jPanelSoTrang.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelSoTrang.setLayout(new java.awt.GridLayout(0, 1));
 
         jLabelSoTrang.setText("Số trang:");
         jPanelSoTrang.add(jLabelSoTrang);
 
+        jTextFieldSoTrang.setEditable(false);
+        jTextFieldSoTrang.setFocusable(false);
         jTextFieldSoTrang.addActionListener(this::jTextFieldSoTrangActionPerformed);
         jPanelSoTrang.add(jTextFieldSoTrang);
 
         jPanelFields.add(jPanelSoTrang);
 
-        jPanelMoTa.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelNamXuatBan.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelNamXuatBan.setLayout(new java.awt.GridLayout(0, 1));
+
+        jLabelNamXuatBan.setText("Năm xuất bản:");
+        jPanelNamXuatBan.add(jLabelNamXuatBan);
+
+        jTextFieldNamXuatBan.setEditable(false);
+        jTextFieldNamXuatBan.setFocusable(false);
+        jTextFieldNamXuatBan.addActionListener(this::jTextFieldNamXuatBanActionPerformed);
+        jPanelNamXuatBan.add(jTextFieldNamXuatBan);
+
+        jPanelFields.add(jPanelNamXuatBan);
+
+        jPanelMoTa.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelMoTa.setMaximumSize(new java.awt.Dimension(2147483647, 200));
+        jPanelMoTa.setLayout(new java.awt.BorderLayout());
 
         jLabelMoTa.setText("Mô tả:");
-        jPanelMoTa.add(jLabelMoTa);
+        jPanelMoTa.add(jLabelMoTa, java.awt.BorderLayout.NORTH);
 
+        jTextAreaMoTa.setEditable(false);
         jTextAreaMoTa.setColumns(20);
         jTextAreaMoTa.setLineWrap(true);
-        jTextAreaMoTa.setRows(5);
+        jTextAreaMoTa.setRows(3);
         jTextAreaMoTa.setWrapStyleWord(true);
+        jTextAreaMoTa.setFocusable(false);
+        jTextAreaMoTa.setMaximumSize(new java.awt.Dimension(2147483647, 200));
         jScrollPaneMoTa.setViewportView(jTextAreaMoTa);
 
-        jPanelMoTa.add(jScrollPaneMoTa);
+        jPanelMoTa.add(jScrollPaneMoTa, java.awt.BorderLayout.CENTER);
 
         jPanelFields.add(jPanelMoTa);
 
+        jPanelGiaSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelGiaSach.setLayout(new java.awt.GridLayout(0, 1));
 
         jLabelGiaSach.setText("Giá sách:");
         jPanelGiaSach.add(jLabelGiaSach);
 
+        jTextFieldGiaSach.setEditable(false);
+        jTextFieldGiaSach.setFocusable(false);
         jTextFieldGiaSach.addActionListener(this::jTextFieldGiaSachActionPerformed);
         jPanelGiaSach.add(jTextFieldGiaSach);
 
         jPanelFields.add(jPanelGiaSach);
+        jPanelFields.add(filler1);
 
         jPanelBottom.add(jPanelFields);
 
@@ -315,7 +350,15 @@ public class SachPanel extends javax.swing.JPanel {
                     "Kinh dị",
                     "Lịch sử",
                     "Tâm lý",
-                    "Học thuật"
+                    "Học thuật asfasgfaasffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffsf6666666666666666666666666",
+                    "Văn học",
+                    "Thiếu nhi",
+                    "Giả tưởng",
+                    "Khoa học",
+                    "Trinh thám",
+                    "Kinh dị",
+                    "Lịch sử",
+                    "Tâm lý"
             );
             
             String moTaMock = String.join(", ",
@@ -392,6 +435,7 @@ public class SachPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
