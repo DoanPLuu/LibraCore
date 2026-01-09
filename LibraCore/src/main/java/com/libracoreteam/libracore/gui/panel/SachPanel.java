@@ -40,8 +40,8 @@ public class SachPanel extends javax.swing.JPanel {
         jComboBoxTimKiem = new javax.swing.JComboBox<>();
         jTextFieldTimKiem = new javax.swing.JTextField();
         jButtonTimKiem = new javax.swing.JButton();
+        jButtonLamMoi = new javax.swing.JButton();
         jPanelNutThem = new javax.swing.JPanel();
-        jButtonTestSua = new javax.swing.JButton();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
@@ -52,36 +52,36 @@ public class SachPanel extends javax.swing.JPanel {
         jLabelTitle = new javax.swing.JLabel();
         jPanelBottom = new javax.swing.JPanel();
         jPanelFields = new javax.swing.JPanel();
-        jPanelTen8 = new javax.swing.JPanel();
-        jLabelTen8 = new javax.swing.JLabel();
-        jTextFieldTen8 = new javax.swing.JTextField();
-        jPanelTen9 = new javax.swing.JPanel();
-        jLabelTen9 = new javax.swing.JLabel();
-        jTextFieldTen9 = new javax.swing.JTextField();
-        jPanelTen10 = new javax.swing.JPanel();
-        jLabelTen10 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jPanelTen11 = new javax.swing.JPanel();
-        jLabelTen11 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jPanelTen12 = new javax.swing.JPanel();
-        jLabelTen12 = new javax.swing.JLabel();
-        jTextFieldTen12 = new javax.swing.JTextField();
-        jPanelTen13 = new javax.swing.JPanel();
-        jLabelTen13 = new javax.swing.JLabel();
-        jTextFieldTen13 = new javax.swing.JTextField();
-        jPanelTen14 = new javax.swing.JPanel();
-        jLabelTen14 = new javax.swing.JLabel();
-        jTextFieldTen14 = new javax.swing.JTextField();
-        jPanelTen15 = new javax.swing.JPanel();
-        jLabelTen15 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
-        jPanelTen16 = new javax.swing.JPanel();
-        jLabelTen16 = new javax.swing.JLabel();
-        jTextFieldTen16 = new javax.swing.JTextField();
+        jPanelMaSach = new javax.swing.JPanel();
+        jLabelMaSach = new javax.swing.JLabel();
+        jTextFieldMaSach = new javax.swing.JTextField();
+        jPanelTenSach = new javax.swing.JPanel();
+        jLabelTenSach = new javax.swing.JLabel();
+        jTextFieldTenSach = new javax.swing.JTextField();
+        jPanelTacGia = new javax.swing.JPanel();
+        jLabelTacGia = new javax.swing.JLabel();
+        jScrollPaneTacGia = new javax.swing.JScrollPane();
+        jTextAreaTacGia = new javax.swing.JTextArea();
+        jPanelTheLoai = new javax.swing.JPanel();
+        jLabelTheLoai = new javax.swing.JLabel();
+        jScrollPaneTheLoai = new javax.swing.JScrollPane();
+        jTextAreaTheLoai = new javax.swing.JTextArea();
+        jPanelNhaXuatBan = new javax.swing.JPanel();
+        jLabelNXB = new javax.swing.JLabel();
+        jTextFieldNXB = new javax.swing.JTextField();
+        jPanelNamXuatBan = new javax.swing.JPanel();
+        jLabelNamXuatBan = new javax.swing.JLabel();
+        jTextFieldNamXuatBan = new javax.swing.JTextField();
+        jPanelSoTrang = new javax.swing.JPanel();
+        jLabelSoTrang = new javax.swing.JLabel();
+        jTextFieldSoTrang = new javax.swing.JTextField();
+        jPanelMoTa = new javax.swing.JPanel();
+        jLabelMoTa = new javax.swing.JLabel();
+        jScrollPaneMoTa = new javax.swing.JScrollPane();
+        jTextAreaMoTa = new javax.swing.JTextArea();
+        jPanelGiaSach = new javax.swing.JPanel();
+        jLabelGiaSach = new javax.swing.JLabel();
+        jTextFieldGiaSach = new javax.swing.JTextField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -94,31 +94,30 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelCongCu.setLayout(new java.awt.BorderLayout());
 
         jComboBoxTimKiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo tên sách", "Theo tên tác giả" }));
-        jComboBoxTimKiem.setPreferredSize(new java.awt.Dimension(118, 40));
+        jComboBoxTimKiem.setPreferredSize(new java.awt.Dimension(110, 40));
         jPanelTimKiem.add(jComboBoxTimKiem);
 
         jTextFieldTimKiem.setText("Tìm kiếm...");
-        jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(200, 40));
+        jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
         jPanelTimKiem.add(jTextFieldTimKiem);
 
         jButtonTimKiem.setPreferredSize(new java.awt.Dimension(40, 40));
         jButtonTimKiem.addActionListener(this::jButtonTimKiemActionPerformed);
         jPanelTimKiem.add(jButtonTimKiem);
 
+        jButtonLamMoi.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonLamMoi.addActionListener(this::jButtonLamMoiActionPerformed);
+        jPanelTimKiem.add(jButtonLamMoi);
+
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
-        jButtonTestSua.setText("Test form sửa");
-        jButtonTestSua.setPreferredSize(new java.awt.Dimension(111, 40));
-        jButtonTestSua.addActionListener(this::jButtonTestSuaActionPerformed);
-        jPanelNutThem.add(jButtonTestSua);
-
         jButtonXuat.setText("Xuất");
-        jButtonXuat.setPreferredSize(new java.awt.Dimension(111, 40));
+        jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
         jPanelNutThem.add(jButtonXuat);
 
-        jButtonThem.setText("Thêm mới");
-        jButtonThem.setPreferredSize(new java.awt.Dimension(111, 40));
+        jButtonThem.setText("Thêm");
+        jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
         jPanelNutThem.add(jButtonThem);
 
@@ -177,108 +176,108 @@ public class SachPanel extends javax.swing.JPanel {
 
         jPanelFields.setLayout(new java.awt.GridLayout(0, 1));
 
-        jPanelTen8.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelMaSach.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen8.setText("Mã sách:");
-        jPanelTen8.add(jLabelTen8);
+        jLabelMaSach.setText("Mã sách:");
+        jPanelMaSach.add(jLabelMaSach);
 
-        jTextFieldTen8.addActionListener(this::jTextFieldTen8ActionPerformed);
-        jPanelTen8.add(jTextFieldTen8);
+        jTextFieldMaSach.addActionListener(this::jTextFieldMaSachActionPerformed);
+        jPanelMaSach.add(jTextFieldMaSach);
 
-        jPanelFields.add(jPanelTen8);
+        jPanelFields.add(jPanelMaSach);
 
-        jPanelTen9.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTenSach.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen9.setText("Tên sách:");
-        jPanelTen9.add(jLabelTen9);
-        jPanelTen9.add(jTextFieldTen9);
+        jLabelTenSach.setText("Tên sách:");
+        jPanelTenSach.add(jLabelTenSach);
+        jPanelTenSach.add(jTextFieldTenSach);
 
-        jPanelFields.add(jPanelTen9);
+        jPanelFields.add(jPanelTenSach);
 
-        jPanelTen10.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTacGia.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen10.setText("Tác giả");
-        jPanelTen10.add(jLabelTen10);
+        jLabelTacGia.setText("Tác giả");
+        jPanelTacGia.add(jLabelTacGia);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setWrapStyleWord(true);
-        jScrollPane2.setViewportView(jTextArea1);
+        jTextAreaTacGia.setColumns(20);
+        jTextAreaTacGia.setLineWrap(true);
+        jTextAreaTacGia.setRows(5);
+        jTextAreaTacGia.setWrapStyleWord(true);
+        jScrollPaneTacGia.setViewportView(jTextAreaTacGia);
 
-        jPanelTen10.add(jScrollPane2);
+        jPanelTacGia.add(jScrollPaneTacGia);
 
-        jPanelFields.add(jPanelTen10);
+        jPanelFields.add(jPanelTacGia);
 
-        jPanelTen11.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTheLoai.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen11.setText("Thể loại");
-        jPanelTen11.add(jLabelTen11);
+        jLabelTheLoai.setText("Thể loại");
+        jPanelTheLoai.add(jLabelTheLoai);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setLineWrap(true);
-        jTextArea2.setRows(5);
-        jTextArea2.setWrapStyleWord(true);
-        jScrollPane3.setViewportView(jTextArea2);
+        jTextAreaTheLoai.setColumns(20);
+        jTextAreaTheLoai.setLineWrap(true);
+        jTextAreaTheLoai.setRows(5);
+        jTextAreaTheLoai.setWrapStyleWord(true);
+        jScrollPaneTheLoai.setViewportView(jTextAreaTheLoai);
 
-        jPanelTen11.add(jScrollPane3);
+        jPanelTheLoai.add(jScrollPaneTheLoai);
 
-        jPanelFields.add(jPanelTen11);
+        jPanelFields.add(jPanelTheLoai);
 
-        jPanelTen12.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelNhaXuatBan.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen12.setText("Nhà xuất bản:");
-        jPanelTen12.add(jLabelTen12);
+        jLabelNXB.setText("Nhà xuất bản:");
+        jPanelNhaXuatBan.add(jLabelNXB);
 
-        jTextFieldTen12.addActionListener(this::jTextFieldTen12ActionPerformed);
-        jPanelTen12.add(jTextFieldTen12);
+        jTextFieldNXB.addActionListener(this::jTextFieldNXBActionPerformed);
+        jPanelNhaXuatBan.add(jTextFieldNXB);
 
-        jPanelFields.add(jPanelTen12);
+        jPanelFields.add(jPanelNhaXuatBan);
 
-        jPanelTen13.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelNamXuatBan.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen13.setText("Năm xuất bản:");
-        jPanelTen13.add(jLabelTen13);
+        jLabelNamXuatBan.setText("Năm xuất bản:");
+        jPanelNamXuatBan.add(jLabelNamXuatBan);
 
-        jTextFieldTen13.addActionListener(this::jTextFieldTen13ActionPerformed);
-        jPanelTen13.add(jTextFieldTen13);
+        jTextFieldNamXuatBan.addActionListener(this::jTextFieldNamXuatBanActionPerformed);
+        jPanelNamXuatBan.add(jTextFieldNamXuatBan);
 
-        jPanelFields.add(jPanelTen13);
+        jPanelFields.add(jPanelNamXuatBan);
 
-        jPanelTen14.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelSoTrang.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen14.setText("Số trang:");
-        jPanelTen14.add(jLabelTen14);
+        jLabelSoTrang.setText("Số trang:");
+        jPanelSoTrang.add(jLabelSoTrang);
 
-        jTextFieldTen14.addActionListener(this::jTextFieldTen14ActionPerformed);
-        jPanelTen14.add(jTextFieldTen14);
+        jTextFieldSoTrang.addActionListener(this::jTextFieldSoTrangActionPerformed);
+        jPanelSoTrang.add(jTextFieldSoTrang);
 
-        jPanelFields.add(jPanelTen14);
+        jPanelFields.add(jPanelSoTrang);
 
-        jPanelTen15.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelMoTa.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen15.setText("Mô tả:");
-        jPanelTen15.add(jLabelTen15);
+        jLabelMoTa.setText("Mô tả:");
+        jPanelMoTa.add(jLabelMoTa);
 
-        jTextArea3.setColumns(20);
-        jTextArea3.setLineWrap(true);
-        jTextArea3.setRows(5);
-        jTextArea3.setWrapStyleWord(true);
-        jScrollPane4.setViewportView(jTextArea3);
+        jTextAreaMoTa.setColumns(20);
+        jTextAreaMoTa.setLineWrap(true);
+        jTextAreaMoTa.setRows(5);
+        jTextAreaMoTa.setWrapStyleWord(true);
+        jScrollPaneMoTa.setViewportView(jTextAreaMoTa);
 
-        jPanelTen15.add(jScrollPane4);
+        jPanelMoTa.add(jScrollPaneMoTa);
 
-        jPanelFields.add(jPanelTen15);
+        jPanelFields.add(jPanelMoTa);
 
-        jPanelTen16.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelGiaSach.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTen16.setText("Giá sách:");
-        jPanelTen16.add(jLabelTen16);
+        jLabelGiaSach.setText("Giá sách:");
+        jPanelGiaSach.add(jLabelGiaSach);
 
-        jTextFieldTen16.addActionListener(this::jTextFieldTen16ActionPerformed);
-        jPanelTen16.add(jTextFieldTen16);
+        jTextFieldGiaSach.addActionListener(this::jTextFieldGiaSachActionPerformed);
+        jPanelGiaSach.add(jTextFieldGiaSach);
 
-        jPanelFields.add(jPanelTen16);
+        jPanelFields.add(jPanelGiaSach);
 
         jPanelBottom.add(jPanelFields);
 
@@ -294,6 +293,7 @@ public class SachPanel extends javax.swing.JPanel {
             jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
             jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
+            jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             
             // Mock tác giả/thể loại dài để test UI panel phải
             String tacGiaMock = String.join(", ",
@@ -331,13 +331,13 @@ public class SachPanel extends javax.swing.JPanel {
             );
 
             // Gán vào field bên phải
-            jTextArea1.setText(tacGiaMock);
-            jTextArea2.setText(theLoaiMock);
-            jTextArea3.setText(moTaMock);
+            jTextAreaTacGia.setText(tacGiaMock);
+            jTextAreaTheLoai.setText(theLoaiMock);
+            jTextAreaMoTa.setText(moTaMock);
 
             // Cho user xem toàn bộ bằng tooltip (hover)
-            jTextArea1.setToolTipText(tacGiaMock);
-            jTextArea2.setToolTipText(theLoaiMock);
+            jTextAreaTacGia.setToolTipText(tacGiaMock);
+            jTextAreaTheLoai.setToolTipText(theLoaiMock);
         }
     
     
@@ -358,25 +358,25 @@ public class SachPanel extends javax.swing.JPanel {
         // TODO: loadDataToTable(); // Gọi hàm refresh bảng ở đây
     }//GEN-LAST:event_jButtonThemActionPerformed
 
-    private void jTextFieldTen8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTen8ActionPerformed
+    private void jTextFieldMaSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaSachActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTen8ActionPerformed
+    }//GEN-LAST:event_jTextFieldMaSachActionPerformed
 
-    private void jTextFieldTen12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTen12ActionPerformed
+    private void jTextFieldNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNXBActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTen12ActionPerformed
+    }//GEN-LAST:event_jTextFieldNXBActionPerformed
 
-    private void jTextFieldTen13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTen13ActionPerformed
+    private void jTextFieldNamXuatBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNamXuatBanActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTen13ActionPerformed
+    }//GEN-LAST:event_jTextFieldNamXuatBanActionPerformed
 
-    private void jTextFieldTen14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTen14ActionPerformed
+    private void jTextFieldSoTrangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSoTrangActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTen14ActionPerformed
+    }//GEN-LAST:event_jTextFieldSoTrangActionPerformed
 
-    private void jTextFieldTen16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTen16ActionPerformed
+    private void jTextFieldGiaSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldGiaSachActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTen16ActionPerformed
+    }//GEN-LAST:event_jTextFieldGiaSachActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
         // TODO add your handling code here:
@@ -386,65 +386,60 @@ public class SachPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonTimKiemActionPerformed
 
-    private void jButtonTestSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTestSuaActionPerformed
-        javax.swing.JFrame parentFrame =
-                (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
-
-        // Mở dialog sửa (mock) để test
-        SuaSachDialog dialog = new SuaSachDialog(parentFrame, true);
-        dialog.setVisible(true);
-    }//GEN-LAST:event_jButtonTestSuaActionPerformed
+    private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonTestSua;
+    private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JComboBox<String> jComboBoxTimKiem;
-    private javax.swing.JLabel jLabelTen10;
-    private javax.swing.JLabel jLabelTen11;
-    private javax.swing.JLabel jLabelTen12;
-    private javax.swing.JLabel jLabelTen13;
-    private javax.swing.JLabel jLabelTen14;
-    private javax.swing.JLabel jLabelTen15;
-    private javax.swing.JLabel jLabelTen16;
-    private javax.swing.JLabel jLabelTen8;
-    private javax.swing.JLabel jLabelTen9;
+    private javax.swing.JLabel jLabelGiaSach;
+    private javax.swing.JLabel jLabelMaSach;
+    private javax.swing.JLabel jLabelMoTa;
+    private javax.swing.JLabel jLabelNXB;
+    private javax.swing.JLabel jLabelNamXuatBan;
+    private javax.swing.JLabel jLabelSoTrang;
+    private javax.swing.JLabel jLabelTacGia;
+    private javax.swing.JLabel jLabelTenSach;
+    private javax.swing.JLabel jLabelTheLoai;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
     private javax.swing.JPanel jPanelCongCu;
     private javax.swing.JPanel jPanelFields;
+    private javax.swing.JPanel jPanelGiaSach;
     private javax.swing.JPanel jPanelLeft;
     private javax.swing.JPanel jPanelLeftTop;
+    private javax.swing.JPanel jPanelMaSach;
+    private javax.swing.JPanel jPanelMoTa;
+    private javax.swing.JPanel jPanelNamXuatBan;
+    private javax.swing.JPanel jPanelNhaXuatBan;
     private javax.swing.JPanel jPanelNutThem;
     private javax.swing.JPanel jPanelRight;
-    private javax.swing.JPanel jPanelTen10;
-    private javax.swing.JPanel jPanelTen11;
-    private javax.swing.JPanel jPanelTen12;
-    private javax.swing.JPanel jPanelTen13;
-    private javax.swing.JPanel jPanelTen14;
-    private javax.swing.JPanel jPanelTen15;
-    private javax.swing.JPanel jPanelTen16;
-    private javax.swing.JPanel jPanelTen8;
-    private javax.swing.JPanel jPanelTen9;
+    private javax.swing.JPanel jPanelSoTrang;
+    private javax.swing.JPanel jPanelTacGia;
+    private javax.swing.JPanel jPanelTenSach;
+    private javax.swing.JPanel jPanelTheLoai;
     private javax.swing.JPanel jPanelTimKiem;
     private javax.swing.JPanel jPanelTop;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPaneMoTa;
+    private javax.swing.JScrollPane jScrollPaneTacGia;
+    private javax.swing.JScrollPane jScrollPaneTheLoai;
     private javax.swing.JTable jTableSach;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextField jTextFieldTen12;
-    private javax.swing.JTextField jTextFieldTen13;
-    private javax.swing.JTextField jTextFieldTen14;
-    private javax.swing.JTextField jTextFieldTen16;
-    private javax.swing.JTextField jTextFieldTen8;
-    private javax.swing.JTextField jTextFieldTen9;
+    private javax.swing.JTextArea jTextAreaMoTa;
+    private javax.swing.JTextArea jTextAreaTacGia;
+    private javax.swing.JTextArea jTextAreaTheLoai;
+    private javax.swing.JTextField jTextFieldGiaSach;
+    private javax.swing.JTextField jTextFieldMaSach;
+    private javax.swing.JTextField jTextFieldNXB;
+    private javax.swing.JTextField jTextFieldNamXuatBan;
+    private javax.swing.JTextField jTextFieldSoTrang;
+    private javax.swing.JTextField jTextFieldTenSach;
     private javax.swing.JTextField jTextFieldTimKiem;
     // End of variables declaration//GEN-END:variables
 }

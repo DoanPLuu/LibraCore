@@ -7,6 +7,7 @@ package com.libracoreteam.libracore.gui.panel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
 /**
@@ -133,35 +134,31 @@ public class MenuItem extends JButton {
         g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        // Vẽ border vàng khi selected
-        if (isSelected) {
-            g2.setColor(new Color(255, 215, 0)); // Màu vàng sáng
-            g2.fillRect(0, 0, 4, getHeight());
-        }
-        
         // Vẽ arrow nếu có submenu
         if (hasSubMenu && !isSubMenuItem) {
-            g2.setColor(getForeground());
-            int arrowWidth = 8;
-            int arrowHeight = 4;
-            int x = getWidth() - arrowWidth - 15;
-            int y = (getHeight() - arrowHeight) / 2;
+        g2.setColor(getForeground());
 
-            // Xoay arrow dựa trên animation value
-            Path2D arrow = new Path2D.Double();
-            if (arrowAnimation < 0.5f) {
-                // Arrow xuống (chưa mở)
-                arrow.moveTo(x, y);
-                arrow.lineTo(x + arrowWidth / 2, y + arrowHeight);
-                arrow.lineTo(x + arrowWidth, y);
-            } else {
-                // Arrow ngang (đã mở)
-                arrow.moveTo(x, y + arrowHeight / 2);
-                arrow.lineTo(x + arrowWidth, y + arrowHeight / 2);
-                arrow.lineTo(x + arrowWidth / 2, y + arrowHeight);
-            }
-            g2.fill(arrow);
+        int size = 8;
+        int x = getWidth() - size - 15;
+        int y = (getHeight() - size) / 2;
+
+        Path2D arrow = new Path2D.Double();
+        arrow.moveTo(0, 0);
+        arrow.lineTo(size, 0);
+        arrow.lineTo(size / 2.0, size);
+        arrow.closePath();
+
+        AffineTransform at = new AffineTransform();
+        at.translate(x, y);
+
+        // arrowAnimation < 0.5: chỉ xuống
+        // arrowAnimation >= 0.5: xoay sang phải
+        if (arrowAnimation >= 0.5f) {
+            at.rotate(Math.toRadians(-90), size / 2.0, size / 2.0);
         }
+
+        g2.fill(at.createTransformedShape(arrow));
+    }
         
         g2.dispose();
     }
