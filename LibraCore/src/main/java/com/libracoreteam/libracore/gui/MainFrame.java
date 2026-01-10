@@ -1,8 +1,12 @@
 package com.libracoreteam.libracore.gui;
 
+import com.libracoreteam.libracore.gui.panel.CuonSachPanel;
 import com.libracoreteam.libracore.gui.panel.MenuPanel;
 import com.libracoreteam.libracore.gui.panel.DashboardPanel;
 import com.libracoreteam.libracore.gui.panel.SachPanel;
+import com.libracoreteam.libracore.gui.panel.NXBPanel;
+import com.libracoreteam.libracore.gui.panel.TacGiaPanel;
+import com.libracoreteam.libracore.gui.panel.TheLoaiPanel;
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,11 +22,11 @@ public class MainFrame extends javax.swing.JFrame {
     // Các panel sẽ được thêm vào CardLayout
     private DashboardPanel dashboardPanel;
     private SachPanel sachPanel;
+    private NXBPanel nxbPanel;
     // TODO: Khai báo các panel khác khi tạo
-    // private CuonSachPanel cuonSachPanel;
-    // private TacGiaPanel tacGiaPanel;
-    // private NXBPanel nxbPanel;
-    // private TheLoaiPanel theLoaiPanel;
+    private CuonSachPanel cuonSachPanel;
+     private TacGiaPanel tacGiaPanel;
+    private TheLoaiPanel theLoaiPanel;
     // private ThanhVienPanel thanhVienPanel;
     // private TheThanhVienPanel theThanhVienPanel;
     // private MuonTraSachPanel muonTraSachPanel;
@@ -110,33 +114,21 @@ public class MainFrame extends javax.swing.JFrame {
         // BOOK: Parent menu (có thể không cần dùng, nhưng thêm để đảm bảo)
         contentPanel.add(createPlaceholderPanel("Quản lý sách"), "BOOK");
         
-        // BOOK_1: Sách
         sachPanel = new SachPanel();
         contentPanel.add(sachPanel, "BOOK_1");
         
-        // BOOK_2: Quyển sách
-        // TODO: Uncomment khi tạo CuonSachPanel
-        // cuonSachPanel = new CuonSachPanel();
-        // contentPanel.add(cuonSachPanel, "BOOK_2");
-        contentPanel.add(createPlaceholderPanel("Quyển sách"), "BOOK_2");
+        cuonSachPanel = new CuonSachPanel();
+        contentPanel.add(cuonSachPanel, "BOOK_2");
         
-        // BOOK_3: Tác giả
-        // TODO: Uncomment khi tạo TacGiaPanel
-        // tacGiaPanel = new TacGiaPanel();
-        // contentPanel.add(tacGiaPanel, "BOOK_3");
-        contentPanel.add(createPlaceholderPanel("Tác giả"), "BOOK_3");
+        tacGiaPanel = new TacGiaPanel();
+        contentPanel.add(tacGiaPanel, "BOOK_3");
         
-        // BOOK_4: Nhà xuất bản
-        // TODO: Uncomment khi tạo NXBPanel
-        // nxbPanel = new NXBPanel();
-        // contentPanel.add(nxbPanel, "BOOK_4");
-        contentPanel.add(createPlaceholderPanel("Nhà xuất bản"), "BOOK_4");
+       
+        nxbPanel = new NXBPanel();
+        contentPanel.add(nxbPanel, "BOOK_4");
         
-        // BOOK_5: Thể loại
-        // TODO: Uncomment khi tạo TheLoaiPanel
-        // theLoaiPanel = new TheLoaiPanel();
-        // contentPanel.add(theLoaiPanel, "BOOK_5");
-        contentPanel.add(createPlaceholderPanel("Thể loại"), "BOOK_5");
+        theLoaiPanel = new TheLoaiPanel();
+        contentPanel.add(theLoaiPanel, "BOOK_5");
         
         // ========== QUẢN LÝ THÀNH VIÊN ==========
         // MEMBER: Parent menu
