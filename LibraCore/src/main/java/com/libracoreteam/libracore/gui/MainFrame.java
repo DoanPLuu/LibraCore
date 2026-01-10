@@ -3,6 +3,7 @@ package com.libracoreteam.libracore.gui;
 import com.libracoreteam.libracore.gui.panel.MenuPanel;
 import com.libracoreteam.libracore.gui.panel.DashboardPanel;
 import com.libracoreteam.libracore.gui.panel.SachPanel;
+import com.libracoreteam.libracore.gui.panel.NXBPanel;
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,10 +19,10 @@ public class MainFrame extends javax.swing.JFrame {
     // Các panel sẽ được thêm vào CardLayout
     private DashboardPanel dashboardPanel;
     private SachPanel sachPanel;
+    private NXBPanel nxbPanel;
     // TODO: Khai báo các panel khác khi tạo
     // private CuonSachPanel cuonSachPanel;
     // private TacGiaPanel tacGiaPanel;
-    // private NXBPanel nxbPanel;
     // private TheLoaiPanel theLoaiPanel;
     // private ThanhVienPanel thanhVienPanel;
     // private TheThanhVienPanel theThanhVienPanel;
@@ -127,10 +128,8 @@ public class MainFrame extends javax.swing.JFrame {
         contentPanel.add(createPlaceholderPanel("Tác giả"), "BOOK_3");
         
         // BOOK_4: Nhà xuất bản
-        // TODO: Uncomment khi tạo NXBPanel
-        // nxbPanel = new NXBPanel();
-        // contentPanel.add(nxbPanel, "BOOK_4");
-        contentPanel.add(createPlaceholderPanel("Nhà xuất bản"), "BOOK_4");
+        nxbPanel = new NXBPanel();
+        contentPanel.add(nxbPanel, "BOOK_4");
         
         // BOOK_5: Thể loại
         // TODO: Uncomment khi tạo TheLoaiPanel
