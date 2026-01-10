@@ -4,8 +4,7 @@
  */
 package com.libracoreteam.libracore.gui.panel;
 
-import com.libracoreteam.libracore.gui.dialog.ThemSachDialog;
-import com.libracoreteam.libracore.gui.dialog.SuaSachDialog;
+import com.libracoreteam.libracore.gui.dialog.ThemTacGiaDialog;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import java.awt.Color;
@@ -14,15 +13,17 @@ import java.awt.Color;
  *
  * @author luuis
  */
-public class CuonSachPanel extends javax.swing.JPanel {
+public class TacGiaPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form TestPanel
      */
-    public CuonSachPanel() {
+    public TacGiaPanel() {
         initComponents();
-        Test();
+        InnitButton();
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -33,6 +34,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem1 = new javax.swing.JMenuItem();
         jPanelLeft = new javax.swing.JPanel();
         jPanelLeftTop = new javax.swing.JPanel();
         jPanelCongCu = new javax.swing.JPanel();
@@ -51,27 +53,33 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jLabelTitle = new javax.swing.JLabel();
         jPanelBottom = new javax.swing.JPanel();
         jPanelFields = new javax.swing.JPanel();
-        jPanelMaSach = new javax.swing.JPanel();
-        jLabelMaSach = new javax.swing.JLabel();
-        jTextFieldMaSach = new javax.swing.JTextField();
-        jPanelTenSach = new javax.swing.JPanel();
-        jLabelTenSach = new javax.swing.JLabel();
-        jTextFieldTenSach = new javax.swing.JTextField();
-        jPanelNhaXuatBan = new javax.swing.JPanel();
-        jLabelNXB = new javax.swing.JLabel();
-        jTextFieldNXB = new javax.swing.JTextField();
-        jPanelSoTrang = new javax.swing.JPanel();
-        jLabelSoTrang = new javax.swing.JLabel();
-        jTextFieldSoTrang = new javax.swing.JTextField();
-        jPanelNamXuatBan = new javax.swing.JPanel();
-        jLabelNamXuatBan = new javax.swing.JLabel();
-        jTextFieldNamXuatBan = new javax.swing.JTextField();
-        jPanelGiaSach = new javax.swing.JPanel();
-        jLabelGiaSach = new javax.swing.JLabel();
-        jTextFieldGiaSach = new javax.swing.JTextField();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        jPanelMa = new javax.swing.JPanel();
+        jLabelMaNXB = new javax.swing.JLabel();
+        jTextFieldMaNXB = new javax.swing.JTextField();
+        jPanelTen = new javax.swing.JPanel();
+        jLabelTenNXB = new javax.swing.JLabel();
+        jTextFieldTenNXB = new javax.swing.JTextField();
+        jPanelDiaChi = new javax.swing.JPanel();
+        jLabelDiaChiNXB = new javax.swing.JLabel();
+        jTextFieldDiaChiNXB = new javax.swing.JTextField();
+        jPanelSDT = new javax.swing.JPanel();
+        jLabelSDT = new javax.swing.JLabel();
+        jTextFieldSDT = new javax.swing.JTextField();
+        jPanelTrangThai = new javax.swing.JPanel();
+        jLabelTrangThai = new javax.swing.JLabel();
+        jTextFieldTrangThai = new javax.swing.JTextField();
+        jPanelTrangThai1 = new javax.swing.JPanel();
+        jLabelTrangThai1 = new javax.swing.JLabel();
+        jTextFieldTrangThai1 = new javax.swing.JTextField();
+        jPanelButton = new javax.swing.JPanel();
+        jButtonXacNhan = new javax.swing.JButton();
+        jButtonHuy = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+
+        jMenuItem1.setText("jMenuItem1");
 
         setLayout(new java.awt.BorderLayout());
 
@@ -153,7 +161,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jPanelRight.setLayout(new java.awt.BorderLayout());
 
         jLabelTitle.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        jLabelTitle.setText("THÔNG TIN CUỐN SÁCH");
+        jLabelTitle.setText("THÔNG TIN TÁC GIẢ");
         jPanelTop.add(jLabelTitle);
 
         jPanelRight.add(jPanelTop, java.awt.BorderLayout.PAGE_START);
@@ -162,85 +170,99 @@ public class CuonSachPanel extends javax.swing.JPanel {
 
         jPanelFields.setLayout(new javax.swing.BoxLayout(jPanelFields, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanelMaSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelMaSach.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelMa.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelMa.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelMaSach.setText("Mã sách:");
-        jPanelMaSach.add(jLabelMaSach);
+        jLabelMaNXB.setText("Mã tác giả:");
+        jPanelMa.add(jLabelMaNXB);
 
-        jTextFieldMaSach.setEditable(false);
-        jTextFieldMaSach.setFocusable(false);
-        jTextFieldMaSach.addActionListener(this::jTextFieldMaSachActionPerformed);
-        jPanelMaSach.add(jTextFieldMaSach);
+        jTextFieldMaNXB.setEditable(false);
+        jTextFieldMaNXB.setFocusable(false);
+        jTextFieldMaNXB.addActionListener(this::jTextFieldMaNXBActionPerformed);
+        jPanelMa.add(jTextFieldMaNXB);
 
-        jPanelFields.add(jPanelMaSach);
+        jPanelFields.add(jPanelMa);
 
-        jPanelTenSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelTenSach.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTen.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTen.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTenSach.setText("Mã cuốn sách:");
-        jPanelTenSach.add(jLabelTenSach);
+        jLabelTenNXB.setText("Tên tác giả:");
+        jPanelTen.add(jLabelTenNXB);
 
-        jTextFieldTenSach.setEditable(false);
-        jTextFieldTenSach.setFocusable(false);
-        jPanelTenSach.add(jTextFieldTenSach);
+        jTextFieldTenNXB.setEditable(false);
+        jTextFieldTenNXB.setFocusable(false);
+        jPanelTen.add(jTextFieldTenNXB);
 
-        jPanelFields.add(jPanelTenSach);
+        jPanelFields.add(jPanelTen);
 
-        jPanelNhaXuatBan.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelNhaXuatBan.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelDiaChi.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelDiaChi.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelNXB.setText("Tên cuốn sách:");
-        jPanelNhaXuatBan.add(jLabelNXB);
+        jLabelDiaChiNXB.setText("Ngày sinh tác giả:");
+        jPanelDiaChi.add(jLabelDiaChiNXB);
 
-        jTextFieldNXB.setEditable(false);
-        jTextFieldNXB.setFocusable(false);
-        jTextFieldNXB.addActionListener(this::jTextFieldNXBActionPerformed);
-        jPanelNhaXuatBan.add(jTextFieldNXB);
+        jTextFieldDiaChiNXB.setEditable(false);
+        jTextFieldDiaChiNXB.setFocusable(false);
+        jTextFieldDiaChiNXB.addActionListener(this::jTextFieldDiaChiNXBActionPerformed);
+        jPanelDiaChi.add(jTextFieldDiaChiNXB);
 
-        jPanelFields.add(jPanelNhaXuatBan);
+        jPanelFields.add(jPanelDiaChi);
 
-        jPanelSoTrang.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelSoTrang.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelSDT.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelSDT.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelSoTrang.setText("Tình trạng sách:");
-        jPanelSoTrang.add(jLabelSoTrang);
+        jLabelSDT.setText("Nơi sinh tác giả:");
+        jPanelSDT.add(jLabelSDT);
 
-        jTextFieldSoTrang.setEditable(false);
-        jTextFieldSoTrang.setFocusable(false);
-        jTextFieldSoTrang.addActionListener(this::jTextFieldSoTrangActionPerformed);
-        jPanelSoTrang.add(jTextFieldSoTrang);
+        jTextFieldSDT.setEditable(false);
+        jTextFieldSDT.setFocusable(false);
+        jTextFieldSDT.addActionListener(this::jTextFieldSDTActionPerformed);
+        jPanelSDT.add(jTextFieldSDT);
 
-        jPanelFields.add(jPanelSoTrang);
+        jPanelFields.add(jPanelSDT);
 
-        jPanelNamXuatBan.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelNamXuatBan.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTrangThai.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTrangThai.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelNamXuatBan.setText("Trạng thái mượn:");
-        jPanelNamXuatBan.add(jLabelNamXuatBan);
+        jLabelTrangThai.setText("SDT tác giả:");
+        jPanelTrangThai.add(jLabelTrangThai);
 
-        jTextFieldNamXuatBan.setEditable(false);
-        jTextFieldNamXuatBan.setFocusable(false);
-        jTextFieldNamXuatBan.addActionListener(this::jTextFieldNamXuatBanActionPerformed);
-        jPanelNamXuatBan.add(jTextFieldNamXuatBan);
+        jTextFieldTrangThai.setEditable(false);
+        jTextFieldTrangThai.setFocusable(false);
+        jTextFieldTrangThai.addActionListener(this::jTextFieldTrangThaiActionPerformed);
+        jPanelTrangThai.add(jTextFieldTrangThai);
 
-        jPanelFields.add(jPanelNamXuatBan);
+        jPanelFields.add(jPanelTrangThai);
 
-        jPanelGiaSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelGiaSach.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTrangThai1.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTrangThai1.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelGiaSach.setText("Đã huỷ:");
-        jPanelGiaSach.add(jLabelGiaSach);
+        jLabelTrangThai1.setText("Trạng thái hoạt động:");
+        jPanelTrangThai1.add(jLabelTrangThai1);
 
-        jTextFieldGiaSach.setEditable(false);
-        jTextFieldGiaSach.setFocusable(false);
-        jTextFieldGiaSach.addActionListener(this::jTextFieldGiaSachActionPerformed);
-        jPanelGiaSach.add(jTextFieldGiaSach);
+        jTextFieldTrangThai1.setEditable(false);
+        jTextFieldTrangThai1.setFocusable(false);
+        jTextFieldTrangThai1.addActionListener(this::jTextFieldTrangThai1ActionPerformed);
+        jPanelTrangThai1.add(jTextFieldTrangThai1);
 
-        jPanelFields.add(jPanelGiaSach);
-        jPanelFields.add(filler1);
+        jPanelFields.add(jPanelTrangThai1);
+
+        jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
+
+        jButtonXacNhan.setText("Xác nhận");
+        jButtonXacNhan.setPreferredSize(new java.awt.Dimension(110, 40));
+        jButtonXacNhan.addActionListener(this::jButtonXacNhanActionPerformed);
+        jPanelButton.add(jButtonXacNhan);
+
+        jButtonHuy.setText("Huỷ");
+        jButtonHuy.setPreferredSize(new java.awt.Dimension(110, 40));
+        jPanelButton.add(jButtonHuy);
+
+        jPanelFields.add(jPanelButton);
         jPanelFields.add(filler2);
         jPanelFields.add(filler3);
+        jPanelFields.add(filler4);
+        jPanelFields.add(filler5);
 
         jPanelBottom.add(jPanelFields);
 
@@ -249,7 +271,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
         add(jPanelRight, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void Test() {
+    private void InnitButton() {
             // Cấu hình tập trung tại đây giúp dễ bảo trì màu sắc/kích thước đồng bộ
             int iconSize = 16;
 
@@ -257,90 +279,41 @@ public class CuonSachPanel extends javax.swing.JPanel {
             jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-            
-            // Mock tác giả/thể loại dài để test UI panel phải
-            String tacGiaMock = String.join(", ",
-                    "Nguyễn Nhật Ánh",
-                    "J.K. Rowling",
-                    "Haruki Murakami",
-                    "George R.R. Martin",
-                    "Arthur Conan Doyle",
-                    "Agatha Christie",
-                    "Stephen King"
-            );
-
-            String theLoaiMock = String.join(", ",
-                    "Văn học",
-                    "Thiếu nhi",
-                    "Giả tưởng",
-                    "Khoa học",
-                    "Trinh thám",
-                    "Kinh dị",
-                    "Lịch sử",
-                    "Tâm lý",
-                    "Học thuật asfasgfaasffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffsf6666666666666666666666666",
-                    "Văn học",
-                    "Thiếu nhi",
-                    "Giả tưởng",
-                    "Khoa học",
-                    "Trinh thám",
-                    "Kinh dị",
-                    "Lịch sử",
-                    "Tâm lý"
-            );
-            
-            String moTaMock = String.join(", ",
-                    "Văn học",
-                    "Thiếu nhi",
-                    "Giả tưởng",
-                    "Khoa học",
-                    "Trinh thám",
-                    "Kinh dị",
-                    "Lịch sử",
-                    "Tâm lý",
-                    "Học thuật"
-            );
-
-           
-        }
+            jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
+            jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
+    }
     
-    
-
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
-        // 1. Lấy frame cha (MainFrame) chứa SachPanel
-//        javax.swing.JFrame parentFrame =
-//                (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
-//
-//        // 2. Khởi tạo Dialog "Thêm sách" (modal)
-//        ThemSachDialog dialog = new ThemSachDialog(parentFrame, true);
-//
-//        // 3. Hiển thị dialog (block cho tới khi dispose)
-//        dialog.setVisible(true);
-//
-//        // 4. Sau khi dialog đóng, có thể reload lại bảng
-//        System.out.println("Dialog Thêm sách đã đóng, tiến hành reload lại bảng...");
+        // 1. Lấy frame cha (MainFrame) chứa TacGiaPanel
+        javax.swing.JFrame parentFrame =
+                (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        // 2. Khởi tạo Dialog "Thêm tác giả" (modal)
+        ThemTacGiaDialog dialog = new ThemTacGiaDialog(parentFrame, true);
+
+        // 3. Hiển thị dialog (block cho tới khi dispose)
+        dialog.setVisible(true);
+
+        // 4. Sau khi dialog đóng, có thể reload lại bảng
+        System.out.println("Dialog Thêm tác giả đã đóng, tiến hành reload lại bảng...");
         // TODO: loadDataToTable(); // Gọi hàm refresh bảng ở đây
     }//GEN-LAST:event_jButtonThemActionPerformed
 
-    private void jTextFieldMaSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaSachActionPerformed
+    private void jTextFieldMaNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaNXBActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldMaSachActionPerformed
+    }//GEN-LAST:event_jTextFieldMaNXBActionPerformed
 
-    private void jTextFieldNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNXBActionPerformed
+    private void jTextFieldDiaChiNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDiaChiNXBActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldNXBActionPerformed
+    }//GEN-LAST:event_jTextFieldDiaChiNXBActionPerformed
 
-    private void jTextFieldNamXuatBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNamXuatBanActionPerformed
+    private void jTextFieldTrangThaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTrangThaiActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldNamXuatBanActionPerformed
+    }//GEN-LAST:event_jTextFieldTrangThaiActionPerformed
 
-    private void jTextFieldSoTrangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSoTrangActionPerformed
+    private void jTextFieldSDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSDTActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldSoTrangActionPerformed
-
-    private void jTextFieldGiaSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldGiaSachActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldGiaSachActionPerformed
+    }//GEN-LAST:event_jTextFieldSDTActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
         // TODO add your handling code here:
@@ -354,46 +327,59 @@ public class CuonSachPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
+    private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonXacNhanActionPerformed
+
+    private void jTextFieldTrangThai1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTrangThai1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTrangThai1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
+    private javax.swing.Box.Filler filler5;
+    private javax.swing.JButton jButtonHuy;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
+    private javax.swing.JButton jButtonXacNhan;
     private javax.swing.JButton jButtonXuat;
-    private javax.swing.JLabel jLabelGiaSach;
-    private javax.swing.JLabel jLabelMaSach;
-    private javax.swing.JLabel jLabelNXB;
-    private javax.swing.JLabel jLabelNamXuatBan;
-    private javax.swing.JLabel jLabelSoTrang;
-    private javax.swing.JLabel jLabelTenSach;
+    private javax.swing.JLabel jLabelDiaChiNXB;
+    private javax.swing.JLabel jLabelMaNXB;
+    private javax.swing.JLabel jLabelSDT;
+    private javax.swing.JLabel jLabelTenNXB;
     private javax.swing.JLabel jLabelTitle;
+    private javax.swing.JLabel jLabelTrangThai;
+    private javax.swing.JLabel jLabelTrangThai1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
+    private javax.swing.JPanel jPanelButton;
     private javax.swing.JPanel jPanelCongCu;
+    private javax.swing.JPanel jPanelDiaChi;
     private javax.swing.JPanel jPanelFields;
-    private javax.swing.JPanel jPanelGiaSach;
     private javax.swing.JPanel jPanelLeft;
     private javax.swing.JPanel jPanelLeftTop;
-    private javax.swing.JPanel jPanelMaSach;
-    private javax.swing.JPanel jPanelNamXuatBan;
-    private javax.swing.JPanel jPanelNhaXuatBan;
+    private javax.swing.JPanel jPanelMa;
     private javax.swing.JPanel jPanelNutThem;
     private javax.swing.JPanel jPanelRight;
-    private javax.swing.JPanel jPanelSoTrang;
-    private javax.swing.JPanel jPanelTenSach;
+    private javax.swing.JPanel jPanelSDT;
+    private javax.swing.JPanel jPanelTen;
     private javax.swing.JPanel jPanelTimKiem;
     private javax.swing.JPanel jPanelTop;
+    private javax.swing.JPanel jPanelTrangThai;
+    private javax.swing.JPanel jPanelTrangThai1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSach;
-    private javax.swing.JTextField jTextFieldGiaSach;
-    private javax.swing.JTextField jTextFieldMaSach;
-    private javax.swing.JTextField jTextFieldNXB;
-    private javax.swing.JTextField jTextFieldNamXuatBan;
-    private javax.swing.JTextField jTextFieldSoTrang;
-    private javax.swing.JTextField jTextFieldTenSach;
+    private javax.swing.JTextField jTextFieldDiaChiNXB;
+    private javax.swing.JTextField jTextFieldMaNXB;
+    private javax.swing.JTextField jTextFieldSDT;
+    private javax.swing.JTextField jTextFieldTenNXB;
     private javax.swing.JTextField jTextFieldTimKiem;
+    private javax.swing.JTextField jTextFieldTrangThai;
+    private javax.swing.JTextField jTextFieldTrangThai1;
     // End of variables declaration//GEN-END:variables
 }

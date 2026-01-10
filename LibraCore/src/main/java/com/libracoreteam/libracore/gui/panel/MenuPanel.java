@@ -49,7 +49,7 @@ public class MenuPanel extends JPanel {
     // 7: Thống kê báo cáo      -> Thống kê sách, Thống kê mượn trả, Thống kê tiền phạt
     private String[][] menuItems = {
         {"Dashboard"},
-        {"Quản lý sách", "Sách", "Quyển sách", "Tác giả", "Nhà xuất bản", "Thể loại"},
+        {"Quản lý sách", "Sách", "Cuốn sách", "Tác giả", "Nhà xuất bản", "Thể loại"},
         {"Quản lý thành viên", "Thành viên", "Thẻ thành viên"},
         {"Quản lý mượn - trả", "Mượn - trả sách"},
         {"Quản lý phạt - trả phạt", "Phạt", "Mức phạt"},
