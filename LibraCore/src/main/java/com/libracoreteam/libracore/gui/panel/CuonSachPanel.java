@@ -40,7 +40,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jTextFieldTimKiem = new javax.swing.JTextField();
         jButtonTimKiem = new javax.swing.JButton();
         jButtonLamMoi = new javax.swing.JButton();
-        jPanelNutThem = new javax.swing.JPanel();
+        jPanelNut = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
@@ -54,21 +54,21 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jPanelMaSach = new javax.swing.JPanel();
         jLabelMaSach = new javax.swing.JLabel();
         jTextFieldMaSach = new javax.swing.JTextField();
-        jPanelTenSach = new javax.swing.JPanel();
-        jLabelTenSach = new javax.swing.JLabel();
-        jTextFieldTenSach = new javax.swing.JTextField();
-        jPanelNhaXuatBan = new javax.swing.JPanel();
-        jLabelNXB = new javax.swing.JLabel();
-        jTextFieldNXB = new javax.swing.JTextField();
-        jPanelSoTrang = new javax.swing.JPanel();
-        jLabelSoTrang = new javax.swing.JLabel();
-        jTextFieldSoTrang = new javax.swing.JTextField();
-        jPanelNamXuatBan = new javax.swing.JPanel();
-        jLabelNamXuatBan = new javax.swing.JLabel();
-        jTextFieldNamXuatBan = new javax.swing.JTextField();
-        jPanelGiaSach = new javax.swing.JPanel();
-        jLabelGiaSach = new javax.swing.JLabel();
-        jTextFieldGiaSach = new javax.swing.JTextField();
+        jPanelMaCuonSach = new javax.swing.JPanel();
+        jLabelMaCuonSach = new javax.swing.JLabel();
+        jTextFieldMaCuonSach = new javax.swing.JTextField();
+        jPanelTenCuonSach = new javax.swing.JPanel();
+        jLabelTenCuonSach = new javax.swing.JLabel();
+        jTextFieldTenCuonSach = new javax.swing.JTextField();
+        jPanelTinhTrangSach = new javax.swing.JPanel();
+        jLabelTinhTrang = new javax.swing.JLabel();
+        jTextFieldTinhTrang = new javax.swing.JTextField();
+        jPanelTrangThaiMuon = new javax.swing.JPanel();
+        jLabelTrangThaiMuon = new javax.swing.JLabel();
+        jTextFieldTrangThaiMuon = new javax.swing.JTextField();
+        jPanelDaHuy = new javax.swing.JPanel();
+        jLabelDaHuy = new javax.swing.JLabel();
+        jTextFieldDaHuy = new javax.swing.JTextField();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
@@ -100,14 +100,14 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jButtonXuat.setText("Xuất");
         jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
-        jPanelNutThem.add(jButtonXuat);
+        jPanelNut.add(jButtonXuat);
 
         jButtonThem.setText("Thêm");
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
-        jPanelNutThem.add(jButtonThem);
+        jPanelNut.add(jButtonThem);
 
-        jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
+        jPanelCongCu.add(jPanelNut, java.awt.BorderLayout.EAST);
 
         jPanelLeftTop.add(jPanelCongCu, java.awt.BorderLayout.CENTER);
 
@@ -175,69 +175,69 @@ public class CuonSachPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelMaSach);
 
-        jPanelTenSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelTenSach.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelMaCuonSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelMaCuonSach.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTenSach.setText("Mã cuốn sách:");
-        jPanelTenSach.add(jLabelTenSach);
+        jLabelMaCuonSach.setText("Mã cuốn sách:");
+        jPanelMaCuonSach.add(jLabelMaCuonSach);
 
-        jTextFieldTenSach.setEditable(false);
-        jTextFieldTenSach.setFocusable(false);
-        jPanelTenSach.add(jTextFieldTenSach);
+        jTextFieldMaCuonSach.setEditable(false);
+        jTextFieldMaCuonSach.setFocusable(false);
+        jPanelMaCuonSach.add(jTextFieldMaCuonSach);
 
-        jPanelFields.add(jPanelTenSach);
+        jPanelFields.add(jPanelMaCuonSach);
 
-        jPanelNhaXuatBan.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelNhaXuatBan.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTenCuonSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTenCuonSach.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelNXB.setText("Tên cuốn sách:");
-        jPanelNhaXuatBan.add(jLabelNXB);
+        jLabelTenCuonSach.setText("Tên cuốn sách:");
+        jPanelTenCuonSach.add(jLabelTenCuonSach);
 
-        jTextFieldNXB.setEditable(false);
-        jTextFieldNXB.setFocusable(false);
-        jTextFieldNXB.addActionListener(this::jTextFieldNXBActionPerformed);
-        jPanelNhaXuatBan.add(jTextFieldNXB);
+        jTextFieldTenCuonSach.setEditable(false);
+        jTextFieldTenCuonSach.setFocusable(false);
+        jTextFieldTenCuonSach.addActionListener(this::jTextFieldTenCuonSachActionPerformed);
+        jPanelTenCuonSach.add(jTextFieldTenCuonSach);
 
-        jPanelFields.add(jPanelNhaXuatBan);
+        jPanelFields.add(jPanelTenCuonSach);
 
-        jPanelSoTrang.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelSoTrang.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTinhTrangSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTinhTrangSach.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelSoTrang.setText("Tình trạng sách:");
-        jPanelSoTrang.add(jLabelSoTrang);
+        jLabelTinhTrang.setText("Tình trạng sách:");
+        jPanelTinhTrangSach.add(jLabelTinhTrang);
 
-        jTextFieldSoTrang.setEditable(false);
-        jTextFieldSoTrang.setFocusable(false);
-        jTextFieldSoTrang.addActionListener(this::jTextFieldSoTrangActionPerformed);
-        jPanelSoTrang.add(jTextFieldSoTrang);
+        jTextFieldTinhTrang.setEditable(false);
+        jTextFieldTinhTrang.setFocusable(false);
+        jTextFieldTinhTrang.addActionListener(this::jTextFieldTinhTrangActionPerformed);
+        jPanelTinhTrangSach.add(jTextFieldTinhTrang);
 
-        jPanelFields.add(jPanelSoTrang);
+        jPanelFields.add(jPanelTinhTrangSach);
 
-        jPanelNamXuatBan.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelNamXuatBan.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelTrangThaiMuon.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTrangThaiMuon.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelNamXuatBan.setText("Trạng thái mượn:");
-        jPanelNamXuatBan.add(jLabelNamXuatBan);
+        jLabelTrangThaiMuon.setText("Trạng thái mượn:");
+        jPanelTrangThaiMuon.add(jLabelTrangThaiMuon);
 
-        jTextFieldNamXuatBan.setEditable(false);
-        jTextFieldNamXuatBan.setFocusable(false);
-        jTextFieldNamXuatBan.addActionListener(this::jTextFieldNamXuatBanActionPerformed);
-        jPanelNamXuatBan.add(jTextFieldNamXuatBan);
+        jTextFieldTrangThaiMuon.setEditable(false);
+        jTextFieldTrangThaiMuon.setFocusable(false);
+        jTextFieldTrangThaiMuon.addActionListener(this::jTextFieldTrangThaiMuonActionPerformed);
+        jPanelTrangThaiMuon.add(jTextFieldTrangThaiMuon);
 
-        jPanelFields.add(jPanelNamXuatBan);
+        jPanelFields.add(jPanelTrangThaiMuon);
 
-        jPanelGiaSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelGiaSach.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelDaHuy.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelDaHuy.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelGiaSach.setText("Đã huỷ:");
-        jPanelGiaSach.add(jLabelGiaSach);
+        jLabelDaHuy.setText("Đã huỷ:");
+        jPanelDaHuy.add(jLabelDaHuy);
 
-        jTextFieldGiaSach.setEditable(false);
-        jTextFieldGiaSach.setFocusable(false);
-        jTextFieldGiaSach.addActionListener(this::jTextFieldGiaSachActionPerformed);
-        jPanelGiaSach.add(jTextFieldGiaSach);
+        jTextFieldDaHuy.setEditable(false);
+        jTextFieldDaHuy.setFocusable(false);
+        jTextFieldDaHuy.addActionListener(this::jTextFieldDaHuyActionPerformed);
+        jPanelDaHuy.add(jTextFieldDaHuy);
 
-        jPanelFields.add(jPanelGiaSach);
+        jPanelFields.add(jPanelDaHuy);
         jPanelFields.add(filler1);
         jPanelFields.add(filler2);
         jPanelFields.add(filler3);
@@ -326,21 +326,21 @@ public class CuonSachPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldMaSachActionPerformed
 
-    private void jTextFieldNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNXBActionPerformed
+    private void jTextFieldTenCuonSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTenCuonSachActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldNXBActionPerformed
+    }//GEN-LAST:event_jTextFieldTenCuonSachActionPerformed
 
-    private void jTextFieldNamXuatBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNamXuatBanActionPerformed
+    private void jTextFieldTrangThaiMuonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTrangThaiMuonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldNamXuatBanActionPerformed
+    }//GEN-LAST:event_jTextFieldTrangThaiMuonActionPerformed
 
-    private void jTextFieldSoTrangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSoTrangActionPerformed
+    private void jTextFieldTinhTrangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTinhTrangActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldSoTrangActionPerformed
+    }//GEN-LAST:event_jTextFieldTinhTrangActionPerformed
 
-    private void jTextFieldGiaSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldGiaSachActionPerformed
+    private void jTextFieldDaHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDaHuyActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldGiaSachActionPerformed
+    }//GEN-LAST:event_jTextFieldDaHuyActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
         // TODO add your handling code here:
@@ -363,37 +363,37 @@ public class CuonSachPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXuat;
-    private javax.swing.JLabel jLabelGiaSach;
+    private javax.swing.JLabel jLabelDaHuy;
+    private javax.swing.JLabel jLabelMaCuonSach;
     private javax.swing.JLabel jLabelMaSach;
-    private javax.swing.JLabel jLabelNXB;
-    private javax.swing.JLabel jLabelNamXuatBan;
-    private javax.swing.JLabel jLabelSoTrang;
-    private javax.swing.JLabel jLabelTenSach;
+    private javax.swing.JLabel jLabelTenCuonSach;
+    private javax.swing.JLabel jLabelTinhTrang;
     private javax.swing.JLabel jLabelTitle;
+    private javax.swing.JLabel jLabelTrangThaiMuon;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
     private javax.swing.JPanel jPanelCongCu;
+    private javax.swing.JPanel jPanelDaHuy;
     private javax.swing.JPanel jPanelFields;
-    private javax.swing.JPanel jPanelGiaSach;
     private javax.swing.JPanel jPanelLeft;
     private javax.swing.JPanel jPanelLeftTop;
+    private javax.swing.JPanel jPanelMaCuonSach;
     private javax.swing.JPanel jPanelMaSach;
-    private javax.swing.JPanel jPanelNamXuatBan;
-    private javax.swing.JPanel jPanelNhaXuatBan;
-    private javax.swing.JPanel jPanelNutThem;
+    private javax.swing.JPanel jPanelNut;
     private javax.swing.JPanel jPanelRight;
-    private javax.swing.JPanel jPanelSoTrang;
-    private javax.swing.JPanel jPanelTenSach;
+    private javax.swing.JPanel jPanelTenCuonSach;
     private javax.swing.JPanel jPanelTimKiem;
+    private javax.swing.JPanel jPanelTinhTrangSach;
     private javax.swing.JPanel jPanelTop;
+    private javax.swing.JPanel jPanelTrangThaiMuon;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSach;
-    private javax.swing.JTextField jTextFieldGiaSach;
+    private javax.swing.JTextField jTextFieldDaHuy;
+    private javax.swing.JTextField jTextFieldMaCuonSach;
     private javax.swing.JTextField jTextFieldMaSach;
-    private javax.swing.JTextField jTextFieldNXB;
-    private javax.swing.JTextField jTextFieldNamXuatBan;
-    private javax.swing.JTextField jTextFieldSoTrang;
-    private javax.swing.JTextField jTextFieldTenSach;
+    private javax.swing.JTextField jTextFieldTenCuonSach;
     private javax.swing.JTextField jTextFieldTimKiem;
+    private javax.swing.JTextField jTextFieldTinhTrang;
+    private javax.swing.JTextField jTextFieldTrangThaiMuon;
     // End of variables declaration//GEN-END:variables
 }
