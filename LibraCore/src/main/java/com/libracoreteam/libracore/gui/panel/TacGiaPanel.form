@@ -263,18 +263,18 @@
                     <Property name="rows" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jLabelMaNXB">
+                    <Component class="javax.swing.JLabel" name="jLabelMaTacGia">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="M&#xe3; t&#xe1;c gi&#x1ea3;:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldMaNXB">
+                    <Component class="javax.swing.JTextField" name="jTextFieldMaTacGia">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="focusable" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldMaNXBActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldMaTacGiaActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -293,12 +293,12 @@
                     <Property name="rows" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jLabelTenNXB">
+                    <Component class="javax.swing.JLabel" name="jLabelTenTacGia">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="T&#xea;n t&#xe1;c gi&#x1ea3;:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldTenNXB">
+                    <Component class="javax.swing.JTextField" name="jTextFieldTenTacGia">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="focusable" type="boolean" value="false"/>
@@ -306,7 +306,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanelDiaChi">
+                <Container class="javax.swing.JPanel" name="jPanelNgaySinh">
                   <Properties>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -320,23 +320,23 @@
                     <Property name="rows" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jLabelDiaChiNXB">
+                    <Component class="javax.swing.JLabel" name="jLabelNgaySinh">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Ng&#xe0;y sinh t&#xe1;c gi&#x1ea3;:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldDiaChiNXB">
+                    <Component class="javax.swing.JTextField" name="jTextFieldNgaySinhTacGia">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="focusable" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldDiaChiNXBActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldNgaySinhTacGiaActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanelSDT">
+                <Container class="javax.swing.JPanel" name="jPanelNoiSinh">
                   <Properties>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -350,18 +350,18 @@
                     <Property name="rows" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jLabelSDT">
+                    <Component class="javax.swing.JLabel" name="jLabelNoiSinh">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="N&#x1a1;i sinh t&#xe1;c gi&#x1ea3;:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldSDT">
+                    <Component class="javax.swing.JTextField" name="jTextFieldNoiSinhTacGia">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="focusable" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldSDTActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldNoiSinhTacGiaActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -380,18 +380,18 @@
                     <Property name="rows" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jLabelTrangThai">
+                    <Component class="javax.swing.JLabel" name="jLabelSDTTacGia">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="SDT t&#xe1;c gi&#x1ea3;:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldTrangThai">
+                    <Component class="javax.swing.JTextField" name="jTextFieldSDTTacGia">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="focusable" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTrangThaiActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldSDTTacGiaActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -410,18 +410,18 @@
                     <Property name="rows" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jLabelTrangThai1">
+                    <Component class="javax.swing.JLabel" name="jLabelTrangThai">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Tr&#x1ea1;ng th&#xe1;i ho&#x1ea1;t &#x111;&#x1ed9;ng:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldTrangThai1">
+                    <Component class="javax.swing.JTextField" name="jTextFieldTrangThai">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="focusable" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTrangThai1ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTrangThaiActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>

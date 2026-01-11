@@ -54,11 +54,11 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         jPanelBottom = new javax.swing.JPanel();
         jPanelFields = new javax.swing.JPanel();
         jPanelMa = new javax.swing.JPanel();
-        jLabelMaNXB = new javax.swing.JLabel();
-        jTextFieldMaNXB = new javax.swing.JTextField();
+        jLabelMaTheLoai = new javax.swing.JLabel();
+        jTextFieldMaTheLoai = new javax.swing.JTextField();
         jPanelTen = new javax.swing.JPanel();
-        jLabelTenNXB = new javax.swing.JLabel();
-        jTextFieldTenNXB = new javax.swing.JTextField();
+        jLabelTenTheLoai = new javax.swing.JLabel();
+        jTextFieldTenTheLoai = new javax.swing.JTextField();
         jPanelButton = new javax.swing.JPanel();
         jButtonXacNhan = new javax.swing.JButton();
         jButtonHuy = new javax.swing.JButton();
@@ -166,25 +166,25 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         jPanelMa.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelMa.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelMaNXB.setText("Mã thể loại:");
-        jPanelMa.add(jLabelMaNXB);
+        jLabelMaTheLoai.setText("Mã thể loại:");
+        jPanelMa.add(jLabelMaTheLoai);
 
-        jTextFieldMaNXB.setEditable(false);
-        jTextFieldMaNXB.setFocusable(false);
-        jTextFieldMaNXB.addActionListener(this::jTextFieldMaNXBActionPerformed);
-        jPanelMa.add(jTextFieldMaNXB);
+        jTextFieldMaTheLoai.setEditable(false);
+        jTextFieldMaTheLoai.setFocusable(false);
+        jTextFieldMaTheLoai.addActionListener(this::jTextFieldMaTheLoaiActionPerformed);
+        jPanelMa.add(jTextFieldMaTheLoai);
 
         jPanelFields.add(jPanelMa);
 
         jPanelTen.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelTen.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTenNXB.setText("Tên thể loại:");
-        jPanelTen.add(jLabelTenNXB);
+        jLabelTenTheLoai.setText("Tên thể loại:");
+        jPanelTen.add(jLabelTenTheLoai);
 
-        jTextFieldTenNXB.setEditable(false);
-        jTextFieldTenNXB.setFocusable(false);
-        jPanelTen.add(jTextFieldTenNXB);
+        jTextFieldTenTheLoai.setEditable(false);
+        jTextFieldTenTheLoai.setFocusable(false);
+        jPanelTen.add(jTextFieldTenTheLoai);
 
         jPanelFields.add(jPanelTen);
 
@@ -245,9 +245,9 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         // TODO: loadDataToTable(); // Gọi hàm refresh bảng ở đây
     }//GEN-LAST:event_jButtonThemActionPerformed
 
-    private void jTextFieldMaNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaNXBActionPerformed
+    private void jTextFieldMaTheLoaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaTheLoaiActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldMaNXBActionPerformed
+    }//GEN-LAST:event_jTextFieldMaTheLoaiActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
         // TODO add your handling code here:
@@ -282,8 +282,8 @@ public class TheLoaiPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXacNhan;
     private javax.swing.JButton jButtonXuat;
-    private javax.swing.JLabel jLabelMaNXB;
-    private javax.swing.JLabel jLabelTenNXB;
+    private javax.swing.JLabel jLabelMaTheLoai;
+    private javax.swing.JLabel jLabelTenTheLoai;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanelBoard;
@@ -301,8 +301,8 @@ public class TheLoaiPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanelTop;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSach;
-    private javax.swing.JTextField jTextFieldMaNXB;
-    private javax.swing.JTextField jTextFieldTenNXB;
+    private javax.swing.JTextField jTextFieldMaTheLoai;
+    private javax.swing.JTextField jTextFieldTenTheLoai;
     private javax.swing.JTextField jTextFieldTimKiem;
     // End of variables declaration//GEN-END:variables
 }
