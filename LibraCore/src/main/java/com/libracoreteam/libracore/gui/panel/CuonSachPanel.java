@@ -40,7 +40,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jTextFieldTimKiem = new javax.swing.JTextField();
         jButtonTimKiem = new javax.swing.JButton();
         jButtonLamMoi = new javax.swing.JButton();
-        jPanelNutThem = new javax.swing.JPanel();
+        jPanelNut = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
@@ -54,7 +54,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jPanelMaSach = new javax.swing.JPanel();
         jLabelMaSach = new javax.swing.JLabel();
         jTextFieldMaSach = new javax.swing.JTextField();
-        jPanelTenSach = new javax.swing.JPanel();
+        jPanelMaCuonSach = new javax.swing.JPanel();
         jLabelTenSach = new javax.swing.JLabel();
         jTextFieldTenSach = new javax.swing.JTextField();
         jPanelNhaXuatBan = new javax.swing.JPanel();
@@ -100,14 +100,14 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jButtonXuat.setText("Xuất");
         jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
-        jPanelNutThem.add(jButtonXuat);
+        jPanelNut.add(jButtonXuat);
 
         jButtonThem.setText("Thêm");
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
-        jPanelNutThem.add(jButtonThem);
+        jPanelNut.add(jButtonThem);
 
-        jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
+        jPanelCongCu.add(jPanelNut, java.awt.BorderLayout.EAST);
 
         jPanelLeftTop.add(jPanelCongCu, java.awt.BorderLayout.CENTER);
 
@@ -175,17 +175,17 @@ public class CuonSachPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelMaSach);
 
-        jPanelTenSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelTenSach.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelMaCuonSach.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelMaCuonSach.setLayout(new java.awt.GridLayout(0, 1));
 
         jLabelTenSach.setText("Mã cuốn sách:");
-        jPanelTenSach.add(jLabelTenSach);
+        jPanelMaCuonSach.add(jLabelTenSach);
 
         jTextFieldTenSach.setEditable(false);
         jTextFieldTenSach.setFocusable(false);
-        jPanelTenSach.add(jTextFieldTenSach);
+        jPanelMaCuonSach.add(jTextFieldTenSach);
 
-        jPanelFields.add(jPanelTenSach);
+        jPanelFields.add(jPanelMaCuonSach);
 
         jPanelNhaXuatBan.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelNhaXuatBan.setLayout(new java.awt.GridLayout(0, 1));
@@ -377,13 +377,13 @@ public class CuonSachPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanelGiaSach;
     private javax.swing.JPanel jPanelLeft;
     private javax.swing.JPanel jPanelLeftTop;
+    private javax.swing.JPanel jPanelMaCuonSach;
     private javax.swing.JPanel jPanelMaSach;
     private javax.swing.JPanel jPanelNamXuatBan;
     private javax.swing.JPanel jPanelNhaXuatBan;
-    private javax.swing.JPanel jPanelNutThem;
+    private javax.swing.JPanel jPanelNut;
     private javax.swing.JPanel jPanelRight;
     private javax.swing.JPanel jPanelSoTrang;
-    private javax.swing.JPanel jPanelTenSach;
     private javax.swing.JPanel jPanelTimKiem;
     private javax.swing.JPanel jPanelTop;
     private javax.swing.JScrollPane jScrollPane1;
