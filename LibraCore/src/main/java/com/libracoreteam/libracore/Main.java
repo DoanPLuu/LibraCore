@@ -20,9 +20,6 @@ public class Main {
         
         setupLookAndFeel();
         
-        // 2. Test database connection
-        testDatabaseConnection();
-        
         // 3. Launch application
         java.awt.EventQueue.invokeLater(() -> {
             new MainFrame().setVisible(true);  
@@ -37,24 +34,6 @@ public class Main {
             
         } catch (Exception e) {
             System.err.println("Không thể setup FlatLaf!");
-            e.printStackTrace();
         }
     }
-    
-    /**
-     * Test database connection
-     */
-    private static void testDatabaseConnection() {
-        try (Connection conn = DBConnection.getConnection()) {
-            System.out.println("Database connection OK!");
-        } catch (Exception e) {
-            System.err.println("Database connection FAILED!");
-            System.err.println("Kiểm tra:");
-            System.err.println("  1. Laragon đã chạy chưa?");
-            System.err.println("  2. Database 'LibraCore' đã tạo chưa?");
-            System.err.println("  3. URL, username, password đúng chưa?");
-            e.printStackTrace();
-        }
-    }
-
 }
