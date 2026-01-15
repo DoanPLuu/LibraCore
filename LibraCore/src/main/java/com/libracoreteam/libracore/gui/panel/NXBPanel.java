@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.FlowLayout;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.Box;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -272,6 +273,7 @@ public class NXBPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelTrangThai);
 
+        jPanelButton.setMinimumSize(new java.awt.Dimension(250, 60));
         jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
 
         jButtonXacNhan.setText("Xác nhận");
@@ -306,6 +308,8 @@ public class NXBPanel extends javax.swing.JPanel {
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
             jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
+            jPanelButton.add(Box.createRigidArea(new Dimension(0, 40)));
+
     }
 
     private void initTable() {
