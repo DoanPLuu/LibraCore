@@ -1,5 +1,7 @@
 package com.libracoreteam.libracore.gui.dialog;
 
+import com.libracoreteam.libracore.bus.NXBBUS;
+import com.libracoreteam.libracore.model.NXB;
 import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
@@ -15,6 +17,10 @@ public class ThemNXBDialog extends JDialog {
     
     private JButton btnLuu;
     private JButton btnHuy;
+
+    private final NXBBUS nxbBUS = new NXBBUS();
+    private boolean saved = false;
+    private int createdId = -1;
 
     public ThemNXBDialog(Frame parent, boolean modal) {
         super(parent, "Thêm nhà xuất bản", modal);
@@ -72,15 +78,31 @@ public class ThemNXBDialog extends JDialog {
     }
 
     private void onSave() {
-        System.out.println("=== Thêm nhà xuất bản ===");
-        System.out.println("Tên NXB: " + txtTenNXB.getText());
-        System.out.println("Địa chỉ: " + txtDiaChi.getText());
-        System.out.println("Số điện thoại: " + txtSDT.getText());
-        
-        // TODO: Validate dữ liệu trước khi lưu
-        // TODO: Gọi BUS/Service để insert vào DB
-        
-        dispose();
+        try {
+            NXB created = nxbBUS.create(
+                    txtTenNXB.getText(),
+                    txtDiaChi.getText(),
+                    txtSDT.getText()
+            );
+
+            saved = true;
+            createdId = created != null ? created.getIdNXB() : -1;
+
+            JOptionPane.showMessageDialog(this, "Thêm NXB thành công.");
+            dispose();
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage());
+        }
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public int getCreatedId() {
+        return createdId;
     }
 }
 
