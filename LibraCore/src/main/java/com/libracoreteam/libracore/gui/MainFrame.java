@@ -5,6 +5,7 @@ import com.libracoreteam.libracore.gui.panel.MenuPanel;
 import com.libracoreteam.libracore.gui.panel.DashboardPanel;
 import com.libracoreteam.libracore.gui.panel.SachPanel;
 import com.libracoreteam.libracore.gui.panel.NXBPanel;
+import com.libracoreteam.libracore.gui.panel.NhapSachPanel;
 import com.libracoreteam.libracore.gui.panel.TacGiaPanel;
 import com.libracoreteam.libracore.gui.panel.TheLoaiPanel;
 import javax.swing.*;
@@ -32,7 +33,7 @@ public class MainFrame extends javax.swing.JFrame {
     // private MuonTraSachPanel muonTraSachPanel;
     // private PhatPanel phatPanel;
     // private MucPhatPanel mucPhatPanel;
-    // private NhapSachPanel nhapSachPanel;
+     private NhapSachPanel nhapSachPanel;
     // private NCCPanel nccPanel;
     // private NguoiDungPanel nguoiDungPanel;
     // private TaiKhoanPanel taiKhoanPanel;
@@ -175,12 +176,8 @@ public class MainFrame extends javax.swing.JFrame {
         // ========== QUẢN LÝ NHẬP SÁCH ==========
         // IMPORT: Parent menu
         contentPanel.add(createPlaceholderPanel("Quản lý nhập sách"), "IMPORT");
-        
-        // IMPORT_1: Nhập sách
-        // TODO: Uncomment khi tạo NhapSachPanel
-        // nhapSachPanel = new NhapSachPanel();
-        // contentPanel.add(nhapSachPanel, "IMPORT_1");
-        contentPanel.add(createPlaceholderPanel("Nhập sách"), "IMPORT_1");
+        nhapSachPanel = new NhapSachPanel();
+        contentPanel.add(nhapSachPanel, "IMPORT_1");
         
         // IMPORT_2: Nhà cung cấp
         // TODO: Uncomment khi tạo NCCPanel

@@ -9,6 +9,8 @@ import com.libracoreteam.libracore.gui.dialog.SuaSachDialog;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.Box;
 
 /**
  *
@@ -21,7 +23,7 @@ public class SachPanel extends javax.swing.JPanel {
      */
     public SachPanel() {
         initComponents();
-        Test();
+        InnitButton();
     }
 
     /**
@@ -82,7 +84,9 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelGiaSach = new javax.swing.JPanel();
         jLabelGiaSach = new javax.swing.JLabel();
         jTextFieldGiaSach = new javax.swing.JTextField();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        jPanelButton = new javax.swing.JPanel();
+        jButtonXacNhan = new javax.swing.JButton();
+        jButtonHuy = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -312,7 +316,20 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelGiaSach.add(jTextFieldGiaSach);
 
         jPanelFields.add(jPanelGiaSach);
-        jPanelFields.add(filler1);
+
+        jPanelButton.setMinimumSize(new java.awt.Dimension(250, 60));
+        jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
+
+        jButtonXacNhan.setText("Xác nhận");
+        jButtonXacNhan.setPreferredSize(new java.awt.Dimension(110, 40));
+        jButtonXacNhan.addActionListener(this::jButtonXacNhanActionPerformed);
+        jPanelButton.add(jButtonXacNhan);
+
+        jButtonHuy.setText("Huỷ");
+        jButtonHuy.setPreferredSize(new java.awt.Dimension(110, 40));
+        jPanelButton.add(jButtonHuy);
+
+        jPanelFields.add(jPanelButton);
 
         jPanelBottom.add(jPanelFields);
 
@@ -321,7 +338,7 @@ public class SachPanel extends javax.swing.JPanel {
         add(jPanelRight, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void Test() {
+    private void InnitButton() {
             // Cấu hình tập trung tại đây giúp dễ bảo trì màu sắc/kích thước đồng bộ
             int iconSize = 16;
 
@@ -329,59 +346,11 @@ public class SachPanel extends javax.swing.JPanel {
             jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-            
-            // Mock tác giả/thể loại dài để test UI panel phải
-            String tacGiaMock = String.join(", ",
-                    "Nguyễn Nhật Ánh",
-                    "J.K. Rowling",
-                    "Haruki Murakami",
-                    "George R.R. Martin",
-                    "Arthur Conan Doyle",
-                    "Agatha Christie",
-                    "Stephen King"
-            );
+            jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
+            jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
+            jPanelButton.add(Box.createRigidArea(new Dimension(0, 40)));
 
-            String theLoaiMock = String.join(", ",
-                    "Văn học",
-                    "Thiếu nhi",
-                    "Giả tưởng",
-                    "Khoa học",
-                    "Trinh thám",
-                    "Kinh dị",
-                    "Lịch sử",
-                    "Tâm lý",
-                    "Học thuật asfasgfaasffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffsf6666666666666666666666666",
-                    "Văn học",
-                    "Thiếu nhi",
-                    "Giả tưởng",
-                    "Khoa học",
-                    "Trinh thám",
-                    "Kinh dị",
-                    "Lịch sử",
-                    "Tâm lý"
-            );
-            
-            String moTaMock = String.join(", ",
-                    "Văn học",
-                    "Thiếu nhi",
-                    "Giả tưởng",
-                    "Khoa học",
-                    "Trinh thám",
-                    "Kinh dị",
-                    "Lịch sử",
-                    "Tâm lý",
-                    "Học thuật"
-            );
-
-            // Gán vào field bên phải
-            jTextAreaTacGia.setText(tacGiaMock);
-            jTextAreaTheLoai.setText(theLoaiMock);
-            jTextAreaMoTa.setText(moTaMock);
-
-            // Cho user xem toàn bộ bằng tooltip (hover)
-            jTextAreaTacGia.setToolTipText(tacGiaMock);
-            jTextAreaTheLoai.setToolTipText(theLoaiMock);
-        }
+    }
     
     
 
@@ -433,12 +402,17 @@ public class SachPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
+    private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
+      
+    }//GEN-LAST:event_jButtonXacNhanActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
+    private javax.swing.JButton jButtonHuy;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
+    private javax.swing.JButton jButtonXacNhan;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JComboBox<String> jComboBoxTimKiem;
     private javax.swing.JLabel jLabelGiaSach;
@@ -453,6 +427,7 @@ public class SachPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
+    private javax.swing.JPanel jPanelButton;
     private javax.swing.JPanel jPanelCongCu;
     private javax.swing.JPanel jPanelFields;
     private javax.swing.JPanel jPanelGiaSach;
