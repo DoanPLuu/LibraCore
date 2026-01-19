@@ -61,20 +61,11 @@ public class NCCPanel extends javax.swing.JPanel {
         jPanelBottom = new javax.swing.JPanel();
         jPanelFields = new javax.swing.JPanel();
         jPanelMa = new javax.swing.JPanel();
-        jLabelMaNXB = new javax.swing.JLabel();
-        jTextFieldMaNXB = new javax.swing.JTextField();
+        jLabelMaNCC = new javax.swing.JLabel();
+        jTextFieldMaNCC = new javax.swing.JTextField();
         jPanelTen = new javax.swing.JPanel();
-        jLabelTenNXB = new javax.swing.JLabel();
-        jTextFieldTenNXB = new javax.swing.JTextField();
-        jPanelDiaChi = new javax.swing.JPanel();
-        jLabelDiaChiNXB = new javax.swing.JLabel();
-        jTextFieldDiaChiNXB = new javax.swing.JTextField();
-        jPanelSDT = new javax.swing.JPanel();
-        jLabelSDT = new javax.swing.JLabel();
-        jTextFieldSDT = new javax.swing.JTextField();
-        jPanelTrangThai = new javax.swing.JPanel();
-        jLabelTrangThai = new javax.swing.JLabel();
-        jTextFieldTrangThai = new javax.swing.JTextField();
+        jLabelTenNCC = new javax.swing.JLabel();
+        jTextFieldNCC = new javax.swing.JTextField();
         jPanelButton = new javax.swing.JPanel();
         jButtonXacNhan = new javax.swing.JButton();
         jButtonHuy = new javax.swing.JButton();
@@ -82,6 +73,11 @@ public class NCCPanel extends javax.swing.JPanel {
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler9 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler10 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
 
         setLayout(new java.awt.BorderLayout());
 
@@ -151,7 +147,7 @@ public class NCCPanel extends javax.swing.JPanel {
         jPanelRight.setLayout(new java.awt.BorderLayout());
 
         jLabelTitle.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        jLabelTitle.setText("THÔNG TIN NHÀ XUẤT BẢN");
+        jLabelTitle.setText("THÔNG TIN NHÀ CUNG CẤP");
         jPanelTop.add(jLabelTitle);
 
         jPanelRight.add(jPanelTop, java.awt.BorderLayout.PAGE_START);
@@ -163,68 +159,28 @@ public class NCCPanel extends javax.swing.JPanel {
         jPanelMa.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelMa.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelMaNXB.setText("Mã NXB:");
-        jPanelMa.add(jLabelMaNXB);
+        jLabelMaNCC.setText("Mã nhà cung cấp:");
+        jPanelMa.add(jLabelMaNCC);
 
-        jTextFieldMaNXB.setEditable(false);
-        jTextFieldMaNXB.setFocusable(false);
-        jTextFieldMaNXB.addActionListener(this::jTextFieldMaNXBActionPerformed);
-        jPanelMa.add(jTextFieldMaNXB);
+        jTextFieldMaNCC.setEditable(false);
+        jTextFieldMaNCC.setFocusable(false);
+        jTextFieldMaNCC.addActionListener(this::jTextFieldMaNCCActionPerformed);
+        jPanelMa.add(jTextFieldMaNCC);
 
         jPanelFields.add(jPanelMa);
 
         jPanelTen.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelTen.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabelTenNXB.setText("Tên NXB:");
-        jPanelTen.add(jLabelTenNXB);
+        jLabelTenNCC.setText("Tên nhà cung cấp:");
+        jPanelTen.add(jLabelTenNCC);
 
-        jTextFieldTenNXB.setEditable(false);
-        jTextFieldTenNXB.setFocusable(false);
-        jPanelTen.add(jTextFieldTenNXB);
+        jTextFieldNCC.setEditable(false);
+        jTextFieldNCC.setFocusable(false);
+        jPanelTen.add(jTextFieldNCC);
 
         jPanelFields.add(jPanelTen);
 
-        jPanelDiaChi.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelDiaChi.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelDiaChiNXB.setText("Địa chỉ NXB:");
-        jPanelDiaChi.add(jLabelDiaChiNXB);
-
-        jTextFieldDiaChiNXB.setEditable(false);
-        jTextFieldDiaChiNXB.setFocusable(false);
-        jTextFieldDiaChiNXB.addActionListener(this::jTextFieldDiaChiNXBActionPerformed);
-        jPanelDiaChi.add(jTextFieldDiaChiNXB);
-
-        jPanelFields.add(jPanelDiaChi);
-
-        jPanelSDT.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelSDT.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelSDT.setText("Số điện thoại NXB:");
-        jPanelSDT.add(jLabelSDT);
-
-        jTextFieldSDT.setEditable(false);
-        jTextFieldSDT.setFocusable(false);
-        jTextFieldSDT.addActionListener(this::jTextFieldSDTActionPerformed);
-        jPanelSDT.add(jTextFieldSDT);
-
-        jPanelFields.add(jPanelSDT);
-
-        jPanelTrangThai.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelTrangThai.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelTrangThai.setText("Trạng thái:");
-        jPanelTrangThai.add(jLabelTrangThai);
-
-        jTextFieldTrangThai.setEditable(false);
-        jTextFieldTrangThai.setFocusable(false);
-        jTextFieldTrangThai.addActionListener(this::jTextFieldTrangThaiActionPerformed);
-        jPanelTrangThai.add(jTextFieldTrangThai);
-
-        jPanelFields.add(jPanelTrangThai);
-
-        jPanelButton.setMinimumSize(new java.awt.Dimension(250, 60));
         jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
 
         jButtonXacNhan.setText("Xác nhận");
@@ -241,6 +197,11 @@ public class NCCPanel extends javax.swing.JPanel {
         jPanelFields.add(filler3);
         jPanelFields.add(filler4);
         jPanelFields.add(filler5);
+        jPanelFields.add(filler6);
+        jPanelFields.add(filler7);
+        jPanelFields.add(filler8);
+        jPanelFields.add(filler9);
+        jPanelFields.add(filler10);
 
         jPanelBottom.add(jPanelFields);
 
@@ -266,67 +227,51 @@ public class NCCPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButtonThemActionPerformed
 
-    private void jTextFieldMaNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaNXBActionPerformed
+    private void jTextFieldMaNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaNCCActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldMaNXBActionPerformed
-
-    private void jTextFieldDiaChiNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDiaChiNXBActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldDiaChiNXBActionPerformed
-
-    private void jTextFieldSDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSDTActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldSDTActionPerformed
-
-    private void jTextFieldTrangThaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTrangThaiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTrangThaiActionPerformed
+    }//GEN-LAST:event_jTextFieldMaNCCActionPerformed
 
     private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
-
+        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonXacNhanActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler10;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
+    private javax.swing.Box.Filler filler8;
+    private javax.swing.Box.Filler filler9;
     private javax.swing.JButton jButtonHuy;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXacNhan;
     private javax.swing.JButton jButtonXuat;
-    private javax.swing.JLabel jLabelDiaChiNXB;
-    private javax.swing.JLabel jLabelMaNXB;
-    private javax.swing.JLabel jLabelSDT;
-    private javax.swing.JLabel jLabelTenNXB;
+    private javax.swing.JLabel jLabelMaNCC;
+    private javax.swing.JLabel jLabelTenNCC;
     private javax.swing.JLabel jLabelTitle;
-    private javax.swing.JLabel jLabelTrangThai;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
     private javax.swing.JPanel jPanelButton;
     private javax.swing.JPanel jPanelCongCu;
-    private javax.swing.JPanel jPanelDiaChi;
     private javax.swing.JPanel jPanelFields;
     private javax.swing.JPanel jPanelLeft;
     private javax.swing.JPanel jPanelLeftTop;
     private javax.swing.JPanel jPanelMa;
     private javax.swing.JPanel jPanelNutThem;
     private javax.swing.JPanel jPanelRight;
-    private javax.swing.JPanel jPanelSDT;
     private javax.swing.JPanel jPanelTen;
     private javax.swing.JPanel jPanelTimKiem;
     private javax.swing.JPanel jPanelTop;
-    private javax.swing.JPanel jPanelTrangThai;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSach1;
-    private javax.swing.JTextField jTextFieldDiaChiNXB;
-    private javax.swing.JTextField jTextFieldMaNXB;
-    private javax.swing.JTextField jTextFieldSDT;
-    private javax.swing.JTextField jTextFieldTenNXB;
+    private javax.swing.JTextField jTextFieldMaNCC;
+    private javax.swing.JTextField jTextFieldNCC;
     private javax.swing.JTextField jTextFieldTimKiem;
-    private javax.swing.JTextField jTextFieldTrangThai;
     // End of variables declaration//GEN-END:variables
 }
