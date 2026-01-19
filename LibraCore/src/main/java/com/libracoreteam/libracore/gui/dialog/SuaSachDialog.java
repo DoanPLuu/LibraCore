@@ -1,11 +1,18 @@
 package com.libracoreteam.libracore.gui.dialog;
 
+import com.libracoreteam.libracore.bus.SachBUS;
+import com.libracoreteam.libracore.model.NXB;
+import com.libracoreteam.libracore.model.Sach;
+import com.libracoreteam.libracore.model.TacGia;
+import com.libracoreteam.libracore.model.TheLoai;
 import com.libracoreteam.libracore.util.checklist.CheckListItem;
 import com.libracoreteam.libracore.util.checklist.CheckListUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Dialog sửa sách (mock để test luồng UI).
@@ -15,6 +22,10 @@ import java.awt.*;
  */
 public class SuaSachDialog extends JDialog {
 
+    private final SachBUS sachBUS = new SachBUS();
+    private final int editingIdSach;
+    private boolean saved = false;
+
     // ===== Field cơ bản =====
     private JTextField txtTenSach;
     private JTextField txtNamXB;
@@ -23,7 +34,7 @@ public class SuaSachDialog extends JDialog {
 
     private JTextArea txtMoTa;
 
-    private JComboBox<String> cboNXB;
+    private JComboBox<IdNameItem> cboNXB;
 
     // ===== Checkbox list =====
     private DefaultListModel<CheckListItem> tacGiaModel;
@@ -36,9 +47,21 @@ public class SuaSachDialog extends JDialog {
     private JButton btnHuy;
 
     public SuaSachDialog(Frame parent, boolean modal) {
+        this(parent, modal, -1);
+    }
+
+    public SuaSachDialog(Frame parent, boolean modal, int idSach) {
         super(parent, "Sửa sách", modal);
+        this.editingIdSach = idSach;
         initComponents();
-        loadMockDataForEdit();
+        loadListsFromDb();
+
+        if (editingIdSach > 0) {
+            loadDataForEdit(editingIdSach);
+        } else {
+            // vẫn giữ mock để test UI nếu chưa có luồng chọn sách
+            loadMockDataForEdit();
+        }
     }
 
     private void initComponents() {
@@ -57,10 +80,6 @@ public class SuaSachDialog extends JDialog {
 
         // ===== Tác giả (checkbox list) =====
         tacGiaModel = new DefaultListModel<>();
-        // TODO: thay id mock bằng id_TacGia lấy từ DB
-        tacGiaModel.addElement(new CheckListItem(1, "Nguyễn Nhật Ánh"));
-        tacGiaModel.addElement(new CheckListItem(2, "J.K. Rowling"));
-        tacGiaModel.addElement(new CheckListItem(3, "Haruki Murakami"));
 
         lstTacGia = CheckListUtils.createCheckList(tacGiaModel);
         lstTacGia.setVisibleRowCount(4);
@@ -71,11 +90,6 @@ public class SuaSachDialog extends JDialog {
 
         // ===== Thể loại (checkbox list) =====
         theLoaiModel = new DefaultListModel<>();
-        // TODO: thay id mock bằng id_TheLoai lấy từ DB
-        theLoaiModel.addElement(new CheckListItem(1, "Văn học"));
-        theLoaiModel.addElement(new CheckListItem(2, "Thiếu nhi"));
-        theLoaiModel.addElement(new CheckListItem(3, "Giả tưởng"));
-        theLoaiModel.addElement(new CheckListItem(4, "Khoa học"));
 
         lstTheLoai = CheckListUtils.createCheckList(theLoaiModel);
         lstTheLoai.setVisibleRowCount(4);
@@ -86,9 +100,6 @@ public class SuaSachDialog extends JDialog {
 
         // ===== Nhà xuất bản =====
         cboNXB = new JComboBox<>();
-        cboNXB.addItem("NXB Kim Đồng");
-        cboNXB.addItem("NXB Trẻ");
-        cboNXB.addItem("NXB Giáo Dục");
 
         formPanel.add(new JLabel("Nhà xuất bản:"));
         formPanel.add(cboNXB);
@@ -149,7 +160,7 @@ public class SuaSachDialog extends JDialog {
     private void loadMockDataForEdit() {
         // Mock field cơ bản
         txtTenSach.setText("Harry Potter và Hòn đá Phù thủy");
-        cboNXB.setSelectedItem("NXB Trẻ");
+        selectComboByName(cboNXB, "NXB Trẻ");
         txtNamXB.setText("2000");
         txtSoTrang.setText("320");
         txtGiaSach.setText("89000");
@@ -177,26 +188,173 @@ public class SuaSachDialog extends JDialog {
     }
 
     private void onSave() {
-        // TODO: Validate + gọi Service/DAO để update sách + bảng nối
-        System.out.println("[SuaSachDialog] Save mock:");
-        System.out.println("Tên sách: " + txtTenSach.getText());
-        System.out.println("NXB: " + cboNXB.getSelectedItem());
-        System.out.println("Năm XB: " + txtNamXB.getText());
-        System.out.println("Số trang: " + txtSoTrang.getText());
-        System.out.println("Giá: " + txtGiaSach.getText());
-        System.out.println("Mô tả: " + txtMoTa.getText());
-
-        System.out.println("Tác giả đã chọn:");
-        for (CheckListItem item : CheckListUtils.getSelectedItems(tacGiaModel)) {
-            System.out.println(" - (" + item.getId() + ") " + item.getLabel());
+        if (editingIdSach <= 0) {
+            JOptionPane.showMessageDialog(this, "Chưa có ID sách để cập nhật (hãy mở dialog bằng id_Sach).");
+            return;
         }
 
-        System.out.println("Thể loại đã chọn:");
-        for (CheckListItem item : CheckListUtils.getSelectedItems(theLoaiModel)) {
-            System.out.println(" - (" + item.getId() + ") " + item.getLabel());
+        IdNameItem selectedNXB = (IdNameItem) cboNXB.getSelectedItem();
+        Integer idNXB = selectedNXB != null ? selectedNXB.id : null;
+
+        List<Integer> tacGiaIds = toIdList(CheckListUtils.getSelectedItems(tacGiaModel));
+        List<Integer> theLoaiIds = toIdList(CheckListUtils.getSelectedItems(theLoaiModel));
+
+        try {
+            boolean ok = sachBUS.update(
+                    editingIdSach,
+                    txtTenSach.getText(),
+                    idNXB,
+                    txtNamXB.getText(),
+                    txtSoTrang.getText(),
+                    txtMoTa.getText(),
+                    true,
+                    tacGiaIds,
+                    theLoaiIds
+            );
+
+            if (!ok) {
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại.");
+                return;
+            }
+
+            saved = true;
+            JOptionPane.showMessageDialog(this, "Cập nhật sách thành công. Mã sách: " + editingIdSach);
+            dispose();
+
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage());
+        }
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    private void loadListsFromDb() {
+        loadTacGiaToModel();
+        loadTheLoaiToModel();
+        loadNXBToCombo();
+    }
+
+    private void loadDataForEdit(int idSach) {
+        try {
+            Sach s = sachBUS.getById(idSach);
+            if (s == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy sách có mã: " + idSach);
+                return;
+            }
+
+            txtTenSach.setText(s.getTenSach());
+            txtNamXB.setText(s.getNamXuatBan() != null ? String.valueOf(s.getNamXuatBan()) : "");
+            txtSoTrang.setText(s.getSoTrang() != null ? String.valueOf(s.getSoTrang()) : "");
+            txtMoTa.setText(s.getMoTa() != null ? s.getMoTa() : "");
+
+            // chọn NXB theo id
+            if (s.getIdNXB() != null) {
+                selectComboById(cboNXB, s.getIdNXB());
+            }
+
+            // tick tác giả / thể loại theo bảng nối
+            List<Integer> tgIds = sachBUS.getTacGiaIdsBySach(idSach);
+            List<Integer> tlIds = sachBUS.getTheLoaiIdsBySach(idSach);
+
+            for (Integer id : tgIds) {
+                if (id != null) setSelectedById(tacGiaModel, id, true);
+            }
+            for (Integer id : tlIds) {
+                if (id != null) setSelectedById(theLoaiModel, id, true);
+            }
+
+            lstTacGia.repaint();
+            lstTheLoai.repaint();
+
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Không tải được dữ liệu sách: " + ex.getMessage());
+        }
+    }
+
+    private void loadTacGiaToModel() {
+        tacGiaModel.clear();
+        try {
+            List<TacGia> list = sachBUS.getTacGiaActive();
+            for (TacGia tg : list) {
+                tacGiaModel.addElement(new CheckListItem(tg.getIdTacGia(), tg.getTenTacGia()));
+            }
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Không tải được danh sách tác giả: " + ex.getMessage());
+        }
+    }
+
+    private void loadTheLoaiToModel() {
+        theLoaiModel.clear();
+        try {
+            List<TheLoai> list = sachBUS.getTheLoaiActive();
+            for (TheLoai tl : list) {
+                theLoaiModel.addElement(new CheckListItem(tl.getIdTheLoai(), tl.getTenTheLoai()));
+            }
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Không tải được danh sách thể loại: " + ex.getMessage());
+        }
+    }
+
+    private void loadNXBToCombo() {
+        cboNXB.removeAllItems();
+        try {
+            List<NXB> list = sachBUS.getNXBActive();
+            for (NXB nxb : list) {
+                cboNXB.addItem(new IdNameItem(nxb.getIdNXB(), nxb.getTenNXB()));
+            }
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Không tải được danh sách NXB: " + ex.getMessage());
+        }
+    }
+
+    private static void selectComboByName(JComboBox<IdNameItem> combo, String name) {
+        if (combo == null || name == null) return;
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            IdNameItem it = combo.getItemAt(i);
+            if (it != null && name.equalsIgnoreCase(it.name)) {
+                combo.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
+
+    private static void selectComboById(JComboBox<IdNameItem> combo, int id) {
+        if (combo == null) return;
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            IdNameItem it = combo.getItemAt(i);
+            if (it != null && it.id == id) {
+                combo.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
+
+    private static List<Integer> toIdList(List<CheckListItem> items) {
+        List<Integer> ids = new ArrayList<>();
+        if (items == null) return ids;
+        for (CheckListItem it : items) {
+            if (it != null && it.getId() > 0) ids.add(it.getId());
+        }
+        return ids;
+    }
+
+    private static final class IdNameItem {
+        private final int id;
+        private final String name;
+
+        private IdNameItem(int id, String name) {
+            this.id = id;
+            this.name = name;
         }
 
-        dispose();
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }
 

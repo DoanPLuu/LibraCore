@@ -4,13 +4,33 @@
  */
 package com.libracoreteam.libracore.gui.panel;
 
+import com.libracoreteam.libracore.bus.SachBUS;
 import com.libracoreteam.libracore.gui.dialog.ThemSachDialog;
 import com.libracoreteam.libracore.gui.dialog.SuaSachDialog;
+import com.libracoreteam.libracore.model.NXB;
+import com.libracoreteam.libracore.model.Sach;
+import com.libracoreteam.libracore.model.TacGia;
+import com.libracoreteam.libracore.model.TheLoai;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import java.awt.FlowLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.Box;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -18,12 +38,26 @@ import javax.swing.Box;
  */
 public class SachPanel extends javax.swing.JPanel {
 
+    private final SachBUS sachBUS = new SachBUS();
+
+    private DefaultTableModel tblModel;
+    private List<Sach> currentList = new ArrayList<>();
+    private Sach currentSelected = null;
+    private boolean isLoadingSelection = false;
+
+    private Map<Integer, String> nxbNameById = new HashMap<>();
+    private Map<Integer, String> tacGiaNameById = new HashMap<>();
+    private Map<Integer, String> theLoaiNameById = new HashMap<>();
+
     /**
      * Creates new form TestPanel
      */
     public SachPanel() {
         initComponents();
         InnitButton();
+        initTable();
+        bindEvents();
+        loadActiveToTable();
     }
 
     /**
@@ -84,9 +118,6 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelGiaSach = new javax.swing.JPanel();
         jLabelGiaSach = new javax.swing.JLabel();
         jTextFieldGiaSach = new javax.swing.JTextField();
-        jPanelButton = new javax.swing.JPanel();
-        jButtonXacNhan = new javax.swing.JButton();
-        jButtonHuy = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -102,8 +133,8 @@ public class SachPanel extends javax.swing.JPanel {
         jComboBoxTimKiem.setPreferredSize(new java.awt.Dimension(110, 40));
         jPanelTimKiem.add(jComboBoxTimKiem);
 
-        jTextFieldTimKiem.setText("Tìm kiếm...");
         jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
+        jTextFieldTimKiem.addActionListener(this::jTextFieldTimKiemActionPerformed);
         jPanelTimKiem.add(jTextFieldTimKiem);
 
         jButtonTimKiem.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -317,20 +348,6 @@ public class SachPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelGiaSach);
 
-        jPanelButton.setMinimumSize(new java.awt.Dimension(250, 60));
-        jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
-
-        jButtonXacNhan.setText("Xác nhận");
-        jButtonXacNhan.setPreferredSize(new java.awt.Dimension(110, 40));
-        jButtonXacNhan.addActionListener(this::jButtonXacNhanActionPerformed);
-        jPanelButton.add(jButtonXacNhan);
-
-        jButtonHuy.setText("Huỷ");
-        jButtonHuy.setPreferredSize(new java.awt.Dimension(110, 40));
-        jPanelButton.add(jButtonHuy);
-
-        jPanelFields.add(jPanelButton);
-
         jPanelBottom.add(jPanelFields);
 
         jPanelRight.add(jPanelBottom, java.awt.BorderLayout.CENTER);
@@ -346,10 +363,307 @@ public class SachPanel extends javax.swing.JPanel {
             jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-            jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
-            jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
-            jPanelButton.add(Box.createRigidArea(new Dimension(0, 40)));
+            jTextFieldTimKiem.putClientProperty(
+        "JTextField.placeholderText",
+        "Tìm kiếm"
+);
 
+    }
+
+    private void initTable() {
+        tblModel = new DefaultTableModel(
+                new Object[]{"Mã", "Tên sách", "NXB", "Năm XB", "Số trang", "Thao tác"},
+                0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return col == 5;
+            }
+        };
+
+        jTableSach.setModel(tblModel);
+        jTableSach.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jTableSach.getTableHeader().setReorderingAllowed(false);
+
+        jTableSach.getColumnModel().getColumn(5).setCellRenderer(new ActionCellRenderer());
+        jTableSach.getColumnModel().getColumn(5).setCellEditor(new ActionCellEditor());
+        jTableSach.getColumnModel().getColumn(5).setPreferredWidth(90);
+        jTableSach.getColumnModel().getColumn(5).setMaxWidth(110);
+
+        jTableSach.setSelectionBackground(new Color(220, 220, 220));
+        jTableSach.setSelectionForeground(Color.BLACK);
+        jTableSach.setRowHeight(30);
+    }
+
+    private void bindEvents() {
+        jTableSach.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            if (e.getValueIsAdjusting()) return;
+            if (isLoadingSelection) return;
+            int row = jTableSach.getSelectedRow();
+            if (row < 0 || row >= currentList.size()) return;
+
+            currentSelected = currentList.get(row);
+            fillDetail(currentSelected);
+        });
+    }
+
+    private void loadActiveToTable() {
+        try {
+            currentList = sachBUS.getActive();
+            rebuildCaches();
+            renderTable(currentList);
+
+            jTableSach.clearSelection();
+            clearDetail();
+            currentSelected = null;
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Không tải được dữ liệu sách: " + ex.getMessage());
+        }
+    }
+
+    private void rebuildCaches() {
+        nxbNameById.clear();
+        tacGiaNameById.clear();
+        theLoaiNameById.clear();
+
+        try {
+            for (NXB nxb : sachBUS.getNXBActive()) {
+                nxbNameById.put(nxb.getIdNXB(), nxb.getTenNXB());
+            }
+        } catch (RuntimeException ignore) {
+        }
+
+        try {
+            for (TacGia tg : sachBUS.getTacGiaActive()) {
+                tacGiaNameById.put(tg.getIdTacGia(), tg.getTenTacGia());
+            }
+        } catch (RuntimeException ignore) {
+        }
+
+        try {
+            for (TheLoai tl : sachBUS.getTheLoaiActive()) {
+                theLoaiNameById.put(tl.getIdTheLoai(), tl.getTenTheLoai());
+            }
+        } catch (RuntimeException ignore) {
+        }
+    }
+
+    private void renderTable(List<Sach> list) {
+        if (tblModel == null) return;
+        tblModel.setRowCount(0);
+
+        for (Sach s : list) {
+            String nxbText = "";
+            if (s.getIdNXB() != null) {
+                String name = nxbNameById.get(s.getIdNXB());
+                nxbText = (name != null) ? name : ("#" + s.getIdNXB());
+            }
+
+            tblModel.addRow(new Object[]{
+                    s.getIdSach(),
+                    s.getTenSach(),
+                    nxbText,
+                    s.getNamXuatBan() != null ? s.getNamXuatBan() : "",
+                    s.getSoTrang() != null ? s.getSoTrang() : "",
+                    null
+            });
+        }
+    }
+
+    private void fillDetail(Sach s) {
+        if (s == null) return;
+
+        jTextFieldMaSach.setText(String.valueOf(s.getIdSach()));
+        jTextFieldTenSach.setText(nullSafe(s.getTenSach()));
+        jTextFieldNamXuatBan.setText(s.getNamXuatBan() != null ? String.valueOf(s.getNamXuatBan()) : "");
+        jTextFieldSoTrang.setText(s.getSoTrang() != null ? String.valueOf(s.getSoTrang()) : "");
+        jTextAreaMoTa.setText(nullSafe(s.getMoTa()));
+
+        if (s.getIdNXB() != null) {
+            String name = nxbNameById.get(s.getIdNXB());
+            jTextFieldNXB.setText(name != null ? name : ("#" + s.getIdNXB()));
+        } else {
+            jTextFieldNXB.setText("");
+        }
+
+        try {
+            List<Integer> tgIds = sachBUS.getTacGiaIdsBySach(s.getIdSach());
+            jTextAreaTacGia.setText(joinNamesByIds(tgIds, tacGiaNameById));
+        } catch (RuntimeException ex) {
+            jTextAreaTacGia.setText("");
+        }
+
+        try {
+            List<Integer> tlIds = sachBUS.getTheLoaiIdsBySach(s.getIdSach());
+            jTextAreaTheLoai.setText(joinNamesByIds(tlIds, theLoaiNameById));
+        } catch (RuntimeException ex) {
+            jTextAreaTheLoai.setText("");
+        }
+
+        // Giá: DB v6 không có giá ở bảng Sach -> tạm để trống
+        jTextFieldGiaSach.setText("");
+    }
+
+    private void clearDetail() {
+        jTextFieldMaSach.setText("");
+        jTextFieldTenSach.setText("");
+        jTextAreaTacGia.setText("");
+        jTextAreaTheLoai.setText("");
+        jTextFieldNXB.setText("");
+        jTextFieldSoTrang.setText("");
+        jTextFieldNamXuatBan.setText("");
+        jTextAreaMoTa.setText("");
+        jTextFieldGiaSach.setText("");
+    }
+
+    private String joinNamesByIds(List<Integer> ids, Map<Integer, String> map) {
+        if (ids == null || ids.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (Integer id : ids) {
+            if (id == null) continue;
+            String name = map.get(id);
+            if (name == null) name = "#" + id;
+            if (sb.length() > 0) sb.append("\n");
+            sb.append(name);
+        }
+        return sb.toString();
+    }
+
+    private String nullSafe(String s) {
+        return s == null ? "" : s;
+    }
+
+    private void selectRowById(int idSach) {
+        if (currentList == null || currentList.isEmpty()) return;
+        for (int i = 0; i < currentList.size(); i++) {
+            if (currentList.get(i).getIdSach() == idSach) {
+                isLoadingSelection = true;
+                try {
+                    jTableSach.setRowSelectionInterval(i, i);
+                } finally {
+                    isLoadingSelection = false;
+                }
+                return;
+            }
+        }
+    }
+
+    private void startEditByRow(int viewRow) {
+        if (viewRow < 0 || viewRow >= currentList.size()) return;
+        Sach s = currentList.get(viewRow);
+
+        javax.swing.JFrame parentFrame =
+                (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        SuaSachDialog dialog = new SuaSachDialog(parentFrame, true, s.getIdSach());
+        dialog.setVisible(true);
+
+        if (dialog.isSaved()) {
+            int id = s.getIdSach();
+            loadActiveToTable();
+            selectRowById(id);
+        }
+    }
+
+    private void deleteByRow(int viewRow) {
+        if (viewRow < 0 || viewRow >= currentList.size()) return;
+        Sach s = currentList.get(viewRow);
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc muốn xoá (ngừng hoạt động) sách \"" + nullSafe(s.getTenSach()) + "\" không?",
+                "Xác nhận xoá",
+                JOptionPane.YES_NO_OPTION
+        );
+        if (choice != JOptionPane.YES_OPTION) return;
+
+        try {
+            boolean ok = sachBUS.softDelete(s.getIdSach());
+            if (!ok) {
+                JOptionPane.showMessageDialog(this, "Xoá thất bại.");
+                return;
+            }
+            JOptionPane.showMessageDialog(this, "Đã xoá (ngừng hoạt động).");
+            loadActiveToTable();
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage());
+        }
+    }
+
+    private class ActionCellRenderer extends JPanel implements TableCellRenderer {
+        private final JButton btnEdit = new JButton();
+        private final JButton btnDelete = new JButton();
+
+        ActionCellRenderer() {
+            super(new FlowLayout(FlowLayout.CENTER, 6, 0));
+            setOpaque(true);
+
+            int iconSize = 16;
+            btnEdit.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
+            btnDelete.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+
+            btnEdit.setFocusable(false);
+            btnDelete.setFocusable(false);
+            btnEdit.setBorderPainted(false);
+            btnDelete.setBorderPainted(false);
+            btnEdit.setContentAreaFilled(false);
+            btnDelete.setContentAreaFilled(false);
+
+            add(btnEdit);
+            add(btnDelete);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            return this;
+        }
+    }
+
+    private class ActionCellEditor extends AbstractCellEditor implements TableCellEditor {
+        private final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 0));
+        private final JButton btnEdit = new JButton();
+        private final JButton btnDelete = new JButton();
+        private int currentRow = -1;
+
+        ActionCellEditor() {
+            panel.setOpaque(true);
+
+            int iconSize = 16;
+            btnEdit.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
+            btnDelete.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+
+            btnEdit.setFocusable(false);
+            btnDelete.setFocusable(false);
+            btnEdit.setBorderPainted(false);
+            btnDelete.setBorderPainted(false);
+            btnEdit.setContentAreaFilled(false);
+            btnDelete.setContentAreaFilled(false);
+
+            btnEdit.addActionListener(e -> {
+                stopCellEditing();
+                startEditByRow(currentRow);
+            });
+            btnDelete.addActionListener(e -> {
+                stopCellEditing();
+                deleteByRow(currentRow);
+            });
+
+            panel.add(btnEdit);
+            panel.add(btnDelete);
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return null;
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected, int row, int column) {
+            currentRow = row;
+            panel.setBackground(table.getSelectionBackground());
+            return panel;
+        }
     }
     
     
@@ -365,9 +679,11 @@ public class SachPanel extends javax.swing.JPanel {
         // 3. Hiển thị dialog (block cho tới khi dispose)
         dialog.setVisible(true);
 
-        // 4. Sau khi dialog đóng, có thể reload lại bảng
-        System.out.println("Dialog Thêm sách đã đóng, tiến hành reload lại bảng...");
-        // TODO: loadDataToTable(); // Gọi hàm refresh bảng ở đây
+        if (dialog.isSaved()) {
+            int createdId = dialog.getCreatedId();
+            loadActiveToTable();
+            if (createdId > 0) selectRowById(createdId);
+        }
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jTextFieldMaSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaSachActionPerformed
@@ -395,24 +711,45 @@ public class SachPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonXuatActionPerformed
 
     private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTimKiemActionPerformed
-        // TODO add your handling code here:
+        String keyword = jTextFieldTimKiem.getText();
+        if (keyword != null) keyword = keyword.trim();
+
+        if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
+            loadActiveToTable();
+            return;
+        }
+
+        // Hiện tại SachDAO chỉ search theo tên sách/mô tả (chưa join tác giả)
+        if (jComboBoxTimKiem.getSelectedIndex() == 1) {
+            JOptionPane.showMessageDialog(this, "Tìm theo tác giả hiện chưa hỗ trợ (cần join bảng nối).");
+            return;
+        }
+
+        try {
+            currentList = sachBUS.searchActive(keyword);
+            renderTable(currentList);
+            jTableSach.clearSelection();
+            clearDetail();
+            currentSelected = null;
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Tìm kiếm thất bại: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jButtonTimKiemActionPerformed
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
-        // TODO add your handling code here:
+        jTextFieldTimKiem.setText("");
+        loadActiveToTable();
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
-    private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
-      
-    }//GEN-LAST:event_jButtonXacNhanActionPerformed
+    private void jTextFieldTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTimKiemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonHuy;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
-    private javax.swing.JButton jButtonXacNhan;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JComboBox<String> jComboBoxTimKiem;
     private javax.swing.JLabel jLabelGiaSach;
@@ -427,7 +764,6 @@ public class SachPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
-    private javax.swing.JPanel jPanelButton;
     private javax.swing.JPanel jPanelCongCu;
     private javax.swing.JPanel jPanelFields;
     private javax.swing.JPanel jPanelGiaSach;
