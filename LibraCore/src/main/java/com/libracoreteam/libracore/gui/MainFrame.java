@@ -8,6 +8,7 @@ import com.libracoreteam.libracore.gui.panel.NXBPanel;
 import com.libracoreteam.libracore.gui.panel.NhapSachPanel;
 import com.libracoreteam.libracore.gui.panel.TacGiaPanel;
 import com.libracoreteam.libracore.gui.panel.TheLoaiPanel;
+import com.libracoreteam.libracore.gui.panel.NCCPanel;
 import javax.swing.*;
 import java.awt.*;
 
@@ -35,6 +36,8 @@ public class MainFrame extends javax.swing.JFrame {
     // private MucPhatPanel mucPhatPanel;
      private NhapSachPanel nhapSachPanel;
     // private NCCPanel nccPanel;
+    // private NhapSachPanel nhapSachPanel;
+    private NCCPanel nccPanel;
     // private NguoiDungPanel nguoiDungPanel;
     // private TaiKhoanPanel taiKhoanPanel;
     // private VaiTroPanel vaiTroPanel;
@@ -179,11 +182,11 @@ public class MainFrame extends javax.swing.JFrame {
         nhapSachPanel = new NhapSachPanel();
         contentPanel.add(nhapSachPanel, "IMPORT_1");
         
-        // IMPORT_2: Nhà cung cấp
-        // TODO: Uncomment khi tạo NCCPanel
-        // nccPanel = new NCCPanel();
-        // contentPanel.add(nccPanel, "IMPORT_2");
-        contentPanel.add(createPlaceholderPanel("Nhà cung cấp"), "IMPORT_2");
+        //IMPORT_2: Nhà cung cấp
+        // TODO: Uncomment khi tạo nccPanel
+        nccPanel = new NCCPanel();
+        contentPanel.add(nccPanel, "IMPORT_2");
+
         
         // ========== QUẢN LÝ NGƯỜI DÙNG ==========
         // USER: Parent menu
