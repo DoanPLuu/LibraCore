@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.swing.FontIcon;
 
 
 public class ThemSachDialog extends JDialog {
@@ -25,7 +27,7 @@ public class ThemSachDialog extends JDialog {
     private JTextField txtTenSach;
     private JTextField txtNamXB;
     private JTextField txtSoTrang;
-    private JTextField txtGiaSach;
+
 
     private JTextArea txtMoTa;
 
@@ -38,8 +40,8 @@ public class ThemSachDialog extends JDialog {
     private JList<CheckListItem> lstTacGia;
     private JList<CheckListItem> lstTheLoai;
 
-    private JButton btnLuu;
-    private JButton btnHuy;
+    private JButton jButtonLuu;
+    private JButton jButtonHuy;
 
     public ThemSachDialog(Frame parent, boolean modal) {
         super(parent, "Thêm sách", modal);
@@ -55,6 +57,8 @@ public class ThemSachDialog extends JDialog {
                         "[]"
                 )
         );
+        
+        int iconSize = 16;
 
         // ===== Tên sách =====
         txtTenSach = new JTextField(25);
@@ -116,21 +120,18 @@ public class ThemSachDialog extends JDialog {
         formPanel.add(new JLabel("Mô tả:"));
         formPanel.add(spMoTa, "hmin 100");
 
-        // ===== Giá sách =====
-        txtGiaSach = new JTextField(10);
-        formPanel.add(new JLabel("Giá sách:"));
-        formPanel.add(txtGiaSach);
-
         // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        btnLuu = new JButton("Xác nhận");
-        btnHuy = new JButton("Hủy");
+        jButtonLuu = new JButton("Xác nhận");
+        jButtonHuy = new JButton("Hủy");
 
-        buttonPanel.add(btnLuu);
-        buttonPanel.add(btnHuy);
+        buttonPanel.add(jButtonLuu);
+        buttonPanel.add(jButtonHuy);
+        jButtonLuu.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
+        jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
 
-        btnLuu.addActionListener(e -> onSave());
-        btnHuy.addActionListener(e -> dispose());
+        jButtonLuu.addActionListener(e -> onSave());
+        jButtonHuy.addActionListener(e -> dispose());
 
         // ===== Layout tổng =====
         setLayout(new BorderLayout());

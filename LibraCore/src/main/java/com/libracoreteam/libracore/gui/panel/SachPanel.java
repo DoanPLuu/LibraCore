@@ -680,9 +680,7 @@ public class SachPanel extends javax.swing.JPanel {
         dialog.setVisible(true);
 
         if (dialog.isSaved()) {
-            int createdId = dialog.getCreatedId();
             loadActiveToTable();
-            if (createdId > 0) selectRowById(createdId);
         }
     }//GEN-LAST:event_jButtonThemActionPerformed
 
