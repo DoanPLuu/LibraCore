@@ -36,6 +36,13 @@ public class TheThanhVien {
         this.ngayHetHan = ngayHetHan;
         this.trangThai = "HoatDong";
     }
+
+    public TheThanhVien(int idDocGia){
+        this.idDocGia=idDocGia;
+        this.ngayCap=LocalDate.now();
+        this.ngayHetHan=ngayCap.plusYears(1);
+        this.trangThai="HoatDong";
+    }
     
     // Getters
     public int getIdTheThanhVien() {
@@ -103,5 +110,12 @@ public class TheThanhVien {
                 ", idDocGia=" + idDocGia +
                 ", trangThai='" + trangThai + '\'' +
                 '}';
+    }
+
+    public void GiaHanThe(int soNam){
+        if(this.ngayHetHan.isBefore(LocalDate.now())){
+            this.ngayHetHan=LocalDate.now().plusYears(soNam);
+        }else this.ngayHetHan=this.ngayHetHan.plusYears(soNam);
+        this.trangThai="HoatDong";
     }
 }

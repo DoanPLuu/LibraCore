@@ -1,14 +1,10 @@
 package com.libracoreteam.libracore.gui;
 
-import com.libracoreteam.libracore.gui.panel.CuonSachPanel;
-import com.libracoreteam.libracore.gui.panel.MenuPanel;
-import com.libracoreteam.libracore.gui.panel.DashboardPanel;
-import com.libracoreteam.libracore.gui.panel.SachPanel;
-import com.libracoreteam.libracore.gui.panel.NXBPanel;
-import com.libracoreteam.libracore.gui.panel.TacGiaPanel;
-import com.libracoreteam.libracore.gui.panel.TheLoaiPanel;
+import com.libracoreteam.libracore.gui.panel.*;
+
 import javax.swing.*;
 import java.awt.*;
+import com.libracoreteam.libracore.gui.panel.ThanhVienPanel;
 
 /**
  *
@@ -27,9 +23,9 @@ public class MainFrame extends javax.swing.JFrame {
     private CuonSachPanel cuonSachPanel;
      private TacGiaPanel tacGiaPanel;
     private TheLoaiPanel theLoaiPanel;
-    // private ThanhVienPanel thanhVienPanel;
-    // private TheThanhVienPanel theThanhVienPanel;
-    // private MuonTraSachPanel muonTraSachPanel;
+    private ThanhVienPanel thanhVienPanel;
+    private TheThanhVienPanel theThanhVienPanel;
+    private MuonTraSachPanel muonTraSachPanel;
     // private PhatPanel phatPanel;
     // private MucPhatPanel mucPhatPanel;
     // private NhapSachPanel nhapSachPanel;
@@ -132,19 +128,13 @@ public class MainFrame extends javax.swing.JFrame {
         
         // ========== QUẢN LÝ THÀNH VIÊN ==========
         // MEMBER: Parent menu
-        contentPanel.add(createPlaceholderPanel("Quản lý thành viên"), "MEMBER");
-        
-        // MEMBER_1: Thành viên
-        // TODO: Uncomment khi tạo ThanhVienPanel
-        // thanhVienPanel = new ThanhVienPanel();
-        // contentPanel.add(thanhVienPanel, "MEMBER_1");
-        contentPanel.add(createPlaceholderPanel("Thành viên"), "MEMBER_1");
+        thanhVienPanel = new com.libracoreteam.libracore.gui.panel.ThanhVienPanel();
+        contentPanel.add(thanhVienPanel, "MEMBER_1");
         
         // MEMBER_2: Thẻ thành viên
         // TODO: Uncomment khi tạo TheThanhVienPanel
-        // theThanhVienPanel = new TheThanhVienPanel();
-        // contentPanel.add(theThanhVienPanel, "MEMBER_2");
-        contentPanel.add(createPlaceholderPanel("Thẻ thành viên"), "MEMBER_2");
+        theThanhVienPanel = new com.libracoreteam.libracore.gui.panel.TheThanhVienPanel();
+        contentPanel.add(theThanhVienPanel, "MEMBER_2");
         
         // ========== QUẢN LÝ MƯỢN - TRẢ ==========
         // BORROW: Parent menu
@@ -152,9 +142,8 @@ public class MainFrame extends javax.swing.JFrame {
         
         // BORROW_1: Mượn - trả sách
         // TODO: Uncomment khi tạo MuonTraSachPanel
-        // muonTraSachPanel = new MuonTraSachPanel();
-        // contentPanel.add(muonTraSachPanel, "BORROW_1");
-        contentPanel.add(createPlaceholderPanel("Mượn - trả sách"), "BORROW_1");
+        muonTraSachPanel = new MuonTraSachPanel();
+        contentPanel.add(muonTraSachPanel, "BORROW_1");
         
         // ========== QUẢN LÝ PHẠT - TRẢ PHẠT ==========
         // FINE: Parent menu

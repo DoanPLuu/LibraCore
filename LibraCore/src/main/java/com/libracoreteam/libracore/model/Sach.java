@@ -106,27 +106,21 @@ public class Sach {
     public void setSoTrang(Integer soTrang) {
         this.soTrang = soTrang;
     }
-
     public void setDanhSachTacGia(List<TacGia> danhSachTacGia) {
         this.danhSachTacGia = danhSachTacGia;
     }
-
     public void setDanhSachTheLoai(List<TheLoai> danhSachTheLoai) {
         this.danhSachTheLoai = danhSachTheLoai;
     }
-
     public void setNhaXuatBan(NXB nhaXuatBan) {
         this.nhaXuatBan = nhaXuatBan;
     }
-    
     public boolean isHoatDong() {
         return hoatDong;
     }
-    
     public void setHoatDong(boolean hoatDong) {
         this.hoatDong = hoatDong;
     }
-    
     @Override
     public String toString() {
         return "Sach{" +
