@@ -157,7 +157,6 @@ CREATE TABLE IF NOT EXISTS `PhieuNhap` (
 	`id_NCC` INTEGER,
 	`NgayNhap` DATE,
 	`SoLuongSach` INTEGER,
-	`LoaiPhieuNhap` ENUM('Mua', 'Tang') DEFAULT 'Mua',
 	`id_NhanVien` INTEGER NOT NULL,
 	`TrangThai` ENUM('DaNhap', 'DaHuy', 'ChuaNhap') NOT NULL DEFAULT 'ChuaNhap',
 	PRIMARY KEY(`id_PhieuNhap`)
