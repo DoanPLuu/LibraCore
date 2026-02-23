@@ -19,10 +19,10 @@ public class MuonTraBUS {
         return chiTietDAO.getByPhieuMuonId(idPhieuMuon);
     }
 
-    public boolean muonSach(PhieuMuon pm, List<Integer> listIdCuonSach) {
-        pm.setTongSoSachMuon(listIdCuonSach.size());
-        pm.setTrangThai("DangMuon");
-        int idPhieuMoi = phieuMuonDAO.add(pm);
+    public boolean muonSach(PhieuMuon phieuMuon, List<Integer> listIdCuonSach) {
+        phieuMuon.setTongSoSachMuon(listIdCuonSach.size());
+        phieuMuon.setTrangThai("DangMuon");
+        int idPhieuMoi = phieuMuonDAO.add(phieuMuon);
 
         if (idPhieuMoi == -1) return false;
 

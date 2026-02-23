@@ -3,7 +3,6 @@ package com.libracoreteam.libracore.bus;
 import com.libracoreteam.libracore.dao.DocGiaDAO;
 import com.libracoreteam.libracore.model.DocGia;
 
-import javax.print.Doc;
 import java.util.List;
 
 public class DocGiaBUS {

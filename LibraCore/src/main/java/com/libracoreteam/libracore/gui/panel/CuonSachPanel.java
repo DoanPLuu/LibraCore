@@ -395,5 +395,4 @@ public class CuonSachPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldTimKiem;
     private javax.swing.JTextField jTextFieldTinhTrang;
     private javax.swing.JTextField jTextFieldTrangThaiMuon;
-    // End of variables declaration//GEN-END:variables
 }
