@@ -81,13 +81,7 @@
             <artifactId>jfreechart</artifactId>
             <version>1.5.6</version>
         </dependency>
-        
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>7.0.2</version>
-          </dependency>
-          
+
         <!-- MigLayout -->
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -95,7 +89,6 @@
             <version>11.4.2</version>
         </dependency>
 
-        
         <!-- (Optional) Lombok - Giảm boilerplate code -->
         <!-- <dependency>
             <groupId>org.projectlombok</groupId>

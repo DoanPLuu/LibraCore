@@ -28,8 +28,10 @@ public class MainFrame extends javax.swing.JFrame {
     private MuonTraSachPanel muonTraSachPanel;
     // private PhatPanel phatPanel;
     // private MucPhatPanel mucPhatPanel;
-    // private NhapSachPanel nhapSachPanel;
+     private NhapSachPanel nhapSachPanel;
     // private NCCPanel nccPanel;
+    // private NhapSachPanel nhapSachPanel;
+    private NCCPanel nccPanel;
     // private NguoiDungPanel nguoiDungPanel;
     // private TaiKhoanPanel taiKhoanPanel;
     // private VaiTroPanel vaiTroPanel;
@@ -164,18 +166,14 @@ public class MainFrame extends javax.swing.JFrame {
         // ========== QUẢN LÝ NHẬP SÁCH ==========
         // IMPORT: Parent menu
         contentPanel.add(createPlaceholderPanel("Quản lý nhập sách"), "IMPORT");
+        nhapSachPanel = new NhapSachPanel();
+        contentPanel.add(nhapSachPanel, "IMPORT_1");
         
-        // IMPORT_1: Nhập sách
-        // TODO: Uncomment khi tạo NhapSachPanel
-        // nhapSachPanel = new NhapSachPanel();
-        // contentPanel.add(nhapSachPanel, "IMPORT_1");
-        contentPanel.add(createPlaceholderPanel("Nhập sách"), "IMPORT_1");
-        
-        // IMPORT_2: Nhà cung cấp
-        // TODO: Uncomment khi tạo NCCPanel
-        // nccPanel = new NCCPanel();
-        // contentPanel.add(nccPanel, "IMPORT_2");
-        contentPanel.add(createPlaceholderPanel("Nhà cung cấp"), "IMPORT_2");
+        //IMPORT_2: Nhà cung cấp
+        // TODO: Uncomment khi tạo nccPanel
+        nccPanel = new NCCPanel();
+        contentPanel.add(nccPanel, "IMPORT_2");
+
         
         // ========== QUẢN LÝ NGƯỜI DÙNG ==========
         // USER: Parent menu

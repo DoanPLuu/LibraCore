@@ -5,8 +5,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.Timer;
 
 /**
- * Helper class để animate việc mở/đóng submenu
- * Dùng javax.swing.Timer thay vì TimingFramework (không cần dependency)
+ * Helper class để làm hoạt ảnh mở/đóng submenu
  * @author luuis
  */
 public class MenuAnimation {

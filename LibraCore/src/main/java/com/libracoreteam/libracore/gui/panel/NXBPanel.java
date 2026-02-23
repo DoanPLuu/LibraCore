@@ -4,10 +4,40 @@
  */
 package com.libracoreteam.libracore.gui.panel;
 
+import com.libracoreteam.libracore.bus.NXBBUS;
 import com.libracoreteam.libracore.gui.dialog.ThemNXBDialog;
+import com.libracoreteam.libracore.model.NXB;
+import java.awt.*;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
-import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.awt.FlowLayout;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javax.swing.Box;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -15,12 +45,24 @@ import java.awt.Color;
  */
 public class NXBPanel extends javax.swing.JPanel {
 
+    private final NXBBUS nxbBUS = new NXBBUS();
+
+    private DefaultTableModel tblModel;
+    private List<NXB> currentList = new ArrayList<>();
+    private NXB currentSelected = null;
+    private boolean editMode = false;
+    private boolean isLoadingSelection = false;
+
     /**
      * Creates new form TestPanel
      */
     public NXBPanel() {
         initComponents();
         InnitButton();
+        initTable();
+        bindEvents();
+        loadActiveToTable();
+        setEditMode(false);
     }
     
     
@@ -231,6 +273,7 @@ public class NXBPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelTrangThai);
 
+        jPanelButton.setMinimumSize(new java.awt.Dimension(250, 60));
         jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
 
         jButtonXacNhan.setText("Xác nhận");
@@ -265,22 +308,268 @@ public class NXBPanel extends javax.swing.JPanel {
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
             jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
+            jPanelButton.add(Box.createRigidArea(new Dimension(0, 40)));
+
+    }
+
+    private void initTable() {
+        tblModel = new DefaultTableModel(
+                new Object[]{"Mã", "Tên NXB", "Địa chỉ", "SĐT", "Thao tác"},
+                0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return col == 4; // chỉ cột thao tác có editor
+            }
+        };
+
+        jTableSach.setModel(tblModel);
+        jTableSach.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jTableSach.getTableHeader().setReorderingAllowed(false);
+
+        // Renderer + Editor cho cột thao tác
+        jTableSach.getColumnModel().getColumn(4).setCellRenderer(new ActionCellRenderer());
+        jTableSach.getColumnModel().getColumn(4).setCellEditor(new ActionCellEditor());
+        jTableSach.getColumnModel().getColumn(4).setPreferredWidth(90);
+        jTableSach.getColumnModel().getColumn(4).setMaxWidth(110);
+        jTableSach.setSelectionBackground(new Color(220, 220, 220)); // Màu nền khi chọn
+        jTableSach.setSelectionForeground(Color.BLACK);              // Màu chữ khi chọn
+        jTableSach.setRowHeight(30);
+    }
+
+    private void bindEvents() {
+        jTableSach.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            if (e.getValueIsAdjusting()) return;
+            if (isLoadingSelection) return;
+            int row = jTableSach.getSelectedRow();
+            if (row < 0 || row >= currentList.size()) return;
+
+            currentSelected = currentList.get(row);
+            fillDetail(currentSelected);
+            setEditMode(false);
+        });
+
+        jButtonHuy.addActionListener(evt -> {
+            if (editMode && currentSelected != null) {
+                fillDetail(currentSelected); // revert
+                setEditMode(false);
+            } else {
+                jTableSach.clearSelection();
+                clearDetail();
+                currentSelected = null;
+                setEditMode(false);
+            }
+        });
+    }
+
+    private void loadActiveToTable() {
+        try {
+            currentList = nxbBUS.getActive();
+            renderTable(currentList);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Không tải được dữ liệu NXB: " + ex.getMessage());
+        }
+    }
+
+    private void renderTable(List<NXB> list) {
+        if (tblModel == null) return;
+        tblModel.setRowCount(0);
+        for (NXB n : list) {
+            tblModel.addRow(new Object[]{
+                    n.getIdNXB(),
+                    n.getTenNXB(),
+                    n.getDiaChi(),
+                    n.getSdt(),
+                    null
+            });
+        }
+    }
+
+    private void fillDetail(NXB n) {
+        if (n == null) return;
+        jTextFieldMaNXB.setText(String.valueOf(n.getIdNXB()));
+        jTextFieldTenNXB.setText(n.getTenNXB());
+        jTextFieldDiaChiNXB.setText(n.getDiaChi());
+        jTextFieldSDT.setText(n.getSdt());
+        jTextFieldTrangThai.setText(n.isHoatDong() ? "Hoạt động" : "Ngừng");
+    }
+
+    private void clearDetail() {
+        jTextFieldMaNXB.setText("");
+        jTextFieldTenNXB.setText("");
+        jTextFieldDiaChiNXB.setText("");
+        jTextFieldSDT.setText("");
+        jTextFieldTrangThai.setText("");
+    }
+
+    private void setEditMode(boolean on) {
+        editMode = on;
+
+        // Xác nhận/Huỷ: chỉ show khi đang sửa
+        jButtonXacNhan.setVisible(on);
+        jButtonHuy.setVisible(on);
+
+        // Đang sửa thì khoá bảng (tránh click đổi dòng / bấm action khi chưa lưu)
+        jTableSach.setEnabled(!on);
+        jTableSach.setRowSelectionAllowed(!on);
+
+        jTextFieldTenNXB.setEditable(on);
+        jTextFieldTenNXB.setFocusable(on);
+
+        jTextFieldDiaChiNXB.setEditable(on);
+        jTextFieldDiaChiNXB.setFocusable(on);
+
+        jTextFieldSDT.setEditable(on);
+        jTextFieldSDT.setFocusable(on);
+
+        // Mã + Trạng thái giữ readonly (đỡ phải đổi GUI builder sang checkbox/combobox)
+        jTextFieldMaNXB.setEditable(false);
+        jTextFieldMaNXB.setFocusable(false);
+        jTextFieldTrangThai.setEditable(false);
+        jTextFieldTrangThai.setFocusable(false);
+
+        jButtonXacNhan.setText("Lưu");
+    }
+
+    private void selectRowById(int id) {
+        if (currentList == null || currentList.isEmpty()) return;
+        for (int i = 0; i < currentList.size(); i++) {
+            if (currentList.get(i).getIdNXB() == id) {
+                isLoadingSelection = true;
+                try {
+                    jTableSach.setRowSelectionInterval(i, i);
+                } finally {
+                    isLoadingSelection = false;
+                }
+                return;
+            }
+        }
+    }
+
+    private void startEditByRow(int viewRow) {
+        if (viewRow < 0 || viewRow >= currentList.size()) return;
+        currentSelected = currentList.get(viewRow);
+        fillDetail(currentSelected);
+        selectRowById(currentSelected.getIdNXB());
+        setEditMode(true);
+        jTextFieldTenNXB.requestFocusInWindow();
+    }
+
+    private void deleteByRow(int viewRow) {
+        if (viewRow < 0 || viewRow >= currentList.size()) return;
+        NXB n = currentList.get(viewRow);
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc muốn xoá (ngừng hoạt động) NXB \"" + n.getTenNXB() + "\" không?",
+                "Xác nhận xoá",
+                JOptionPane.YES_NO_OPTION
+        );
+        if (choice != JOptionPane.YES_OPTION) return;
+
+        try {
+            boolean ok = nxbBUS.softDelete(n.getIdNXB());
+            if (!ok) {
+                JOptionPane.showMessageDialog(this, "Xoá thất bại.");
+                return;
+            }
+            JOptionPane.showMessageDialog(this, "Đã xoá (ngừng hoạt động).");
+            loadActiveToTable();
+            jTableSach.clearSelection();
+            clearDetail();
+            currentSelected = null;
+            setEditMode(false);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage());
+        }
+    }
+
+    private class ActionCellRenderer extends JPanel implements TableCellRenderer {
+        private final JButton btnEdit = new JButton();
+        private final JButton btnDelete = new JButton();
+
+        ActionCellRenderer() {
+            super(new FlowLayout(FlowLayout.CENTER, 6, 0));
+            setOpaque(true);
+
+            int iconSize = 16;
+            btnEdit.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
+            btnDelete.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+
+            btnEdit.setFocusable(false);
+            btnDelete.setFocusable(false);
+            btnEdit.setBorderPainted(false);
+            btnDelete.setBorderPainted(false);
+            btnEdit.setContentAreaFilled(false);
+            btnDelete.setContentAreaFilled(false);
+
+            add(btnEdit);
+            add(btnDelete);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            return this;
+        }
+    }
+
+    private class ActionCellEditor extends AbstractCellEditor implements TableCellEditor {
+        private final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 0));
+        private final JButton btnEdit = new JButton();
+        private final JButton btnDelete = new JButton();
+        private int currentRow = -1;
+
+        ActionCellEditor() {
+            panel.setOpaque(true);
+
+            int iconSize = 16;
+            btnEdit.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
+            btnDelete.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+
+            btnEdit.setFocusable(false);
+            btnDelete.setFocusable(false);
+            btnEdit.setBorderPainted(false);
+            btnDelete.setBorderPainted(false);
+            btnEdit.setContentAreaFilled(false);
+            btnDelete.setContentAreaFilled(false);
+
+            btnEdit.addActionListener(e -> {
+                stopCellEditing();
+                startEditByRow(currentRow);
+            });
+            btnDelete.addActionListener(e -> {
+                stopCellEditing();
+                deleteByRow(currentRow);
+            });
+
+            panel.add(btnEdit);
+            panel.add(btnDelete);
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return null;
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected, int row, int column) {
+            currentRow = row;
+            panel.setBackground(table.getSelectionBackground());
+            return panel;
+        }
     }
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
         // 1. Lấy frame cha (MainFrame) chứa NXBPanel
         javax.swing.JFrame parentFrame =
                 (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
-
         // 2. Khởi tạo Dialog "Thêm nhà xuất bản" (modal)
         ThemNXBDialog dialog = new ThemNXBDialog(parentFrame, true);
-
         // 3. Hiển thị dialog (block cho tới khi dispose)
         dialog.setVisible(true);
-
-        // 4. Sau khi dialog đóng, có thể reload lại bảng
-        System.out.println("Dialog Thêm nhà xuất bản đã đóng, tiến hành reload lại bảng...");
-        // TODO: loadDataToTable(); // Gọi hàm refresh bảng ở đây
+        loadActiveToTable();
+        setEditMode(false);
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jTextFieldMaNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaNXBActionPerformed
@@ -300,19 +589,164 @@ public class NXBPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextFieldSDTActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
-        // TODO add your handling code here:
+        if (editMode) {
+            int choice = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn đang ở chế độ sửa. Vẫn muốn xuất danh sách không?",
+                    "Xác nhận xuất",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (choice != JOptionPane.YES_OPTION) return;
+        }
+
+        List<NXB> listToExport = (currentList != null) ? currentList : new ArrayList<>();
+        if (listToExport.isEmpty()) {
+            // fallback: tải lại từ DB nếu list đang rỗng
+            try {
+                listToExport = nxbBUS.getActive();
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this, "Không tải được dữ liệu để xuất: " + ex.getMessage());
+                return;
+            }
+        }
+
+        if (listToExport.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Danh sách trống, không có gì để xuất.");
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Xuất danh sách NXB ra Excel");
+        chooser.setFileFilter(new FileNameExtensionFilter("Excel (*.xlsx)", "xlsx"));
+        chooser.setAcceptAllFileFilterUsed(true);
+
+        String defaultName = "NXB_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
+        chooser.setSelectedFile(new File(defaultName));
+
+        int result = chooser.showSaveDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) return;
+
+        File file = chooser.getSelectedFile();
+        if (file == null) return;
+
+        // đảm bảo đuôi .xlsx
+        String path = file.getAbsolutePath();
+        if (!path.toLowerCase().endsWith(".xlsx")) {
+            file = new File(path + ".xlsx");
+        }
+
+        try {
+            exportNXBToExcel(file, listToExport);
+            JOptionPane.showMessageDialog(this, "Xuất Excel thành công:\n" + file.getAbsolutePath());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Xuất Excel thất bại: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jButtonXuatActionPerformed
 
+    private void exportNXBToExcel(File file, List<NXB> list) throws IOException {
+        try (Workbook wb = new XSSFWorkbook()) {
+            Sheet sheet = wb.createSheet("NXB");
+
+            // Style header
+            CellStyle headerStyle = wb.createCellStyle();
+            Font headerFont = wb.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+
+            // Header row
+            int r = 0;
+            Row header = sheet.createRow(r++);
+            String[] headers = {"Mã NXB", "Tên NXB", "Địa chỉ", "Số điện thoại"};
+            for (int c = 0; c < headers.length; c++) {
+                Cell cell = header.createCell(c);
+                cell.setCellValue(headers[c]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // Data rows
+            for (NXB n : list) {
+                Row row = sheet.createRow(r++);
+                row.createCell(0).setCellValue(n.getIdNXB());
+                row.createCell(1).setCellValue(nullSafe(n.getTenNXB()));
+                row.createCell(2).setCellValue(nullSafe(n.getDiaChi()));
+                row.createCell(3).setCellValue(nullSafe(n.getSdt()));
+            }
+
+            // Auto-size
+            for (int c = 0; c < headers.length; c++) {
+                sheet.autoSizeColumn(c);
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                wb.write(fos);
+            }
+        }
+    }
+
+    private String nullSafe(String s) {
+        return s == null ? "" : s;
+    }
+
     private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTimKiemActionPerformed
-        // TODO add your handling code here:
+        String keyword = jTextFieldTimKiem.getText();
+        if (keyword != null) keyword = keyword.trim();
+
+        // placeholder "Tìm kiếm..." thì xem như rỗng
+        if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
+            loadActiveToTable();
+        } else {
+            try {
+                currentList = nxbBUS.searchActive(keyword);
+                renderTable(currentList);
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this, "Tìm kiếm thất bại: " + ex.getMessage());
+            }
+        }
+
+        jTableSach.clearSelection();
+        clearDetail();
+        currentSelected = null;
+        setEditMode(false);
     }//GEN-LAST:event_jButtonTimKiemActionPerformed
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
-        // TODO add your handling code here:
+        jTextFieldTimKiem.setText("");
+        loadActiveToTable();
+        jTableSach.clearSelection();
+        clearDetail();
+        currentSelected = null;
+        setEditMode(false);
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
     private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
-        // TODO add your handling code here:
+        if (currentSelected == null) return;
+        if (!editMode) return;
+
+        try {
+            boolean ok = nxbBUS.update(
+                    currentSelected.getIdNXB(),
+                    jTextFieldTenNXB.getText(),
+                    jTextFieldDiaChiNXB.getText(),
+                    jTextFieldSDT.getText(),
+                    currentSelected.isHoatDong() // chưa cho sửa trạng thái ở UI
+            );
+
+            if (!ok) {
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại.");
+                return;
+            }
+
+            JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
+            int id = currentSelected.getIdNXB();
+            loadActiveToTable();
+            setEditMode(false);
+            selectRowById(id);
+
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jButtonXacNhanActionPerformed
 
 
