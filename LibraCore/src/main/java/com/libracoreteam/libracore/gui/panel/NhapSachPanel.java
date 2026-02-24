@@ -144,19 +144,18 @@ public class NhapSachPanel extends javax.swing.JPanel {
     }
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
-        // 1. Lấy frame cha (MainFrame) chứa TacGiaPanel
+        // 1. Lấy frame cha (MainFrame)
         javax.swing.JFrame parentFrame =
                 (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
 
-        // 2. Khởi tạo Dialog "Thêm tác giả" (modal)
-        ThemTacGiaDialog dialog = new ThemTacGiaDialog(parentFrame, true);
+        // 2. Khởi tạo Dialog "Tạo phiếu nhập" (modal)
+        com.libracoreteam.libracore.gui.dialog.TaoPhieuNhapDialog dialog = new com.libracoreteam.libracore.gui.dialog.TaoPhieuNhapDialog(parentFrame, true);
 
         // 3. Hiển thị dialog (block cho tới khi dispose)
         dialog.setVisible(true);
 
-        // 4. Sau khi dialog đóng, có thể reload lại bảng
-        System.out.println("Dialog Thêm tác giả đã đóng, tiến hành reload lại bảng...");
-        // TODO: loadDataToTable(); // Gọi hàm refresh bảng ở đây
+        // 4. Reload table data after dialog closes
+        // loadDataToTable();
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
