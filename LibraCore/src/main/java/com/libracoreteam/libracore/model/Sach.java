@@ -12,21 +12,22 @@ import java.util.List;
  */
 public class Sach {
     private int idSach;
-    private Integer idNXB;  
+    private Integer idNXB;
     private Integer namXuatBan;
     private String tenSach;
     private String moTa;
     private Integer soTrang;
     private boolean hoatDong;
-    
+
     private List<TacGia> danhSachTacGia;
     private List<TheLoai> danhSachTheLoai;
     private NXB nhaXuatBan;
-    
+
     public Sach() {
     }
-    
-    public Sach(int idSach, Integer idNXB, Integer namXuatBan, String tenSach, String moTa, Integer soTrang, boolean hoatDong) {
+
+    public Sach(int idSach, Integer idNXB, Integer namXuatBan, String tenSach, String moTa, Integer soTrang,
+            boolean hoatDong) {
         this.idSach = idSach;
         this.idNXB = idNXB;
         this.namXuatBan = namXuatBan;
@@ -35,7 +36,7 @@ public class Sach {
         this.soTrang = soTrang;
         this.hoatDong = hoatDong;
     }
-    
+
     public Sach(Integer idNXB, Integer namXuatBan, String tenSach, String moTa, Integer soTrang) {
         this.idNXB = idNXB;
         this.namXuatBan = namXuatBan;
@@ -45,7 +46,7 @@ public class Sach {
         this.hoatDong = true;
     }
 
-    //getter
+    // getter
     public int getIdSach() {
         return idSach;
     }
@@ -81,8 +82,8 @@ public class Sach {
     public NXB getNhaXuatBan() {
         return nhaXuatBan;
     }
-    
-    //setter
+
+    // setter
     public void setIdSach(int idSach) {
         this.idSach = idSach;
     }
@@ -118,16 +119,13 @@ public class Sach {
     public boolean isHoatDong() {
         return hoatDong;
     }
+
     public void setHoatDong(boolean hoatDong) {
         this.hoatDong = hoatDong;
     }
+
     @Override
     public String toString() {
-        return "Sach{" +
-                "idSach=" + idSach +
-                ", tenSach='" + tenSach + '\'' +
-                ", namXuatBan=" + namXuatBan +
-                '}';
+        return tenSach;
     }
 }
-

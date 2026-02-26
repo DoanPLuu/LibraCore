@@ -1,12 +1,54 @@
 package com.libracoreteam.libracore.dao;
 
+import com.libracoreteam.libracore.model.CuonSach;
+import com.libracoreteam.libracore.model.Sach;
 import com.libracoreteam.libracore.util.DBConnection;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CuonSachDAO {
-    // Bên sách cần để lại cái này vì chúng quan trọng cho bên mượn
+
+    public List<CuonSach> getAll() {
+        String sql =
+                "SELECT c.id_CuonSach, c.id_Sach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, s.TenSach " +
+                "FROM CuonSach c " +
+                "JOIN Sach s ON s.id_Sach = c.id_Sach " +
+                "ORDER BY c.id_CuonSach DESC";
+        return queryList(sql, false, null);
+    }
+
+    public List<CuonSach> search(String keyword) {
+        String sql =
+                "SELECT c.id_CuonSach, c.id_Sach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, s.TenSach " +
+                "FROM CuonSach c " +
+                "JOIN Sach s ON s.id_Sach = c.id_Sach " +
+                "WHERE CAST(c.id_CuonSach AS CHAR) LIKE ? OR CAST(c.id_Sach AS CHAR) LIKE ? OR s.TenSach LIKE ? " +
+                "ORDER BY c.id_CuonSach DESC";
+
+        String k = "%" + (keyword == null ? "" : keyword.trim()) + "%";
+        return queryList(sql, true, k);
+    }
+
+    public boolean softDelete(int idCuonSach) {
+        String sql = "UPDATE CuonSach SET DaHuy = ? WHERE id_CuonSach = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, true);
+            ps.setInt(2, idCuonSach);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("CuonSachDAO.softDelete failed", e);
+        }
+    }
+
+    
     public boolean updateStatus(int idCuonSach, String trangThaiMoi) {
-        String sql = "UPDATE CuonSach SET trang_Thai_Muon = ? WHERE id_CuonSach = ?";
+        String sql = "UPDATE CuonSach SET TrangThaiMuon = ? WHERE id_CuonSach = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, trangThaiMoi);
@@ -17,9 +59,10 @@ public class CuonSachDAO {
             return false;
         }
     }
-    //Bên sách nên thêm hàm này vì quan trọng cho bên mượn sách
+
+    // Kiểm tra tính khả dụng của cuốn sách (Đang rảnh và tình trạng tốt)
     public boolean isAvailable(int idCuonSach) {
-        String sql = "SELECT COUNT(*) FROM CuonSach WHERE id_CuonSach = ? AND trang_Thai_Muon = 'Ranh' AND tinh_Trang_Sach = 'Tot'";
+        String sql = "SELECT COUNT(*) FROM CuonSach WHERE id_CuonSach = ? AND TrangThaiMuon = 'Ranh' AND TinhTrangSach = 'Tot'";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idCuonSach);
@@ -28,16 +71,54 @@ public class CuonSachDAO {
         } catch (SQLException e) {}
         return false;
     }
-    //Bên sách nên thêm hàm này vò nó quan trọng cho bên mượn sách
+
     public String getTenSachById(int idCuonSach) {
-        String sql = "SELECT s.ten_Sach FROM CuonSach cs JOIN Sach s ON cs.id_Sach = s.id_Sach WHERE cs.id_CuonSach = ?";
+        String sql = "SELECT s.TenSach FROM CuonSach cs JOIN Sach s ON cs.id_Sach = s.id_Sach WHERE cs.id_CuonSach = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idCuonSach);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) return rs.getString("ten_Sach");
-        } catch (Exception e) {
-        }
+            if (rs.next()) return rs.getString("TenSach");
+        } catch (Exception e) {}
         return null;
+    }
+
+    private List<CuonSach> queryList(String sql, boolean hasKeyword, String keyword) {
+        List<CuonSach> list = new ArrayList<CuonSach>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (hasKeyword) {
+                ps.setString(1, keyword);
+                ps.setString(2, keyword);
+                ps.setString(3, keyword);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("CuonSachDAO.queryList failed", e);
+        }
+    }
+
+    private CuonSach map(ResultSet rs) throws SQLException {
+        CuonSach c = new CuonSach();
+        c.setIdCuonSach(rs.getInt("id_CuonSach"));
+        c.setIdSach(rs.getInt("id_Sach"));
+        c.setTinhTrangSach(rs.getString("TinhTrangSach"));
+        c.setTrangThaiMuon(rs.getString("TrangThaiMuon"));
+
+        boolean daHuy = rs.getBoolean("DaHuy");
+        c.setDaHuy(rs.wasNull() ? false : daHuy);
+
+        Sach s = new Sach();
+        s.setIdSach(c.getIdSach());
+        s.setTenSach(rs.getString("TenSach"));
+        c.setSach(s);
+        return c;
     }
 }
