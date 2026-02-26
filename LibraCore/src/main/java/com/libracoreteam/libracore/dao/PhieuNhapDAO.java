@@ -58,6 +58,8 @@ public class PhieuNhapDAO {
                 "INSERT INTO PhieuNhap (id_NCC, NgayNhap, SoLuongSach, id_NhanVien, TrangThai) VALUES (?, ?, ?, ?, ?)";
         String sqlInsertDetail =
                 "INSERT INTO ChiTietPhieuNhap (id_PhieuNhap, id_Sach, SoLuong, GiaTien, MaDauSach) VALUES (?, ?, ?, ?, ?)";
+        String sqlInsertCuonSach =
+                "INSERT INTO CuonSach (id_Sach, TinhTrangSach, TrangThaiMuon, DaHuy) VALUES (?, ?, ?, ?)";
 
         List<ChiTietPhieuNhap> chiTietList = details == null ? Collections.emptyList() : details;
 
@@ -123,6 +125,25 @@ public class PhieuNhapDAO {
                         psDetail.addBatch();
                     }
                     psDetail.executeBatch();
+                }
+
+                // 3) Nhap kho thuc te: tao ban sao trong bang CuonSach theo SoLuong tung dong chi tiet
+                try (PreparedStatement psCuonSach = conn.prepareStatement(sqlInsertCuonSach)) {
+                    for (ChiTietPhieuNhap ct : chiTietList) {
+                        int soLuong = (ct.getSoLuong() == null) ? 0 : ct.getSoLuong();
+                        if (soLuong <= 0) {
+                            continue;
+                        }
+
+                        for (int i = 0; i < soLuong; i++) {
+                            psCuonSach.setInt(1, ct.getIdSach());
+                            psCuonSach.setString(2, "Tot");
+                            psCuonSach.setString(3, "Ranh");
+                            psCuonSach.setBoolean(4, false);
+                            psCuonSach.addBatch();
+                        }
+                    }
+                    psCuonSach.executeBatch();
                 }
 
                 conn.commit();
