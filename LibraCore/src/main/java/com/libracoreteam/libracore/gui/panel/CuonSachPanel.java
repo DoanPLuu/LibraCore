@@ -286,13 +286,13 @@ public class CuonSachPanel extends javax.swing.JPanel {
             jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-            jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm theo mã cuốn / mã sách / tên sách");
+            jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm theo mã cuốn sách / mã sách / tên sách");
 
     }
 
     private void initTable() {
         tblModel = new DefaultTableModel(
-                new Object[]{"Mã cuốn", "Mã sách", "Tên sách", "Tình trạng", "Trạng thái mượn", "Đã huỷ", "Hủy"},
+                new Object[]{"Mã cuốn sách", "Mã sách", "Tên sách", "Tình trạng", "Trạng thái mượn", "Đã huỷ", "Hủy"},
                 0
         ) {
             @Override
@@ -346,7 +346,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
                 tenSach = c.getSach().getTenSach();
             }
             tblModel.addRow(new Object[]{
-                    c.getIdCuonSach(),
+                    valueOrEmpty(c.getMaCuonSach()),
                     c.getIdSach(),
                     tenSach,
                     valueOrEmpty(c.getTinhTrangSach()),
@@ -362,7 +362,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
             return;
         }
         jTextFieldMaSach.setText(String.valueOf(c.getIdSach()));
-        jTextFieldMaCuonSach.setText(String.valueOf(c.getIdCuonSach()));
+        jTextFieldMaCuonSach.setText(valueOrEmpty(c.getMaCuonSach()));
         if (c.getSach() != null && c.getSach().getTenSach() != null) {
             jTextFieldTenCuonSach.setText(c.getSach().getTenSach());
         } else {
@@ -398,7 +398,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
 
         int choice = JOptionPane.showConfirmDialog(
                 this,
-                "Bạn có chắc muốn huỷ cuốn sách #" + c.getIdCuonSach() + " không?",
+                "Bạn có chắc muốn huỷ cuốn sách " + valueOrEmpty(c.getMaCuonSach()) + " không?",
                 "Xác nhận huỷ",
                 JOptionPane.YES_NO_OPTION
         );

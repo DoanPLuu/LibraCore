@@ -119,25 +119,25 @@ public class TaoPhieuNhapDialog extends JDialog {
         btnThemSach = new JButton("Thêm vào phiếu");
         btnThemSach.addActionListener(e -> addSelectedSachToTable());
 
-        String[] cols = {"STT", "Mã đầu sách", "Tên sách", "Số lượng", "Đơn giá nhập", "Thành tiền", "Hành động"};
+        String[] cols = {"STT", "Tên sách", "Số lượng", "Đơn giá nhập", "Thành tiền", "Hành động"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 1 || column == 3 || column == 4 || column == 6;
+                return column == 2 || column == 3 || column == 5;
             }
         };
         tblChiTiet = new JTable(tableModel);
         tblChiTiet.setRowHeight(30);
-        tblChiTiet.getColumnModel().getColumn(6).setCellRenderer(new DeleteButtonRenderer());
-        tblChiTiet.getColumnModel().getColumn(6).setCellEditor(new DeleteButtonEditor());
-        tblChiTiet.getColumnModel().getColumn(6).setPreferredWidth(85);
-        tblChiTiet.getColumnModel().getColumn(6).setMaxWidth(100);
+        tblChiTiet.getColumnModel().getColumn(5).setCellRenderer(new DeleteButtonRenderer());
+        tblChiTiet.getColumnModel().getColumn(5).setCellEditor(new DeleteButtonEditor());
+        tblChiTiet.getColumnModel().getColumn(5).setPreferredWidth(85);
+        tblChiTiet.getColumnModel().getColumn(5).setMaxWidth(100);
 
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+        tblChiTiet.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
         tblChiTiet.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
         tblChiTiet.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
-        tblChiTiet.getColumnModel().getColumn(5).setCellRenderer(rightRenderer);
 
         btnLuuPhieu = new JButton("Lưu Phiếu Nhập");
         btnLuuPhieu.setFont(btnLuuPhieu.getFont().deriveFont(Font.BOLD, 14f));
@@ -233,7 +233,7 @@ public class TaoPhieuNhapDialog extends JDialog {
         }
 
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            Sach rowSach = (Sach) tableModel.getValueAt(i, 2);
+            Sach rowSach = (Sach) tableModel.getValueAt(i, 1);
             if (rowSach != null && rowSach.getIdSach() == s.getIdSach()) {
                 JOptionPane.showMessageDialog(this, "Sách này đã có trong phiếu nhập!");
                 return;
@@ -244,7 +244,6 @@ public class TaoPhieuNhapDialog extends JDialog {
 
         Object[] rowData = {
                 stt,
-                "S-" + s.getIdSach(),
                 s,
                 1,
                 BigDecimal.ZERO,
@@ -273,13 +272,13 @@ public class TaoPhieuNhapDialog extends JDialog {
                 BigDecimal price = BigDecimal.ZERO;
 
                 try {
-                    qty = parsePositiveIntOrZero(tableModel.getValueAt(i, 3));
-                    price = parseBigDecimalOrZero(tableModel.getValueAt(i, 4));
+                    qty = parsePositiveIntOrZero(tableModel.getValueAt(i, 2));
+                    price = parseBigDecimalOrZero(tableModel.getValueAt(i, 3));
                 } catch (Exception ignored) {
                 }
 
                 BigDecimal rowTotal = price.multiply(BigDecimal.valueOf(qty));
-                tableModel.setValueAt(rowTotal, i, 5);
+                tableModel.setValueAt(rowTotal, i, 4);
 
                 totalQty += qty;
                 totalAmt = totalAmt.add(rowTotal);
@@ -315,23 +314,17 @@ public class TaoPhieuNhapDialog extends JDialog {
 
             for (int i = 0; i < tableModel.getRowCount(); i++) {
                 int rowNum = i + 1;
-                Sach sach = (Sach) tableModel.getValueAt(i, 2);
+                Sach sach = (Sach) tableModel.getValueAt(i, 1);
                 if (sach == null || sach.getIdSach() <= 0) {
                     throw new IllegalArgumentException("Dòng " + rowNum + ": đầu sách không hợp lệ");
                 }
 
-                String maDauSach = valueAsString(tableModel.getValueAt(i, 1));
-                if (maDauSach.isEmpty()) {
-                    maDauSach = "S-" + sach.getIdSach();
-                }
-
-                int soLuong = parsePositiveInt(tableModel.getValueAt(i, 3), "Dòng " + rowNum + ": số lượng phải > 0");
-                BigDecimal donGia = parseNonNegativeBigDecimal(tableModel.getValueAt(i, 4),
+                int soLuong = parsePositiveInt(tableModel.getValueAt(i, 2), "Dòng " + rowNum + ": số lượng phải > 0");
+                BigDecimal donGia = parseNonNegativeBigDecimal(tableModel.getValueAt(i, 3),
                         "Dòng " + rowNum + ": đơn giá phải >= 0");
 
                 ChiTietPhieuNhap ct = new ChiTietPhieuNhap();
                 ct.setIdSach(sach.getIdSach());
-                ct.setMaDauSach(maDauSach);
                 ct.setSoLuong(soLuong);
                 ct.setGiaTien(donGia);
                 details.add(ct);

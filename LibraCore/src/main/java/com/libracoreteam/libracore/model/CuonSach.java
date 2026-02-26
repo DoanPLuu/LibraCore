@@ -11,6 +11,7 @@ package com.libracoreteam.libracore.model;
 public class CuonSach {
     private int idCuonSach;
     private int idSach;
+    private String maCuonSach;
     private String tinhTrangSach; // Enum: Tot, Hong, Mat
     private String trangThaiMuon; // Enum: Ranh, DangMuon
     private Boolean daHuy;
@@ -43,6 +44,10 @@ public class CuonSach {
     public int getIdSach() {
         return idSach;
     }
+
+    public String getMaCuonSach() {
+        return maCuonSach;
+    }
     
     public String getTinhTrangSach() {
         return tinhTrangSach;
@@ -63,6 +68,10 @@ public class CuonSach {
     
     public void setIdSach(int idSach) {
         this.idSach = idSach;
+    }
+
+    public void setMaCuonSach(String maCuonSach) {
+        this.maCuonSach = maCuonSach;
     }
     
     public void setTinhTrangSach(String tinhTrangSach) {
@@ -107,6 +116,7 @@ public class CuonSach {
         return "CuonSach{" +
                 "idCuonSach=" + idCuonSach +
                 ", idSach=" + idSach +
+                ", maCuonSach='" + maCuonSach + '\'' +
                 ", tinhTrangSach='" + tinhTrangSach + '\'' +
                 ", trangThaiMuon='" + trangThaiMuon + '\'' +
                 '}';
