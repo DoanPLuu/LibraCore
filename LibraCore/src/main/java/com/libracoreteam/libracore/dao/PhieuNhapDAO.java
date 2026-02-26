@@ -59,7 +59,7 @@ public class PhieuNhapDAO {
         String sqlInsertPhieu =
                 "INSERT INTO PhieuNhap (id_NCC, NgayNhap, SoLuongSach, id_NhanVien, TrangThai) VALUES (?, ?, ?, ?, ?)";
         String sqlInsertDetail =
-                "INSERT INTO ChiTietPhieuNhap (id_PhieuNhap, id_Sach, SoLuong, GiaTien, MaDauSach) VALUES (?, ?, ?, ?, ?)";
+                "INSERT INTO ChiTietPhieuNhap (id_PhieuNhap, id_Sach, SoLuong, GiaTien) VALUES (?, ?, ?, ?)";
         String sqlInsertCuonSach =
                 "INSERT INTO CuonSach (id_Sach, MaCuonSach, TinhTrangSach, TrangThaiMuon, DaHuy, id_ChiTietPhieuNhap) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -126,8 +126,6 @@ public class PhieuNhapDAO {
                         } else {
                             psDetail.setBigDecimal(4, ct.getGiaTien());
                         }
-
-                        psDetail.setString(5, ct.getMaDauSach());
                         if (psDetail.executeUpdate() == 0) {
                             conn.rollback();
                             return false;
@@ -210,7 +208,7 @@ public class PhieuNhapDAO {
 
     public List<ChiTietPhieuNhap> getDetailsByPhieuNhap(int idPhieuNhap) {
         String sql =
-                "SELECT c.id_ChiTietPhieuNhap, c.id_PhieuNhap, c.id_Sach, c.SoLuong, c.GiaTien, c.MaDauSach, s.TenSach " +
+                "SELECT c.id_ChiTietPhieuNhap, c.id_PhieuNhap, c.id_Sach, c.SoLuong, c.GiaTien, s.TenSach " +
                 "FROM ChiTietPhieuNhap c " +
                 "JOIN Sach s ON s.id_Sach = c.id_Sach " +
                 "WHERE c.id_PhieuNhap = ? " +
@@ -232,7 +230,6 @@ public class PhieuNhapDAO {
                     ct.setSoLuong(rs.wasNull() ? null : soLuong);
 
                     ct.setGiaTien(rs.getBigDecimal("GiaTien"));
-                    ct.setMaDauSach(rs.getString("MaDauSach"));
 
                     Sach sach = new Sach();
                     sach.setIdSach(ct.getIdSach());

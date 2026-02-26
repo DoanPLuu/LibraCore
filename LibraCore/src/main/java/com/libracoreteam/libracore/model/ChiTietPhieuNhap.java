@@ -16,30 +16,27 @@ public class ChiTietPhieuNhap {
     private int idSach;
     private Integer soLuong;
     private BigDecimal giaTien;
-    private String maDauSach;
     
     private Sach sach;
     
     public ChiTietPhieuNhap() {
     }
     
-    public ChiTietPhieuNhap(int idChiTietPhieuNhap, int idPhieuNhap, int idSach, 
-                            Integer soLuong, BigDecimal giaTien, String maDauSach) {
+    public ChiTietPhieuNhap(int idChiTietPhieuNhap, int idPhieuNhap, int idSach,
+                            Integer soLuong, BigDecimal giaTien) {
         this.idChiTietPhieuNhap = idChiTietPhieuNhap;
         this.idPhieuNhap = idPhieuNhap;
         this.idSach = idSach;
         this.soLuong = soLuong;
         this.giaTien = giaTien;
-        this.maDauSach = maDauSach;
     }
     
-    public ChiTietPhieuNhap(int idPhieuNhap, int idSach, Integer soLuong, 
-                            BigDecimal giaTien, String maDauSach) {
+    public ChiTietPhieuNhap(int idPhieuNhap, int idSach, Integer soLuong,
+                            BigDecimal giaTien) {
         this.idPhieuNhap = idPhieuNhap;
         this.idSach = idSach;
         this.soLuong = soLuong;
         this.giaTien = giaTien;
-        this.maDauSach = maDauSach;
     }
     
     // Getters
@@ -61,10 +58,6 @@ public class ChiTietPhieuNhap {
     
     public BigDecimal getGiaTien() {
         return giaTien;
-    }
-    
-    public String getMaDauSach() {
-        return maDauSach;
     }
     
     public Sach getSach() {
@@ -90,10 +83,6 @@ public class ChiTietPhieuNhap {
     
     public void setGiaTien(BigDecimal giaTien) {
         this.giaTien = giaTien;
-    }
-    
-    public void setMaDauSach(String maDauSach) {
-        this.maDauSach = maDauSach;
     }
     
     public void setSach(Sach sach) {

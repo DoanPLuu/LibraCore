@@ -61,7 +61,7 @@ public class ChiTietPhieuNhapDialog extends JDialog {
         add(headerPanel, BorderLayout.NORTH);
 
         tableModel = new DefaultTableModel(
-                new Object[]{"STT", "Mã đầu sách", "Tên sách", "Số lượng", "Đơn giá", "Thành tiền"},
+                new Object[]{"STT", "Tên sách", "Số lượng", "Đơn giá", "Thành tiền"},
                 0
         ) {
             @Override
@@ -100,7 +100,6 @@ public class ChiTietPhieuNhapDialog extends JDialog {
 
             tableModel.addRow(new Object[]{
                     stt++,
-                    ct.getMaDauSach() == null ? "" : ct.getMaDauSach(),
                     tenSach,
                     soLuong,
                     donGia,

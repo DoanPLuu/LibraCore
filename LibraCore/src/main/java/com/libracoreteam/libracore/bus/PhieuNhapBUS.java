@@ -83,13 +83,6 @@ public class PhieuNhapBUS {
                 throw new IllegalArgumentException("Đơn giá nhập phải >= 0");
             }
 
-            String maDauSach = ct.getMaDauSach();
-            if (maDauSach == null || maDauSach.trim().isEmpty()) {
-                ct.setMaDauSach("S-" + ct.getIdSach());
-            } else {
-                ct.setMaDauSach(maDauSach.trim());
-            }
-
             normalizedDetails.add(ct);
             tongSoLuong += ct.getSoLuong();
         }
