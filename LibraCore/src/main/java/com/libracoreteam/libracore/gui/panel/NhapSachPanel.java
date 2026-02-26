@@ -4,10 +4,16 @@
  */
 package com.libracoreteam.libracore.gui.panel;
 
-import com.libracoreteam.libracore.gui.dialog.ThemTacGiaDialog;
-import org.kordamp.ikonli.swing.FontIcon;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import com.libracoreteam.libracore.bus.PhieuNhapBUS;
+import com.libracoreteam.libracore.gui.dialog.TaoPhieuNhapDialog;
+import com.libracoreteam.libracore.model.PhieuNhap;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.swing.FontIcon;
 
 /**
  *
@@ -15,12 +21,19 @@ import java.awt.Color;
  */
 public class NhapSachPanel extends javax.swing.JPanel {
 
+    private final PhieuNhapBUS phieuNhapBUS = new PhieuNhapBUS();
+    private DefaultTableModel tblModel;
+    private List<PhieuNhap> currentList = new ArrayList<PhieuNhap>();
+    private boolean showingCancelled = false;
+
     /**
      * Creates new form TestPanel
      */
     public NhapSachPanel() {
         initComponents();
         InnitButton();
+        initTable();
+        loadData();
     }
     
     
@@ -141,6 +154,54 @@ public class NhapSachPanel extends javax.swing.JPanel {
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             jButtonDSHuy.setIcon(FontIcon.of(FontAwesomeSolid.ALIGN_JUSTIFY, iconSize, new Color(100, 100, 100)));
+            jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm theo mã phiếu hoặc nhà cung cấp");
+    }
+
+    private void initTable() {
+        tblModel = new DefaultTableModel(
+                new Object[]{"Mã phiếu", "Ngày nhập", "Nhà cung cấp", "Số lượng sách", "Trạng thái"},
+                0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        jTableSach.setModel(tblModel);
+        jTableSach.getTableHeader().setReorderingAllowed(false);
+        jTableSach.setRowHeight(30);
+    }
+
+    private void loadData() {
+        try {
+            if (showingCancelled) {
+                currentList = phieuNhapBUS.getDaHuy();
+            } else {
+                currentList = phieuNhapBUS.getActive();
+            }
+            renderTable(currentList);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Không tải được danh sách phiếu nhập: " + ex.getMessage());
+        }
+    }
+
+    private void renderTable(List<PhieuNhap> list) {
+        tblModel.setRowCount(0);
+        for (PhieuNhap p : list) {
+            String nccText = "";
+            if (p.getNcc() != null && p.getNcc().getTenNCC() != null) {
+                nccText = p.getNcc().getTenNCC();
+            }
+
+            tblModel.addRow(new Object[]{
+                    p.getIdPhieuNhap(),
+                    p.getNgayNhap() == null ? "" : p.getNgayNhap(),
+                    nccText,
+                    p.getSoLuongSach() == null ? 0 : p.getSoLuongSach(),
+                    p.getTrangThai()
+            });
+        }
     }
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
@@ -149,29 +210,57 @@ public class NhapSachPanel extends javax.swing.JPanel {
                 (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
 
         // 2. Khởi tạo Dialog "Tạo phiếu nhập" (modal)
-        com.libracoreteam.libracore.gui.dialog.TaoPhieuNhapDialog dialog = new com.libracoreteam.libracore.gui.dialog.TaoPhieuNhapDialog(parentFrame, true);
+        TaoPhieuNhapDialog dialog = new TaoPhieuNhapDialog(parentFrame, true);
 
         // 3. Hiển thị dialog (block cho tới khi dispose)
         dialog.setVisible(true);
 
         // 4. Reload table data after dialog closes
-        // loadDataToTable();
+        if (dialog.isSaved()) {
+            showingCancelled = false;
+            jButtonDSHuy.setText("Danh sách huỷ");
+            loadData();
+        }
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(this, "Chức năng xuất phiếu nhập sẽ bổ sung sau.");
     }//GEN-LAST:event_jButtonXuatActionPerformed
 
     private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTimKiemActionPerformed
-        // TODO add your handling code here:
+        String keyword = jTextFieldTimKiem.getText();
+        if (keyword != null) {
+            keyword = keyword.trim();
+        }
+
+        if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
+            loadData();
+            return;
+        }
+
+        try {
+            currentList = phieuNhapBUS.search(keyword, showingCancelled);
+            renderTable(currentList);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "Tìm kiếm thất bại: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jButtonTimKiemActionPerformed
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
-        // TODO add your handling code here:
+        jTextFieldTimKiem.setText("");
+        showingCancelled = false;
+        jButtonDSHuy.setText("Danh sách huỷ");
+        loadData();
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
     private void jButtonDSHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDSHuyActionPerformed
-        // TODO add your handling code here:
+        showingCancelled = !showingCancelled;
+        if (showingCancelled) {
+            jButtonDSHuy.setText("Danh sách hoạt động");
+        } else {
+            jButtonDSHuy.setText("Danh sách huỷ");
+        }
+        loadData();
     }//GEN-LAST:event_jButtonDSHuyActionPerformed
 
 
