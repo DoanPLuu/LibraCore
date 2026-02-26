@@ -15,7 +15,7 @@ public class CuonSachDAO {
 
     public List<CuonSach> getAll() {
         String sql =
-                "SELECT c.id_CuonSach, c.id_Sach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, s.TenSach " +
+                "SELECT c.id_CuonSach, c.id_Sach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, s.TenSach " +
                 "FROM CuonSach c " +
                 "JOIN Sach s ON s.id_Sach = c.id_Sach " +
                 "ORDER BY c.id_CuonSach DESC";
@@ -24,10 +24,10 @@ public class CuonSachDAO {
 
     public List<CuonSach> search(String keyword) {
         String sql =
-                "SELECT c.id_CuonSach, c.id_Sach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, s.TenSach " +
+                "SELECT c.id_CuonSach, c.id_Sach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, s.TenSach " +
                 "FROM CuonSach c " +
                 "JOIN Sach s ON s.id_Sach = c.id_Sach " +
-                "WHERE CAST(c.id_CuonSach AS CHAR) LIKE ? OR CAST(c.id_Sach AS CHAR) LIKE ? OR s.TenSach LIKE ? " +
+                "WHERE c.MaCuonSach LIKE ? OR CAST(c.id_CuonSach AS CHAR) LIKE ? OR CAST(c.id_Sach AS CHAR) LIKE ? OR s.TenSach LIKE ? " +
                 "ORDER BY c.id_CuonSach DESC";
 
         String k = "%" + (keyword == null ? "" : keyword.trim()) + "%";
@@ -55,6 +55,7 @@ public class CuonSachDAO {
                 ps.setString(1, keyword);
                 ps.setString(2, keyword);
                 ps.setString(3, keyword);
+                ps.setString(4, keyword);
             }
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -72,6 +73,7 @@ public class CuonSachDAO {
         CuonSach c = new CuonSach();
         c.setIdCuonSach(rs.getInt("id_CuonSach"));
         c.setIdSach(rs.getInt("id_Sach"));
+        c.setMaCuonSach(rs.getString("MaCuonSach"));
         c.setTinhTrangSach(rs.getString("TinhTrangSach"));
         c.setTrangThaiMuon(rs.getString("TrangThaiMuon"));
 
