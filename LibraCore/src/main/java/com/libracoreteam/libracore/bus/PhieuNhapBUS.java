@@ -37,6 +37,24 @@ public class PhieuNhapBUS {
         return phieuNhapDAO.search(k, onlyDaHuy);
     }
 
+    public List<ChiTietPhieuNhap> getDetailsByPhieuNhap(int idPhieuNhap) {
+        if (idPhieuNhap <= 0) {
+            throw new IllegalArgumentException("ID phiếu nhập không hợp lệ");
+        }
+        return phieuNhapDAO.getDetailsByPhieuNhap(idPhieuNhap);
+    }
+
+    public boolean cancel(int idPhieuNhap) {
+        if (idPhieuNhap <= 0) {
+            throw new IllegalArgumentException("ID phiếu nhập không hợp lệ");
+        }
+        boolean ok = phieuNhapDAO.cancel(idPhieuNhap);
+        if (!ok) {
+            throw new RuntimeException("Không thể hủy phiếu nhập này");
+        }
+        return true;
+    }
+
     public boolean create(PhieuNhap phieuNhap, List<ChiTietPhieuNhap> details) {
         if (phieuNhap == null) {
             throw new IllegalArgumentException("Phiếu nhập không hợp lệ");

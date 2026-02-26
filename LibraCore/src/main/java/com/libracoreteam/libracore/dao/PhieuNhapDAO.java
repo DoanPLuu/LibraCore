@@ -3,6 +3,7 @@ package com.libracoreteam.libracore.dao;
 import com.libracoreteam.libracore.model.ChiTietPhieuNhap;
 import com.libracoreteam.libracore.model.NCC;
 import com.libracoreteam.libracore.model.PhieuNhap;
+import com.libracoreteam.libracore.model.Sach;
 import com.libracoreteam.libracore.util.DBConnection;
 
 import java.sql.Connection;
@@ -140,6 +141,60 @@ public class PhieuNhapDAO {
             }
         } catch (SQLException e) {
             throw new RuntimeException("PhieuNhapDAO.insertWithDetails failed", e);
+        }
+    }
+
+    public List<ChiTietPhieuNhap> getDetailsByPhieuNhap(int idPhieuNhap) {
+        String sql =
+                "SELECT c.id_ChiTietPhieuNhap, c.id_PhieuNhap, c.id_Sach, c.SoLuong, c.GiaTien, c.MaDauSach, s.TenSach " +
+                "FROM ChiTietPhieuNhap c " +
+                "JOIN Sach s ON s.id_Sach = c.id_Sach " +
+                "WHERE c.id_PhieuNhap = ? " +
+                "ORDER BY c.id_ChiTietPhieuNhap ASC";
+
+        List<ChiTietPhieuNhap> list = new ArrayList<ChiTietPhieuNhap>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, idPhieuNhap);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ChiTietPhieuNhap ct = new ChiTietPhieuNhap();
+                    ct.setIdChiTietPhieuNhap(rs.getInt("id_ChiTietPhieuNhap"));
+                    ct.setIdPhieuNhap(rs.getInt("id_PhieuNhap"));
+                    ct.setIdSach(rs.getInt("id_Sach"));
+
+                    int soLuong = rs.getInt("SoLuong");
+                    ct.setSoLuong(rs.wasNull() ? null : soLuong);
+
+                    ct.setGiaTien(rs.getBigDecimal("GiaTien"));
+                    ct.setMaDauSach(rs.getString("MaDauSach"));
+
+                    Sach sach = new Sach();
+                    sach.setIdSach(ct.getIdSach());
+                    sach.setTenSach(rs.getString("TenSach"));
+                    ct.setSach(sach);
+
+                    list.add(ct);
+                }
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("PhieuNhapDAO.getDetailsByPhieuNhap failed", e);
+        }
+    }
+
+    public boolean cancel(int idPhieuNhap) {
+        String sql = "UPDATE PhieuNhap SET TrangThai = ? WHERE id_PhieuNhap = ? AND TrangThai <> ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "DaHuy");
+            ps.setInt(2, idPhieuNhap);
+            ps.setString(3, "DaHuy");
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("PhieuNhapDAO.cancel failed", e);
         }
     }
 
