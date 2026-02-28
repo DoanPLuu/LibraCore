@@ -27,6 +27,12 @@ public class DocGiaBUS {
     }
 
     public String delete(int idDocGia){
+        if (docGiaDAO.isDangNoSach(idDocGia)) {
+            return "Độc giả này đang nợ sách chưa trả. Không thể xóa";
+        }
+        if (docGiaDAO.isTheDangHoatDong(idDocGia)) {
+            return "Thẻ thành viên của người này vẫn đang hoạt động. Vui lòng khóa thẻ trước khi xóa!";
+        }
         if(docGiaDAO.delete(idDocGia)) return "Xóa thành công";
         else return "Xóa thất bại, lỗi hệ thống!";
     }

@@ -10,7 +10,7 @@ import java.util.List;
 public class TheThanhVienDAO {
     public List<TheThanhVien> getAll(){
         List<TheThanhVien> list=new ArrayList<>();
-        String sql="SELECT t.*, d.ho_Ten FROM TheThanhVien t "+"JOIN DocGia d ON t.id_DocGia = d.id_DocGia";
+        String sql="SELECT t.*, d.TenDocGia FROM TheThanhVien t "+"JOIN DocGia d ON t.id_DocGia = d.id_DocGia";
         try(Connection connection= DBConnection.getConnection();
             PreparedStatement preparedStatement=connection.prepareStatement(sql);
             ResultSet resultSet=preparedStatement.executeQuery()){
@@ -20,10 +20,10 @@ public class TheThanhVienDAO {
                 theThanhVien.setIdTheThanhVien(resultSet.getInt("id_TheThanhVien"));
                 theThanhVien.setIdDocGia(resultSet.getInt("id_DocGia"));
 
-                if(resultSet.getDate("ngay_Cap")!=null) theThanhVien.setNgayCap(resultSet.getDate("ngay_Cap").toLocalDate());
-                if(resultSet.getDate("ngay_HetHan")!=null) theThanhVien.setNgayHetHan(resultSet.getDate("ngay_HetHan").toLocalDate());
+                if(resultSet.getDate("NgayCap")!=null) theThanhVien.setNgayCap(resultSet.getDate("NgayCap").toLocalDate());
+                if(resultSet.getDate("NgayHetHan")!=null) theThanhVien.setNgayHetHan(resultSet.getDate("NgayHetHan").toLocalDate());
 
-                theThanhVien.setTrangThai(resultSet.getString("trang_Thai"));
+                theThanhVien.setTrangThai(resultSet.getString("TrangThai"));
                 //
                 list.add(theThanhVien);
             }
@@ -34,7 +34,7 @@ public class TheThanhVienDAO {
     }
 
     public boolean add(TheThanhVien theThanhVien){
-        String sql="INSERT INTO TheThanhVien (id_DocGia, ngay_Cap, ngay_HetHan, trang_Thai) VALUES (?, ?, ?, ?)";
+        String sql="INSERT INTO TheThanhVien (id_DocGia, NgayCap, NgayHetHan, TrangThai) VALUES (?, ?, ?, ?)";
         try(Connection connection=DBConnection.getConnection();
             PreparedStatement preparedStatement=connection.prepareStatement(sql)){
 
@@ -51,7 +51,7 @@ public class TheThanhVienDAO {
     }
 
     public boolean update(TheThanhVien theThanhVien){
-        String sql="UPDATE TheThanhVien SET ngay_HetHan = ?, trang_Thai = ? WHERE id_TheThanhVien = ?";
+        String sql="UPDATE TheThanhVien SET ngayHetHan = ?, TrangThai = ? WHERE id_TheThanhVien = ?";
         try(Connection connection= DBConnection.getConnection();
             PreparedStatement preparedStatement=connection.prepareStatement(sql)){
 
@@ -81,13 +81,16 @@ public class TheThanhVienDAO {
     }
 
     public String getTenDocGia(int idDocGia) {
-        String sql = "SELECT ho_Ten FROM DocGia WHERE id_DocGia = ?";
+        String sql = "SELECT TenDocGia FROM DocGia WHERE id_DocGia = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idDocGia);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) return rs.getString("ho_Ten");
-        } catch (Exception e) {}
+            if (rs.next()) return rs.getString("TenDocGia");
+        } catch (Exception e) {
+            System.err.println("Lỗi khi lấy tên độc giả ID " + idDocGia);
+            e.printStackTrace();
+        }
         return "Unknown";
     }
 
@@ -101,9 +104,9 @@ public class TheThanhVienDAO {
                 com.libracoreteam.libracore.model.TheThanhVien t = new com.libracoreteam.libracore.model.TheThanhVien();
                 t.setIdTheThanhVien(rs.getInt("id_TheThanhVien"));
                 t.setIdDocGia(rs.getInt("id_DocGia"));
-                if (rs.getDate("ngay_Cap") != null) t.setNgayCap(rs.getDate("ngay_Cap").toLocalDate());
-                if (rs.getDate("ngay_HetHan") != null) t.setNgayHetHan(rs.getDate("ngay_HetHan").toLocalDate());
-                t.setTrangThai(rs.getString("trang_Thai"));
+                if (rs.getDate("NgayCap") != null) t.setNgayCap(rs.getDate("NgayCap").toLocalDate());
+                if (rs.getDate("NgayHetHan") != null) t.setNgayHetHan(rs.getDate("NgayHetHan").toLocalDate());
+                t.setTrangThai(rs.getString("TrangThai"));
                 return t;
             }
         } catch (SQLException e) {
@@ -113,14 +116,14 @@ public class TheThanhVienDAO {
     }
 
     public String getTenDocGiaByTheId(int idThe) {
-        String sql = "SELECT d.ho_Ten FROM DocGia d " +
+        String sql = "SELECT d.TenDocGia FROM DocGia d " +
                 "JOIN TheThanhVien t ON d.id_DocGia = t.id_DocGia " +
                 "WHERE t.id_TheThanhVien = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idThe);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) return rs.getString("ho_Ten");
+            if (rs.next()) return rs.getString("TenDocGia");
         } catch (Exception e) {
             e.printStackTrace();
         }

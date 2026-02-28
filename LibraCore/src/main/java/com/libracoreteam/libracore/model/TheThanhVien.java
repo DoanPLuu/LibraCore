@@ -44,6 +44,7 @@ public class TheThanhVien {
         this.trangThai="HoatDong";
     }
     
+    
     // Getters
     public int getIdTheThanhVien() {
         return idTheThanhVien;
@@ -108,7 +109,7 @@ public class TheThanhVien {
         return "TheThanhVien{" +
                 "idTheThanhVien=" + idTheThanhVien +
                 ", idDocGia=" + idDocGia +
-                ", trangThai='" + trangThai + '\'' +
+                ", TrangThai='" + trangThai + '\'' +
                 '}';
     }
 
@@ -117,5 +118,19 @@ public class TheThanhVien {
             this.ngayHetHan=LocalDate.now().plusYears(soNam);
         }else this.ngayHetHan=this.ngayHetHan.plusYears(soNam);
         this.trangThai="HoatDong";
+    }
+    
+    public void GiaHanTheoThang(int soThang) {
+        if(this.ngayHetHan.isBefore(LocalDate.now())){
+            this.ngayHetHan = LocalDate.now().plusMonths(soThang);
+        } else {
+            this.ngayHetHan = this.ngayHetHan.plusMonths(soThang);
+        }
+        this.trangThai = "HoatDong";
+    }
+
+    public void GiaHanDenNgayCuThe(LocalDate ngayChot) {
+        this.ngayHetHan = ngayChot;
+        this.trangThai = "HoatDong";
     }
 }

@@ -22,7 +22,7 @@ public class ThongKeDAO {
 
     // Đếm số phiếu mượn ĐANG MƯỢN (chưa trả)
     public int getSoPhieuDangMuon() {
-        String sql = "SELECT COUNT(*) FROM PhieuMuon WHERE trang_Thai = 'DangMuon'";
+        String sql = "SELECT COUNT(*) FROM PhieuMuon WHERE TrangThai = 'DangMuon'";
         return executeCountQuery(sql);
     }
 
