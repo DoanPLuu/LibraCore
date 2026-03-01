@@ -8,15 +8,9 @@ import java.awt.Color;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
-/**
- *
- * @author Sang
- */
 public class NCCPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form NCCPanel
-     */
+    
     public NCCPanel() {
         initComponents();
         InnitButton();

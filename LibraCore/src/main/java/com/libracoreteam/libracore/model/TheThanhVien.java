@@ -6,10 +6,7 @@ package com.libracoreteam.libracore.model;
 
 import java.time.LocalDate;
 
-/**
- *
- * @author luuis
- */
+
 public class TheThanhVien {
     private int idTheThanhVien;
     private int idDocGia;

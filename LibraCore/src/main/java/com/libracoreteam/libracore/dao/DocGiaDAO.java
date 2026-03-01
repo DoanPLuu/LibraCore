@@ -103,7 +103,7 @@ public class DocGiaDAO {
     }
 
     public boolean update(DocGia docGia) {
-        String sql = "UPDATE DocGia SET TenDocGia=?, DiaChi=?, NgaySinh=?, Email=? WHERE id_DocGia=?";
+        String sql = "UPDATE DocGia SET TenDocGia=?, DiaChi=?, NgaySinh=?, SDT=?, Email=? WHERE id_DocGia=?";
         try (Connection connection = DBConnection.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, docGia.getTenDocGia());

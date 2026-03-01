@@ -2,48 +2,92 @@ package com.libracoreteam.libracore.bus;
 
 import com.libracoreteam.libracore.dao.*;
 import com.libracoreteam.libracore.model.*;
+import com.libracoreteam.libracore.util.DBConnection; // Nhớ import DBConnection
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
 public class MuonTraBUS {
     private PhieuMuonDAO phieuMuonDAO = new PhieuMuonDAO();
-    private ChiTietPhieuMuonDAO chiTietDAO = new ChiTietPhieuMuonDAO();
     private CuonSachDAO cuonSachDAO = new CuonSachDAO();
-    private TheThanhVienDAO theThanhVienDAO=new TheThanhVienDAO();
+    private TheThanhVienDAO theThanhVienDAO = new TheThanhVienDAO();
+    
 
     public List<PhieuMuon> getAllPhieuMuon() {
         return phieuMuonDAO.getAll();
     }
 
     public List<ChiTietPhieuMuon> getChiTiet(int idPhieuMuon) {
-        return chiTietDAO.getByPhieuMuonId(idPhieuMuon);
+       
+        return phieuMuonDAO.getChiTiet(idPhieuMuon);
     }
 
+    
     public boolean muonSach(PhieuMuon phieuMuon, List<Integer> listIdCuonSach) {
+        
         phieuMuon.setTongSoSachMuon(listIdCuonSach.size());
         phieuMuon.setTrangThai("DangMuon");
-        int idPhieuMoi = phieuMuonDAO.add(phieuMuon);
 
-        if (idPhieuMoi == -1) return false;
-
-        for (int idCuonSach : listIdCuonSach) {
-            ChiTietPhieuMuon ct = new ChiTietPhieuMuon(idPhieuMoi, idCuonSach, "ChuaTra");
-            chiTietDAO.add(ct);
-
-            cuonSachDAO.updateStatus(idCuonSach, "DangMuon");
+        
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false); 
+            
+            try {
+             
+                phieuMuonDAO.insertWithDetails(phieuMuon, listIdCuonSach, conn);
+                
+                conn.commit(); 
+                return true;
+            } catch (SQLException ex) {
+                conn.rollback(); 
+                ex.printStackTrace();
+                return false;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return true;
     }
 
+    
     public boolean traSach(int idChiTiet, int idCuonSach, String tinhTrangSach) {
-        boolean ok = chiTietDAO.updateTraSach(idChiTiet, LocalDate.now(), tinhTrangSach);
+        
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false); 
+            
+            try {
+              
+                ChiTietPhieuMuon ct = new ChiTietPhieuMuon();
+                ct.setIdChiTietPhieuMuon(idChiTiet);
+                ct.setNgayTra(LocalDate.now());
+                ct.setTinhTrangTra("DaTra");
+                phieuMuonDAO.updateChiTiet(ct, conn);
 
-        if (ok) {
-            cuonSachDAO.updateStatus(idCuonSach, "Ranh");
+                
+                phieuMuonDAO.updateCuonSachKhiTra(idCuonSach, tinhTrangSach, conn);
+                
+               
+                
+                conn.commit(); 
+                return true;
+            } catch (SQLException ex) {
+                conn.rollback();
+                ex.printStackTrace();
+                return false;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return ok;
     }
 
+    
     public String kiemTraTheKhaDung(int idThe) {
         TheThanhVien theThanhVien = theThanhVienDAO.getById(idThe);
 

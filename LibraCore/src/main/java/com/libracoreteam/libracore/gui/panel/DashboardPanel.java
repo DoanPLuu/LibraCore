@@ -9,10 +9,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/**
- * Dashboard panel - Trang chủ hiển thị thông số tổng quan
- * @author luuis
- */
+
 public class DashboardPanel extends JPanel {
     
     private ThongKeBUS thongKeBUS;
@@ -26,7 +23,7 @@ public class DashboardPanel extends JPanel {
     public DashboardPanel() {
         thongKeBUS = new ThongKeBUS();
         initComponents();
-        loadData(); // Gọi hàm lấy dữ liệu từ DB ngay khi tạo Panel
+        loadData();
     }
     
     private void initComponents() {
@@ -103,10 +100,7 @@ public class DashboardPanel extends JPanel {
         add(pnlCenter, BorderLayout.CENTER);
     }
     
-    /**
-     * Lấy dữ liệu từ BUS và cập nhật lên các Label
-     */
-    private void loadData() {
+    public void loadData() {
         try {
             lblTongSachVal.setText(String.valueOf(thongKeBUS.getTongSoSach()));
             lblTongDocGiaVal.setText(String.valueOf(thongKeBUS.getTongDocGia()));

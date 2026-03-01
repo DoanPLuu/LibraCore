@@ -1,0 +1,465 @@
+# Tài liệu phân tích: Flow Mượn - Trả - Phạt
+
+> Dự án: LibraryManagementSystem (C# WinForms)  
+> Mục tiêu: Phân tích chi tiết để chuyển đổi sang Java Swing
+
+---
+
+## 1. Data Model (Cấu trúc dữ liệu nền tảng)
+
+### 1.1 Các bảng liên quan và quan hệ
+
+```
+BanSaoSach (1) ---< ChiTietPhieuMuon >--- (1) PhieuMuon
+                                                   |
+MucPhat (1) ---< ChiTietPhieuPhat >--- (1) PhieuPhat
+                        |
+               ChiTietPhieuMuon (liên kết ngược)
+```
+
+### 1.2 Bảng PhieuMuon
+| Trường | Kiểu | Mô tả |
+|---|---|---|
+| IdPhieuMuon | int PK | Mã phiếu mượn |
+| IdNhanVien | int FK | Nhân viên lập phiếu |
+| IdTheThanhVien | int FK | Thẻ thành viên của độc giả |
+| NgayMuon | DateTime | Ngày mượn |
+| NgayHenTra | DateTime | Hạn trả sách |
+| TrangThai | Enum | DangMuon / DaTra / DaHuy |
+
+### 1.3 Bảng ChiTietPhieuMuon
+| Trường | Kiểu | Mô tả |
+|---|---|---|
+| IdChiTietPhieuMuon | int PK | |
+| IdPhieuMuon | int FK | |
+| IdBanSaoSach | string FK | Mã bản sao cụ thể |
+| NgayTra | DateTime? | null = chưa trả |
+| TinhTrangTra | Enum | ChuaTra / Tot / HuHong / Mat |
+
+### 1.4 Bảng BanSaoSach
+| Trường | Kiểu | Mô tả |
+|---|---|---|
+| IdBanSaoSach | string PK | |
+| IdSach | int FK | |
+| TinhTrangSach | Enum | Tot / Hong / Mat / **ChoMuon** |
+
+### 1.5 Bảng MucPhat
+| Trường | Kiểu | Mô tả |
+|---|---|---|
+| IdMucPhat | int PK | |
+| TenMucPhat | string | |
+| SoTienPhat | decimal | |
+| LoaiPhat | Enum | **Fixed** (cố định) / **PerDay** (theo ngày) |
+| IsActive | int | 1 = đang dùng |
+
+### 1.6 Bảng PhieuPhat
+| Trường | Kiểu | Mô tả |
+|---|---|---|
+| IdPhieuPhat | int PK | |
+| NgayLap | DateTime | |
+| TienPhatPhaiNop | decimal | Tổng cộng dồn |
+| LyDoPhat | string | Mô tả lý do |
+| TrangThai | Enum | ChuaThu / DaThu / DaHuy |
+
+### 1.7 Bảng ChiTietPhieuPhat
+| Trường | Kiểu | Mô tả |
+|---|---|---|
+| IdChiTietPhieuPhat | int PK | |
+| IdPhieuPhat | int FK | |
+| IdChiTietPhieuMuon | int FK | Sách nào bị phạt |
+| IdMucPhat | int FK | Áp dụng mức phạt nào |
+| SoNgayTreHen | int | 0 nếu phạt Fixed |
+| TienPhatTra | decimal | Tiền phạt dòng này |
+
+---
+
+## 2. Flow hoạt động nghiệp vụ
+
+### 2.1 Flow MUON SACH
+
+```
+NV chọn "Them phieu muon"
+        |
+        v
+Tim kiem doc gia (>= 2 ky tu ->  tim the thanh vien)
+        |
+        v
+Chon the thanh vien tu ComboBox
+        |
+        v
+Chon ban sao sach (chi hien thi BanSaoSach.TinhTrang == Tot)
+        |
+        v
+Dat ngay muon (mac dinh = hom nay)
+Dat ngay hen tra (mac dinh = hom nay + 14 ngay)
+        |
+        v
+Bam "Them"
+        |
+        v
+[Service: AddPhieuMuon]
+  1. Tao PhieuMuon (TrangThai = DangMuon)
+  2. Voi moi ban sao duoc chon:
+     - Tao ChiTietPhieuMuon (NgayTra = null, TinhTrangTra = ChuaTra)
+     - Cap nhat BanSaoSach.TinhTrangSach = ChoMuon
+  3. Luu DB
+        |
+        v
+Thanh cong -> dong form, reload danh sach
+```
+
+**Ràng buộc:**
+- Phải chọn ít nhất 1 bản sao
+- Phải tìm và chọn thành viên hợp lệ
+- Phải có nhân viên hiện tại đã đăng nhập
+- Chỉ bản sao có tình trạng **Tot** mới được hiển thị để chọn
+
+---
+
+### 2.2 Flow TRA SACH
+
+```
+Danh sach phieu muon (DangMuon)
+        |
+NV click nut "Tra" tren dong
+        |
+        v
+[FormTraSach] Load:
+  - Hien thi thong tin doc gia, ngay muon, ngay hen tra
+  - Load danh sach chi tiet (chi hien thi cac dong ChuaTra)
+  - Tinh phat tre ngay hom nay cho tung dong
+        |
+        v
+NV chon tung sach can tra (checkbox "Tra")
+NV chon "Tinh trang tra": Tot / Hong / Mat
+  - Neu Hong/Mat: bat buoc chon "Muc phat" (Fixed) tu combobox
+  - He thong tu tinh: PhatTre + PhatFixed -> hien thi TongPhat
+        |
+        v
+NV bam "Xac nhan"
+        |
+        v
+[Service: TraSachBulk]
+  Voi moi ChiTietPhieuMuon duoc check:
+    1. Cap nhat ChiTietPhieuMuon:
+       - NgayTra = DateTime.Now
+       - TinhTrangTra = (Tot/HuHong/Mat)
+    2. Cap nhat BanSaoSach.TinhTrangSach:
+       - Tot  -> Tot
+       - HuHong -> Hong
+       - Mat  -> Mat
+    3. Xu ly phat (lazy init PhieuPhat):
+       a) Phat tre:
+          - SoNgayTre = (NgayTra.Date - NgayHenTra.Date).Days  [neu > 0]
+          - Tim MucPhat loai PerDay (IsActive=1)
+          - Tao ChiTietPhieuPhat: SoNgayTreHen=N, TienPhatTra = PerDay.SoTien * N
+       b) Phat hang hu/mat (Fixed):
+          - Neu co IdMucPhatFixed duoc truyen vao
+          - Tao ChiTietPhieuPhat: SoNgayTreHen=0, TienPhatTra = Fixed.SoTien
+    4. Neu co bat ky khoan phat nao:
+       - Tao 1 PhieuPhat (TrangThai=ChuaThu) duy nhat cho ca phieu muon
+       - TienPhatPhaiNop = cong don tat ca ChiTietPhieuPhat
+    5. Kiem tra toan bo chi tiet:
+       - Neu ALL TinhTrangTra != ChuaTra -> PhieuMuon.TrangThai = DaTra
+  Luu DB
+```
+
+**Ràng buộc quan trọng:**
+- Phải chọn ít nhất 1 sách để trả
+- Nếu tình trạng = Hong/Mat, bắt buộc chọn mức phạt Fixed (không cho xác nhận nếu thiếu)
+- [TraSachBulk](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/LMS.Services/Services/PhieuMuonService.cs#177-283) dùng lazy init: chỉ tạo PhieuPhat khi thật sự có khoản phạt
+- Phiếu phạt được tạo tự động, không cần NV thao tác thêm ở màn hình phạt
+
+---
+
+### 2.3 Flow QUAN LY PHAT (UcPhat)
+
+```
+Danh sach phieu phat (mac dinh: tat ca, theo trang)
+        |
+        +-- [Chua thu] --- nut "Thanh toan" (button trong cot grid)
+        +-- [Da thu]   --- o trong (khong co nut)
+        +-- [Da huy]   --- o trong
+        |
+NV click "Thanh toan" tren dong Chua thu
+        |
+        v
+Hien MessageBox xac nhan (co tong tien)
+        |
+        v
+[Service: ThanhToanPhieuPhat]
+  - Kiem tra TrangThai == ChuaThu
+  - Doi TrangThai -> DaThu
+  - Luu DB
+        |
+NV click "Huy" tren dong Chua thu
+        |
+        v
+Hien MessageBox xac nhan
+        |
+        v
+[Service: HuyPhieuPhat]
+  - Kiem tra TrangThai == ChuaThu
+  - Doi TrangThai -> DaHuy
+  - Luu DB
+```
+
+**Lưu ý:** PhieuPhat.DaHuy **không** phục hồi trạng thái BanSaoSach hay PhieuMuon.
+
+---
+
+### 2.4 Flow HUY PHIEU MUON
+
+```
+NV chon phieu dang muon -> click "Huy"
+        |
+        v
+Kiem tra:
+  - TrangThai != DaTra va != DaHuy
+  - Khong co chi tiet nao da tra (NgayTra != null)
+        |
+        v
+[Service: HuyPhieuMuon]
+  - Doi PhieuMuon.TrangThai = DaHuy
+  - Voi moi chi tiet: neu BanSao.TinhTrang == ChoMuon -> doi ve Tot
+  - Luu DB
+```
+
+**Ràng buộc:** Không thể hủy nếu đã có ít nhất 1 sách được trả.
+
+---
+
+## 3. Sơ đồ trạng thái
+
+### PhieuMuon
+```
+[DangMuon] ---(tra het sach)---> [DaTra]
+[DangMuon] ---(huy phieu)-----> [DaHuy]
+```
+
+### ChiTietPhieuMuon (TinhTrangTra)
+```
+[ChuaTra] ---(tra sach)---> [Tot | HuHong | Mat]
+```
+
+### BanSaoSach (TinhTrangSach)
+```
+[Tot] ---(tao phieu muon)---> [ChoMuon]
+[ChoMuon] ---(tra Tot)-------> [Tot]
+[ChoMuon] ---(tra Hong)------> [Hong]
+[ChoMuon] ---(tra Mat)-------> [Mat]
+[ChoMuon] ---(huy phieu)-----> [Tot]
+```
+
+### PhieuPhat (TrangThai)
+```
+[ChuaThu] ---(thanh toan)---> [DaThu]
+[ChuaThu] ---(huy)----------> [DaHuy]
+```
+
+---
+
+## 4. Thao tác UI trong C# WinForms
+
+### 4.1 UcMuonTraSach (danh sach phieu muon)
+| Nut / Control | Hanh dong |
+|---|---|
+| [btnThem](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#304-311) | Mo FormThemPhieuMuonTra (ShowDialog) |
+| [btnHuy](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/UcMuonTraSach.cs#346-410) | Huy phieu muon dang chon (co xac nhan) |
+| [btnChiTiet](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#366-389) | Mo FormChiTietPhieuMuon (ShowDialog) |
+| [btnListHuy](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/UcMuonTraSach.cs#283-290) | Loc hien thi phieu da huy |
+| [btnTimKiem](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/UcMuonTraSach.cs#291-345) | Tim kiem theo keyword |
+| [btnLamMoi](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#50-56) | Xoa filter, load lai tat ca |
+| [dgvPhieuMuonTra](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/UcMuonTraSach.cs#196-232) | DataGridView co but "Tra" trong cot cuoi |
+| Button "Tra" trong cot | Neu DangMuon: mo FormTraSach; neu khac: bao hoan tat |
+| Phan trang | btnTruoc / btnSau + labelTrang "Trang X/Y" |
+
+### 4.2 FormThemPhieuMuonTra (them phieu muon)
+| Control | Hanh dong |
+|---|---|
+| [textBoxTimThanhVien](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/FormThemPhieuMuonTra.cs#130-186) | TextChanged -> search real-time (>= 2 ky tu) -> dien ComboBox |
+| [comboBoxThanhVien](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/FormThemPhieuMuonTra.cs#187-205) | Chon -> dien SĐT doc gia |
+| `textBoxSDTThanhVien` | ReadOnly - hien SĐT doc gia duoc chon |
+| `textBoxNhanVien` | ReadOnly - hien ten NV tu CurrentUserContext |
+| [dateTimePickerNgayLap](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/FormThemPhieuMuonTra.cs#333-337) | Ngay muon (mac dinh: hom nay) |
+| `dateTimePickerNgayHenTra` | Ngay hen tra (mac dinh: hom nay + 14 ngay) |
+| `dgvChonSach` | DataGridView co cot checkbox "Chon"; cot khac ReadOnly |
+| [btnThem](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#304-311) | Validate + goi AddPhieuMuon |
+| [btnHuy](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/UcMuonTraSach.cs#346-410) | Dong form |
+
+### 4.3 FormTraSach (tra sach)
+| Control | Hanh dong |
+|---|---|
+| `textBoxDocGia` | ReadOnly - ten doc gia |
+| `textBoxNgayMuon` | ReadOnly |
+| `textBoxNgayHenTra` | ReadOnly |
+| `dgvChiTietMuon` | DataGridView multi-column editable |
+| Cot "TinhTrangTra" | ComboBoxColumn: Tot / Hong / Mat |
+| Cot "MucPhat" | ComboBoxColumn: chi enabled khi TinhTrangTra != Tot; items = danh sach Fixed MucPhat |
+| Cot "PhatTre" | TextBox ReadOnly - tu tinh khi load |
+| Cot "TongPhat" | TextBox ReadOnly - tu tinh = PhatTre + PhatFixed |
+| Cot "Chon" | CheckBoxColumn - chon sach de tra |
+| [btnXacNhan](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/FormTraSach.cs#395-448) | Thu thap du lieu -> goi TraSachBulk |
+
+### 4.4 UcPhat (danh sach phieu phat)
+| Control | Hanh dong |
+|---|---|
+| [dgvPhat](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#448-501) | DataGridView co cot "ThanhToan" (button, chi hien voi Chua thu) |
+| Button "ThanhToan" trong cot | Mo MessageBox xac nhan -> goi ThanhToanPhieuPhat |
+| [btnHuy](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/UcMuonTraSach.cs#346-410) | Huy phieu phat dang chon (co xac nhan) |
+| [btnChiTiet](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#366-389) | Mo FormChiTietPhieuPhat |
+| [btnDSThu](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#502-506) | Loc chi hien "Da thu" |
+| [btnDSHuy](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#507-511) | Loc chi hien "Da huy" |
+| [btnLamMoi](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLPhat/Phat/UcPhat.cs#50-56) | Reset filter |
+| [btnTimKiem](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/UcMuonTraSach.cs#291-345) | Tim kiem |
+| Phan trang | btnTruoc / btnSau + labelTrang |
+
+**Kỹ thuật DisablePayButton:** Khi TrangThai != ChuaThu, ô button bị thay bằng `DataGridViewTextBoxCell` trống (read-only), không phải ẩn cột.
+
+---
+
+## 5. Khuyen nghi khi chuyen sang Java Swing
+
+### 5.1 Tuong duong component
+
+| C# WinForms | Java Swing tuong duong |
+|---|---|
+| `UserControl` | `JPanel` (dung lam panel noi dung) |
+| [Form](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/FormTraSach.cs#18-449) (dialog) | `JDialog` (modal=true) |
+| `DataGridView` | `JTable` + `DefaultTableModel` |
+| `DataGridViewComboBoxColumn` | `TableCellEditor` dung `JComboBox` |
+| `DataGridViewCheckBoxColumn` | `TableCellEditor` / `TableCellRenderer` dung `JCheckBox` |
+| `DataGridViewButtonColumn` | `TableCellRenderer` + `TableCellEditor` dung `JButton` |
+| [ComboBox](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/FormTraSach.cs#237-248) | `JComboBox<T>` |
+| `TextBox` (ReadOnly) | `JTextField` (setEditable(false)) |
+| `DateTimePicker` | `JSpinner` voi `SpinnerDateModel` hoac thu vien `JDatePicker` |
+| `MessageBox.Show()` | `JOptionPane.showMessageDialog()` / `showConfirmDialog()` |
+| `ShowDialog()` | `new JDialog(parent, true).setVisible(true)` |
+| `DialogResult.OK` | Custom field hoac `JDialog.dispose()` + poll ket qua |
+
+### 5.2 Xu ly JTable phuc tap (FormTraSach)
+
+JTable trong Java khong co column type built-in nhu WinForms. Can custom:
+
+```java
+// Cot ComboBox "TinhTrangTra"
+TableColumn col = table.getColumnModel().getColumn(INDEX_TINH_TRANG_TRA);
+col.setCellEditor(new DefaultCellEditor(new JComboBox<>(new String[]{"Tot", "Hong", "Mat"})));
+
+// Cot ComboBox "MucPhat" - chi enable khi Hong/Mat
+// Ghi de isCellEditable() trong TableModel:
+@Override
+public boolean isCellEditable(int row, int col) {
+    if (col == INDEX_MUC_PHAT) {
+        String tinhTrang = (String) getValueAt(row, INDEX_TINH_TRANG_TRA);
+        return !"Tot".equals(tinhTrang);
+    }
+    return col == INDEX_TINH_TRANG_TRA || col == INDEX_CHON;
+}
+```
+
+### 5.3 Lazy recalculate khi thay doi TinhTrangTra
+
+Trong WinForms dung su kien [CellValueChanged](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/FormTraSach.cs#174-216). Trong Java Swing:
+
+```java
+// Trong TableModel, ghi de setValueAt()
+@Override
+public void setValueAt(Object value, int row, int col) {
+    super.setValueAt(value, row, col);
+    if (col == INDEX_TINH_TRANG_TRA) {
+        // Reset MucPhat neu chon lai "Tot"
+        if ("Tot".equals(value)) {
+            setValueAt("", row, INDEX_MUC_PHAT);
+        }
+        recalculateFine(row);
+        fireTableRowsUpdated(row, row);
+    }
+    if (col == INDEX_MUC_PHAT) {
+        recalculateFine(row);
+        fireTableRowsUpdated(row, row);
+    }
+}
+```
+
+### 5.4 Button trong JTable (DisablePayButton)
+
+Khi TrangThai != ChuaThu, can disable nut hoac an nut:
+
+```java
+// Renderer tra ve JButton chi khi "Chua thu"
+class PayButtonRenderer implements TableCellRenderer {
+    private JButton btn = new JButton("Thanh toan");
+    private JLabel empty = new JLabel("");
+    
+    @Override
+    public Component getTableCellRendererComponent(...) {
+        String status = (String) table.getValueAt(row, COL_TRANG_THAI);
+        return "Chua thu".equals(status) ? btn : empty;
+    }
+}
+// Tuong tu voi Editor de bat su kien click
+```
+
+### 5.5 Search real-time thanh vien (FormThemPhieuMuonTra)
+
+WinForms dung [TextChanged](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/Views/UserControls/QLMuonTraSach/MuonTraSach/FormThemPhieuMuonTra.cs#130-186). Trong Java Swing:
+
+```java
+textFieldTimThanhVien.getDocument().addDocumentListener(new DocumentListener() {
+    @Override
+    public void insertUpdate(DocumentEvent e) { doSearch(); }
+    @Override
+    public void removeUpdate(DocumentEvent e) { doSearch(); }
+    @Override
+    public void changedUpdate(DocumentEvent e) {}
+    
+    private void doSearch() {
+        String keyword = textFieldTimThanhVien.getText().trim();
+        if (keyword.length() < 2) {
+            comboBoxThanhVien.removeAllItems();
+            return;
+        }
+        // Goi service -> populate comboBox
+        List<TheThanhVien> results = theThanhVienService.timKiem(keyword);
+        comboBoxThanhVien.removeAllItems();
+        results.forEach(ttv -> comboBoxThanhVien.addItem(ttv));
+    }
+});
+```
+
+### 5.6 Quan ly DbContext / Connection
+
+C# dung `using (var context = new LibraryDbContext())` - tao moi moi lan. Java nen:
+- Dung **Singleton** cho `EntityManagerFactory` (JPA) hoac `DataSource` (JDBC)
+- Tao `EntityManager` / `Connection` moi moi thao tac, dong ngay sau khi dung
+- Hoac dung **Service layer** nhan `EntityManager` / `Connection` tu ngoai vao (Dependency Injection)
+
+### 5.7 Phan trang
+
+Hien tai C# dung page/pageSize + count query. Trong Java Swing co the:
+- Giu nguyen chien luoc nay (query dem + query data phan trang)
+- Quan ly bien `currentPage`, `totalPages`, `pageSize` trong Panel
+- Dung `JLabel` hien "Trang X/Y", `JButton` Truoc/Sau
+
+### 5.8 CurrentUserContext
+
+C# dung static class `CurrentUserContext.CurrentUser`. Trong Java:
+- Dung **Singleton**: `UserSession.getInstance().getCurrentUser()`
+- Hoac truyen `idNhanVien` xuong form con qua constructor
+
+---
+
+## 6. Cac diem can chu y khi convert
+
+1. **PhieuPhat la lazy-created**: Khong phai luc nao tra sach cung tao PhieuPhat. Chi tao khi co khoản phat (tre han hoac sach hu/mat). Phan logic nay nam trong [TraSachBulk](file:///d:/WorkSpace/CSharp/LibraryManagementSystem/LMS.Services/Services/PhieuMuonService.cs#177-283), can giu nguyen.
+
+2. **TraSachBulk co the xu ly nhieu sach cung luc**: 1 PhieuPhat cho ca phieu muon (khong phai 1 PhieuPhat/sach). Can dam bao tong tien duoc tinh dung (cong don).
+
+3. **Trong FormTraSach, chi hien thi chi tiet ChuaTra**: Loc `TinhTrangTra == ChuaTra` - chi tiet da tra truoc do khong hien lai.
+
+4. **Muc phat PerDay**: He thong chi co 1 muc PerDay active. Neu khong co -> khong tinh phat tre. Can dam bao seed data hop le.
+
+5. **DisablePayButton = thay the cell, khong an cot**: Chieu nay giu cot "ThanhToan" nhung o nao khong can phai thanh toan thi render empty. Trong Java, can custom bo Renderer + Editor theo cach tuong tu.
+
+6. **Khong co man hinh "TRA PHAT" rieng biet**: Chuc nang tra phat (ThanhToanPhieuPhat) duoc thuc hien thang tu danh sach phieu phat (UcPhat), khong co form rieng.

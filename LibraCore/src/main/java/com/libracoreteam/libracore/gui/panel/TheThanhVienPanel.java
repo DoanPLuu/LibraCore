@@ -140,7 +140,7 @@ public class TheThanhVienPanel extends JPanel {
     }
 
     // Load dữ liệu lên bảng
-    private void loadData() {
+    public void loadData() {
         listThe = theThanhVienBUS.getAll();
         tableModel.setRowCount(0);
         for (TheThanhVien t : listThe) {

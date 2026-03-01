@@ -83,6 +83,28 @@ public class TheThanhVienBUS {
         }
     }
     
+    public String kiemTraTheKhaDung(int idThe) {
+        TheThanhVien theThanhVien = theThanhVienDAO.getById(idThe);
+
+        if (theThanhVien == null) {
+            return "Thẻ không tồn tại trong hệ thống!";
+        }
+
+        if (!"HoatDong".equals(theThanhVien.getTrangThai())) {
+            return "Thẻ đang bị khóa hoặc tạm ngưng hoạt động!";
+        }
+
+        if (theThanhVien.getNgayHetHan() != null && theThanhVien.getNgayHetHan().isBefore(LocalDate.now())) {
+            return "Thẻ đã hết hạn vào ngày " + theThanhVien.getNgayHetHan() + ". Vui lòng gia hạn!";
+        }
+
+        return null;
+    }
+
+    public String getTenDocGiaByThe(int idThe) {
+        return theThanhVienDAO.getTenDocGiaByTheId(idThe);
+    }
+    
     public boolean update(TheThanhVien t) {
         return theThanhVienDAO.update(t);
     }

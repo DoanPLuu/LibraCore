@@ -4,15 +4,12 @@
 
 package com.libracoreteam.libracore;
 
-import com.libracoreteam.libracore.gui.MainFrame;
+import com.libracoreteam.libracore.gui.LoginFrame;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.libracoreteam.libracore.util.DBConnection;
 import java.sql.Connection;
 
-/**
- *
- * @author luuis
- */
+
 public class Main {
 
     public static void main(String[] args) {
@@ -22,7 +19,7 @@ public class Main {
         
         // 3. Launch application
         java.awt.EventQueue.invokeLater(() -> {
-            new MainFrame().setVisible(true);  
+            new LoginFrame().setVisible(true);
             System.out.println("Application started!");
         });
     }

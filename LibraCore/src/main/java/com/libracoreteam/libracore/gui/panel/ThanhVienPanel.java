@@ -68,7 +68,7 @@ public class ThanhVienPanel extends JPanel {
         add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
-    private void loadData() {
+    public void loadData() {
         listDocGia = docGiaBUS.getAllDocGia();
         tableModel.setRowCount(0);
         for (DocGia dg : listDocGia) {

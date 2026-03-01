@@ -4,10 +4,6 @@
  */
 package com.libracoreteam.libracore.model;
 
-/**
- *
- * @author luuis
- */
 public class CuonSach {
     private int idCuonSach;
     private int idSach;
@@ -15,6 +11,7 @@ public class CuonSach {
     private String tinhTrangSach; // Enum: Tot, Hong, Mat
     private String trangThaiMuon; // Enum: Ranh, DangMuon
     private Boolean daHuy;
+    
     
     private Sach sach;
     
@@ -60,6 +57,7 @@ public class CuonSach {
     public Sach getSach() {
         return sach;
     }
+    
     
     // Setters
     public void setIdCuonSach(int idCuonSach) {
