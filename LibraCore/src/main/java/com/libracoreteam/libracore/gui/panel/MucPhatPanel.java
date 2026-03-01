@@ -5,6 +5,10 @@ import com.libracoreteam.libracore.model.MucPhat;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.swing.FontIcon;
+
 import java.awt.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,6 +16,7 @@ import java.util.List;
 public class MucPhatPanel extends JPanel {
 
   private final MucPhatBUS bus = new MucPhatBUS();
+  private final int iconSize = 16;
 
   private final DefaultTableModel tableModel = new DefaultTableModel(
       new String[] { "Mã", "Tên mức phạt", "Loại", "Số tiền (đ)", "Mô tả" }, 0) {
@@ -25,17 +30,25 @@ public class MucPhatPanel extends JPanel {
   private List<MucPhat> currentData;
 
   public MucPhatPanel() {
-    setLayout(new BorderLayout(6, 6));
-    setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    setLayout(new BorderLayout(6, 10));
+    setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
     add(buildTopBar(), BorderLayout.NORTH);
     add(new JScrollPane(table), BorderLayout.CENTER);
     loadData();
   }
 
   private JPanel buildTopBar() {
-    JButton btnThem = new JButton("+ Thêm");
+    JButton btnThem = new JButton("Thêm");
+    btnThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
+    btnThem.setPreferredSize(new Dimension(90, 40));
+
     JButton btnSua = new JButton("Sửa");
-    JButton btnLamMoi = new JButton("Làm mới");
+    btnSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(250, 100, 10)));
+    btnSua.setPreferredSize(new Dimension(90, 40));
+
+    JButton btnLamMoi = new JButton("");
+    btnLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
+    btnLamMoi.setPreferredSize(new Dimension(40, 40));
 
     btnThem.addActionListener(e -> showForm(null));
     btnSua.addActionListener(e -> {
@@ -48,9 +61,11 @@ public class MucPhatPanel extends JPanel {
     });
     btnLamMoi.addActionListener(e -> loadData());
 
-    JPanel bar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
+    JPanel bar = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 4));
     bar.add(btnThem);
+    bar.add(Box.createHorizontalStrut(8));
     bar.add(btnSua);
+    bar.add(Box.createHorizontalStrut(8));
     bar.add(btnLamMoi);
     return bar;
   }
