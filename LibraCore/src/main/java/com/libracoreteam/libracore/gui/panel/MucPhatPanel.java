@@ -1,6 +1,6 @@
 package com.libracoreteam.libracore.gui.panel;
 
-import com.libracoreteam.libracore.dao.MucPhatDAO;
+import com.libracoreteam.libracore.bus.MucPhatBUS;
 import com.libracoreteam.libracore.model.MucPhat;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MucPhatPanel extends JPanel {
 
-  private final MucPhatDAO dao = new MucPhatDAO();
+  private final MucPhatBUS bus = new MucPhatBUS();
   private final int iconSize = 16;
 
   private final DefaultTableModel tableModel = new DefaultTableModel(
@@ -70,8 +70,8 @@ public class MucPhatPanel extends JPanel {
     return bar;
   }
 
-  private void loadData() {
-    currentData = dao.getAll();
+  public void loadData() {
+    currentData = bus.getAll();
     tableModel.setRowCount(0);
     for (MucPhat mp : currentData) {
       tableModel.addRow(new Object[] {
@@ -118,9 +118,9 @@ public class MucPhatPanel extends JPanel {
       mp.setMoTa(tfMoTa.getText().trim());
 
       if (existing != null)
-        dao.update(mp);
+        bus.update(mp);
       else
-        dao.insert(mp);
+        bus.insert(mp);
       loadData();
     } catch (NumberFormatException ex) {
       JOptionPane.showMessageDialog(this, "Số tiền không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);

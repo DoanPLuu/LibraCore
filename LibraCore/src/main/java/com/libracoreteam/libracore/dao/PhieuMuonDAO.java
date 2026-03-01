@@ -188,7 +188,7 @@ public class PhieuMuonDAO {
 
   public void updateTrangThaiPhieuMuon(int idPhieuMuon, String trangThai, Connection conn) throws SQLException {
     String sql = "UPDATE phieumuon SET TrangThai=? WHERE id_PhieuMuon=?";
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (PreparedStatement ps =conn.prepareStatement(sql)) { 
       ps.setString(1, trangThai);
       ps.setInt(2, idPhieuMuon);
       ps.executeUpdate();

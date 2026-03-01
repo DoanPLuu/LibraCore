@@ -411,7 +411,7 @@ public class SachPanel extends javax.swing.JPanel {
         });
     }
 
-    private void loadActiveToTable() {
+    public void loadActiveToTable() {
         try {
             currentList = sachBUS.getActive();
             rebuildCaches();

@@ -92,6 +92,29 @@ public class TheLoaiDAO {
     private interface SQLConsumer<T> {
         void accept(T t) throws SQLException;
     }
+    
+    
+    public boolean insert(TheLoai tl) {
+        String sql = "INSERT INTO TheLoai (TenTheLoai, HoatDong) VALUES (?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+            
+            ps.setString(1, tl.getTenTheLoai());
+            ps.setBoolean(2, tl.isHoatDong()); // Mặc định là true
+            
+            if (ps.executeUpdate() > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        tl.setIdTheLoai(rs.getInt(1)); // Lấy ID mới tạo gán ngược lại
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 
 

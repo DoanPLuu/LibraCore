@@ -1,7 +1,7 @@
 package com.libracoreteam.libracore.gui.dialog;
 
 import com.libracoreteam.libracore.bus.PhieuMuonBUS;
-import com.libracoreteam.libracore.dao.MucPhatDAO;
+import com.libracoreteam.libracore.bus.MucPhatBUS;
 import com.libracoreteam.libracore.model.ChiTietPhieuMuon;
 import com.libracoreteam.libracore.model.MucPhat;
 import com.libracoreteam.libracore.model.PhieuMuon;
@@ -13,7 +13,7 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TraSachDialog extends JDialog {
@@ -38,9 +38,12 @@ public class TraSachDialog extends JDialog {
     super(parent, "Trả sách - Phiếu #" + phieuMuon.getIdPhieuMuon(), true);
     this.phieuMuon = phieuMuon;
     this.phieuMuonBUS = new PhieuMuonBUS();
-    MucPhatDAO mucPhatDAO = new MucPhatDAO();
-    this.dsMucPhatFixed = mucPhatDAO.getAllFixedActive();
-    this.mucPhatPerDay = mucPhatDAO.getPerDayActive();
+    
+    // ĐÃ SỬA THÀNH BUS
+    MucPhatBUS mucPhatBUS = new MucPhatBUS();
+    this.dsMucPhatFixed = mucPhatBUS.getAllFixedActive();
+    this.mucPhatPerDay = mucPhatBUS.getPerDayActive();
+    
     this.dsChiTiet = phieuMuonBUS.getChiTiet(phieuMuon.getIdPhieuMuon());
     initUI();
     pack();

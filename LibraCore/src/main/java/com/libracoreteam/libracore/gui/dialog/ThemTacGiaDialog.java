@@ -86,22 +86,33 @@ public class ThemTacGiaDialog extends JDialog {
     }
 
     private void onSave() {
+        // 1. Lấy và Validate dữ liệu
+        String tenTacGia = txtTenTacGia.getText().trim();
+        String noiSinh = txtNoiSinh.getText().trim();
+        String sdt = txtSDT.getText().trim();
+
+        if (tenTacGia.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên tác giả không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         // Chuyển Date sang LocalDate
-        Date selectedDate = (Date) spnNgaySinh.getValue();
-        LocalDate ngaySinh = selectedDate.toInstant()
-                .atZone(ZoneId.systemDefault())
+        java.util.Date selectedDate = (java.util.Date) spnNgaySinh.getValue();
+        java.time.LocalDate ngaySinh = selectedDate.toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
                 .toLocalDate();
         
-        System.out.println("=== Thêm tác giả ===");
-        System.out.println("Tên tác giả: " + txtTenTacGia.getText());
-        System.out.println("Ngày sinh: " + ngaySinh);
-        System.out.println("Nơi sinh: " + txtNoiSinh.getText());
-        System.out.println("Số điện thoại: " + txtSDT.getText());
+        // 2. Gom vào DTO
+        com.libracoreteam.libracore.model.TacGia tacGia = new com.libracoreteam.libracore.model.TacGia(tenTacGia, ngaySinh, noiSinh, sdt);
         
-        // TODO: Validate dữ liệu trước khi lưu
-        // TODO: Gọi BUS/Service để insert vào DB
-        
-        dispose();
+        // 3. Gọi DAO để lưu
+        com.libracoreteam.libracore.dao.TacGiaDAO tacGiaDAO = new com.libracoreteam.libracore.dao.TacGiaDAO();
+        if (tacGiaDAO.insert(tacGia)) {
+            JOptionPane.showMessageDialog(this, "Thêm tác giả thành công!");
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Lỗi khi lưu tác giả vào cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
 

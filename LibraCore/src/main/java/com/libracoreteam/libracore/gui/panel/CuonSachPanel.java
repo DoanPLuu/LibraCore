@@ -326,7 +326,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
         });
     }
 
-    private void loadData() {
+    public void loadData() {
         try {
             currentList = cuonSachBUS.getAll();
             renderTable(currentList);
@@ -535,7 +535,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
     }
 
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.JButton jButtonHuy;
@@ -576,5 +576,4 @@ public class CuonSachPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldTimKiem;
     private javax.swing.JTextField jTextFieldTinhTrang;
     private javax.swing.JTextField jTextFieldTrangThaiMuon;
-    // End of variables declaration//GEN-END:variables
 }

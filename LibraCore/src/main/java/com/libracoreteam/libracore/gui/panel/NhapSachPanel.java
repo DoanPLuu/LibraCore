@@ -191,7 +191,7 @@ public class NhapSachPanel extends javax.swing.JPanel {
         jTableSach.getColumnModel().getColumn(6).setMaxWidth(110);
     }
 
-    private void loadData() {
+    public void loadData() {
         try {
             if (showingCancelled) {
                 currentList = phieuNhapBUS.getDaHuy();
