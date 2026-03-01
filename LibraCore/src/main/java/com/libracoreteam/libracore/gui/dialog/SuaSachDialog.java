@@ -30,7 +30,7 @@ public class SuaSachDialog extends JDialog {
     private JTextField txtTenSach;
     private JTextField txtNamXB;
     private JTextField txtSoTrang;
-    private JTextField txtGiaSach;
+//    private JTextField txtGiaSach;
 
     private JTextArea txtMoTa;
 
@@ -129,9 +129,9 @@ public class SuaSachDialog extends JDialog {
         formPanel.add(spMoTa, "hmin 100");
 
         // ===== Giá sách =====
-        txtGiaSach = new JTextField(10);
-        formPanel.add(new JLabel("Giá sách:"));
-        formPanel.add(txtGiaSach);
+//        txtGiaSach = new JTextField(10);
+//        formPanel.add(new JLabel("Giá sách:"));
+//        formPanel.add(txtGiaSach);
 
         // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
@@ -163,7 +163,7 @@ public class SuaSachDialog extends JDialog {
         selectComboByName(cboNXB, "NXB Trẻ");
         txtNamXB.setText("2000");
         txtSoTrang.setText("320");
-        txtGiaSach.setText("89000");
+//        txtGiaSach.setText("89000");
         txtMoTa.setText("Mock dữ liệu để test sửa sách.\nCó checklist tác giả và thể loại.");
 
         // Mock: chọn sẵn tác giả + thể loại

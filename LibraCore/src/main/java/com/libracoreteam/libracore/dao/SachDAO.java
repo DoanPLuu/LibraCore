@@ -178,6 +178,34 @@ public class SachDAO {
             throw new RuntimeException("SachDAO.searchActive failed", e);
         }
     }
+    
+    public List<Sach> searchByTacGia(String keyword) {
+        // Lệnh SQL kết hợp 3 bảng: Sach, Sach_TacGia, TacGia
+        String sql = 
+                "SELECT DISTINCT s.id_Sach, s.id_NXB, s.NamXuatBan, s.TenSach, s.MoTa, s.SoTrang, s.HoatDong " +
+                "FROM Sach s " +
+                "JOIN Sach_TacGia st ON s.id_Sach = st.id_Sach " +
+                "JOIN TacGia tg ON st.id_TacGia = tg.id_TacGia " +
+                "WHERE s.HoatDong = ? AND tg.TenTacGia LIKE ? " +
+                "ORDER BY s.TenSach ASC";
+
+        String k = "%" + (keyword == null ? "" : keyword.trim()) + "%";
+
+        List<Sach> list = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setBoolean(1, true);
+            ps.setString(2, k);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("SachDAO.searchByTacGia failed", e);
+        }
+    }
 
     public boolean existsActiveByTenSach(String tenSach, int excludeIdSach) {
         String sql =

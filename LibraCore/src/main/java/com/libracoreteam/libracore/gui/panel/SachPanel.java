@@ -409,6 +409,15 @@ public class SachPanel extends javax.swing.JPanel {
             currentSelected = currentList.get(row);
             fillDetail(currentSelected);
         });
+        
+        jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
+        });
     }
 
     public void loadActiveToTable() {
@@ -719,30 +728,7 @@ public class SachPanel extends javax.swing.JPanel {
     }// GEN-LAST:event_jButtonXuatActionPerformed
 
     private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTimKiemActionPerformed
-        String keyword = jTextFieldTimKiem.getText();
-        if (keyword != null)
-            keyword = keyword.trim();
-
-        if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
-            loadActiveToTable();
-            return;
-        }
-
-        // Hiện tại SachDAO chỉ search theo tên sách/mô tả (chưa join tác giả)
-        if (jComboBoxTimKiem.getSelectedIndex() == 1) {
-            JOptionPane.showMessageDialog(this, "Tìm theo tác giả hiện chưa hỗ trợ (cần join bảng nối).");
-            return;
-        }
-
-        try {
-            currentList = sachBUS.searchActive(keyword);
-            renderTable(currentList);
-            jTableSach.clearSelection();
-            clearDetail();
-            currentSelected = null;
-        } catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(this, "Tìm kiếm thất bại: " + ex.getMessage());
-        }
+        thucHienTimKiem();
     }// GEN-LAST:event_jButtonTimKiemActionPerformed
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonLamMoiActionPerformed
@@ -753,6 +739,33 @@ public class SachPanel extends javax.swing.JPanel {
     private void jTextFieldTimKiemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextFieldTimKiemActionPerformed
         // TODO add your handling code here:
     }// GEN-LAST:event_jTextFieldTimKiemActionPerformed
+    
+    private void thucHienTimKiem() {
+        String keyword = jTextFieldTimKiem.getText();
+        if (keyword != null) keyword = keyword.trim();
+
+        // Nếu ô tìm kiếm trống hoặc đang hiện chữ mờ "Tìm kiếm..." thì load lại toàn bộ
+        if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
+            loadActiveToTable();
+            return;
+        }
+
+        try {
+            // 0 = Tìm theo tên sách, 1 = Tìm theo tên tác giả
+            if (jComboBoxTimKiem.getSelectedIndex() == 0) {
+                currentList = sachBUS.searchActive(keyword);
+            } else {
+                currentList = sachBUS.searchByTacGia(keyword); 
+            }
+            
+            renderTable(currentList);
+            jTableSach.clearSelection();
+            clearDetail();
+            currentSelected = null;
+        } catch (RuntimeException ex) {
+            System.out.println("Lỗi tìm kiếm: " + ex.getMessage());
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLamMoi;

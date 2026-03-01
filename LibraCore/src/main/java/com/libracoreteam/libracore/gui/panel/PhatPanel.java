@@ -97,8 +97,9 @@ public class PhatPanel extends JPanel {
     int confirm = JOptionPane.showConfirmDialog(this,
         "Xác nhận thu tiền phạt phiếu #" + pp.getIdPhieuPhat() + "\nSố tiền: " + pp.getTienPhatPhaiNop() + " đ",
         "Xác nhận thanh toán", JOptionPane.YES_NO_OPTION);
-    if (confirm != JOptionPane.YES_OPTION)
+    if (confirm != JOptionPane.YES_OPTION){
       return;
+    }
     try {
       bus.thanhToan(pp.getIdPhieuPhat());
       loadData();
@@ -158,6 +159,7 @@ public class PhatPanel extends JPanel {
   private class ThanhToanEditor extends DefaultCellEditor {
     private final PhatPanel panel;
     private int editRow;
+    private Object currentValue; // THÊM BIẾN NÀY ĐỂ LƯU GIÁ TRỊ CŨ
 
     ThanhToanEditor(JCheckBox cb, PhatPanel panel) {
       super(cb);
@@ -168,21 +170,24 @@ public class PhatPanel extends JPanel {
     @Override
     public Component getTableCellEditorComponent(JTable t, Object value, boolean isSelected, int row, int col) {
       this.editRow = row;
+      this.currentValue = value; // LƯU LẠI CHỮ "ChuaThu" VÀO ĐÂY
+      
       if (!"ChuaThu".equals(value)) {
         fireEditingStopped();
         return new JLabel("DaHuy".equals(value) ? "Đã hủy" : "✓ Đã xong", SwingConstants.CENTER);
       }
       JButton btn = new JButton("Thanh toán");
       btn.addActionListener(e -> {
-        fireEditingStopped();
-        panel.onThanhToan(editRow);
+        fireEditingStopped(); // Báo Table ngừng edit, nó sẽ lấy "ChuaThu" vẽ lại.
+        panel.onThanhToan(editRow); // Hiện bảng hỏi người dùng
       });
       return btn;
     }
 
     @Override
     public Object getCellEditorValue() {
-      return "";
+      // TRẢ VỀ CHỮ "ChuaThu", ĐỂ NẾU HỦY THÌ NÓ VẪN HIỆN NÚT THANH TOÁN
+      return currentValue; 
     }
   }
 }

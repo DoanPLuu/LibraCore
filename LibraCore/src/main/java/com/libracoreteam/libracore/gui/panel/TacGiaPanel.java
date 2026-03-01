@@ -2,6 +2,7 @@ package com.libracoreteam.libracore.gui.panel;
 
 import com.libracoreteam.libracore.bus.TacGiaBUS;
 import com.libracoreteam.libracore.gui.dialog.ThemTacGiaDialog;
+import com.libracoreteam.libracore.gui.dialog.SuaTacGiaDialog;
 import com.libracoreteam.libracore.model.TacGia;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
@@ -57,8 +58,27 @@ public class TacGiaPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu tác giả!");
         }
     }
+    
+    // Động cơ Live Search
+    private void thucHienTimKiem() {
+        String keyword = jTextFieldTimKiem.getText();
+        if (keyword != null) keyword = keyword.trim();
+
+        if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
+            loadData();
+            return;
+        }
+
+        try {
+            // Cần viết thêm hàm search() trong TacGiaBUS nếu muốn tìm kiếm thật
+            // Tạm thời để trống hoặc dùng hàm lọc thủ công trên list
+        } catch (Exception ex) {
+            System.out.println("Lỗi tìm kiếm: " + ex.getMessage());
+        }
+    }
 
     private void bindEvents() {
+        // Sự kiện click bảng
         jTableSach.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && jTableSach.getSelectedRow() != -1) {
                 currentSelected = currentList.get(jTableSach.getSelectedRow());
@@ -69,6 +89,16 @@ public class TacGiaPanel extends javax.swing.JPanel {
                 jTextFieldSDTTacGia.setText(currentSelected.getSdt() != null ? currentSelected.getSdt() : "");
                 jTextFieldTrangThai.setText(currentSelected.isHoatDong() ? "Hoạt động" : "Ngừng");
             }
+        });
+        
+        // Cảm biến Live Search
+        jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
         });
     }
 
@@ -85,6 +115,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jPanelNutThem = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
+        jButtonSua = new javax.swing.JButton(); // Khai báo nút Sửa
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -111,13 +142,8 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jPanelTrangThai1 = new javax.swing.JPanel();
         jLabelTrangThai = new javax.swing.JLabel();
         jTextFieldTrangThai = new javax.swing.JTextField();
-        jPanelButton = new javax.swing.JPanel();
-        jButtonXacNhan = new javax.swing.JButton();
-        jButtonHuy = new javax.swing.JButton();
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        
+        // ĐÃ XÓA jPanelButton (chứa nút Xác nhận / Huỷ)
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -145,6 +171,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
+        // Gắn 3 nút: Xuất - Thêm - Sửa
         jButtonXuat.setText("Xuất");
         jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
@@ -154,6 +181,11 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
         jPanelNutThem.add(jButtonThem);
+        
+        jButtonSua.setText("Sửa");
+        jButtonSua.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonSua.addActionListener(this::jButtonSuaActionPerformed);
+        jPanelNutThem.add(jButtonSua);
 
         jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
@@ -199,7 +231,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jTextFieldMaTacGia.setEditable(false);
         jTextFieldMaTacGia.setFocusable(false);
-        jTextFieldMaTacGia.addActionListener(this::jTextFieldMaTacGiaActionPerformed);
         jPanelMa.add(jTextFieldMaTacGia);
 
         jPanelFields.add(jPanelMa);
@@ -224,7 +255,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jTextFieldNgaySinhTacGia.setEditable(false);
         jTextFieldNgaySinhTacGia.setFocusable(false);
-        jTextFieldNgaySinhTacGia.addActionListener(this::jTextFieldNgaySinhTacGiaActionPerformed);
         jPanelNgaySinh.add(jTextFieldNgaySinhTacGia);
 
         jPanelFields.add(jPanelNgaySinh);
@@ -237,7 +267,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jTextFieldNoiSinhTacGia.setEditable(false);
         jTextFieldNoiSinhTacGia.setFocusable(false);
-        jTextFieldNoiSinhTacGia.addActionListener(this::jTextFieldNoiSinhTacGiaActionPerformed);
         jPanelNoiSinh.add(jTextFieldNoiSinhTacGia);
 
         jPanelFields.add(jPanelNoiSinh);
@@ -250,7 +279,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jTextFieldSDTTacGia.setEditable(false);
         jTextFieldSDTTacGia.setFocusable(false);
-        jTextFieldSDTTacGia.addActionListener(this::jTextFieldSDTTacGiaActionPerformed);
         jPanelTrangThai.add(jTextFieldSDTTacGia);
 
         jPanelFields.add(jPanelTrangThai);
@@ -263,27 +291,9 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jTextFieldTrangThai.setEditable(false);
         jTextFieldTrangThai.setFocusable(false);
-        jTextFieldTrangThai.addActionListener(this::jTextFieldTrangThaiActionPerformed);
         jPanelTrangThai1.add(jTextFieldTrangThai);
 
         jPanelFields.add(jPanelTrangThai1);
-
-        jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
-
-        jButtonXacNhan.setText("Xác nhận");
-        jButtonXacNhan.setPreferredSize(new java.awt.Dimension(110, 40));
-        jButtonXacNhan.addActionListener(this::jButtonXacNhanActionPerformed);
-        jPanelButton.add(jButtonXacNhan);
-
-        jButtonHuy.setText("Huỷ");
-        jButtonHuy.setPreferredSize(new java.awt.Dimension(110, 40));
-        jPanelButton.add(jButtonHuy);
-
-        jPanelFields.add(jPanelButton);
-        jPanelFields.add(filler2);
-        jPanelFields.add(filler3);
-        jPanelFields.add(filler4);
-        jPanelFields.add(filler5);
 
         jPanelBottom.add(jPanelFields);
 
@@ -298,8 +308,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
             jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-            jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
-            jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
+            jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253))); // Icon nút Sửa
     }
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -308,30 +317,33 @@ public class TacGiaPanel extends javax.swing.JPanel {
         dialog.setVisible(true);
         loadData(); 
     }
-
-    private void jTextFieldMaTacGiaActionPerformed(java.awt.event.ActionEvent evt) {}
-    private void jTextFieldNgaySinhTacGiaActionPerformed(java.awt.event.ActionEvent evt) {}
-    private void jTextFieldSDTTacGiaActionPerformed(java.awt.event.ActionEvent evt) {}
-    private void jTextFieldNoiSinhTacGiaActionPerformed(java.awt.event.ActionEvent evt) {}
-    private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {}
-    private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {}
     
-    private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {
-        loadData();
+    // Sự kiện Nút Sửa
+    private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {
+        if (currentSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một tác giả trên bảng để sửa!");
+            return;
+        }
+        javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+        SuaTacGiaDialog dialog = new SuaTacGiaDialog(parentFrame, true, currentSelected);
+        dialog.setVisible(true);
+        loadData(); 
+    }
+
+    private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {}
+    private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {
+        thucHienTimKiem();
     }
     
-    private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {}
-    private void jTextFieldTrangThaiActionPerformed(java.awt.event.ActionEvent evt) {}
+    private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {
+        jTextFieldTimKiem.setText("");
+        loadData();
+    }
 
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.Box.Filler filler3;
-    private javax.swing.Box.Filler filler4;
-    private javax.swing.Box.Filler filler5;
-    private javax.swing.JButton jButtonHuy;
+    private javax.swing.JButton jButtonSua;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
-    private javax.swing.JButton jButtonXacNhan;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JLabel jLabelMaTacGia;
     private javax.swing.JLabel jLabelNgaySinh;
@@ -343,7 +355,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
-    private javax.swing.JPanel jPanelButton;
     private javax.swing.JPanel jPanelCongCu;
     private javax.swing.JPanel jPanelFields;
     private javax.swing.JPanel jPanelLeft;
