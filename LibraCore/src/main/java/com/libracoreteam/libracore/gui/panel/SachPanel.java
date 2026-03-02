@@ -13,22 +13,15 @@ import com.libracoreteam.libracore.model.TacGia;
 import com.libracoreteam.libracore.model.TheLoai;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
-import java.awt.FlowLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.AbstractCellEditor;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -78,6 +71,8 @@ public class SachPanel extends javax.swing.JPanel {
         jPanelNutThem = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
+        jButtonSua = new javax.swing.JButton();
+        jButtonXoa = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -155,6 +150,16 @@ public class SachPanel extends javax.swing.JPanel {
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
         jPanelNutThem.add(jButtonThem);
+
+        jButtonSua.setText("Sửa");
+        jButtonSua.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonSua.addActionListener(this::jButtonSuaActionPerformed);
+        jPanelNutThem.add(jButtonSua);
+
+        jButtonXoa.setText("Xóa");
+        jButtonXoa.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonXoa.addActionListener(this::jButtonXoaActionPerformed);
+        jPanelNutThem.add(jButtonXoa);
 
         jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
@@ -365,31 +370,24 @@ public class SachPanel extends javax.swing.JPanel {
                 "JTextField.placeholderText",
                 "Tìm kiếm");
 
+        jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
+        jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+
     }
 
     private void initTable() {
         tblModel = new DefaultTableModel(
-                new Object[] { "Mã", "Tên sách", "NXB", "Năm XB", "Số trang", "Sửa", "Xóa" },
+                new Object[] { "Mã", "Tên sách", "NXB", "Năm XB", "Số trang" },
                 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
-                return col == 5 || col == 6;
+                return false;
             }
         };
 
         jTableSach.setModel(tblModel);
         jTableSach.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTableSach.getTableHeader().setReorderingAllowed(false);
-
-        jTableSach.getColumnModel().getColumn(5).setCellRenderer(new ActionButtonRenderer());
-        jTableSach.getColumnModel().getColumn(5).setCellEditor(new ActionButtonEditor(5));
-        jTableSach.getColumnModel().getColumn(5).setPreferredWidth(90);
-        jTableSach.getColumnModel().getColumn(5).setMaxWidth(110);
-
-        jTableSach.getColumnModel().getColumn(6).setCellRenderer(new ActionButtonRenderer());
-        jTableSach.getColumnModel().getColumn(6).setCellEditor(new ActionButtonEditor(6));
-        jTableSach.getColumnModel().getColumn(6).setPreferredWidth(90);
-        jTableSach.getColumnModel().getColumn(6).setMaxWidth(110);
 
         jTableSach.setSelectionBackground(new Color(220, 220, 220));
         jTableSach.setSelectionForeground(Color.BLACK);
@@ -478,9 +476,7 @@ public class SachPanel extends javax.swing.JPanel {
                     s.getTenSach(),
                     nxbText,
                     s.getNamXuatBan() != null ? s.getNamXuatBan() : "",
-                    s.getSoTrang() != null ? s.getSoTrang() : "",
-                    "Sửa",
-                    "Xóa"
+                    s.getSoTrang() != null ? s.getSoTrang() : ""
             });
         }
     }
@@ -612,82 +608,6 @@ public class SachPanel extends javax.swing.JPanel {
         }
     }
 
-    private class ActionButtonRenderer extends JPanel implements TableCellRenderer {
-        private final JButton button = new JButton();
-
-        ActionButtonRenderer() {
-            super(new FlowLayout(FlowLayout.CENTER, 4, 3));
-            setOpaque(true);
-            button.setFocusable(false);
-            add(button);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column) {
-            String text = value == null ? "" : String.valueOf(value);
-            button.setText(text);
-            button.setEnabled(!"-".equals(text));
-            if (column == 6) {
-                button.setForeground(Color.WHITE);
-                button.setBackground(new Color(220, 53, 69));
-            } else {
-                button.setForeground(Color.WHITE);
-                button.setBackground(new Color(13, 110, 253));
-            }
-            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-            return this;
-        }
-    }
-
-    private class ActionButtonEditor extends AbstractCellEditor implements TableCellEditor {
-        private final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 3));
-        private final JButton button = new JButton();
-        private final int actionColumn;
-        private int currentRow = -1;
-        private String currentValue = "";
-
-        ActionButtonEditor(int actionColumn) {
-            this.actionColumn = actionColumn;
-            panel.add(button);
-            button.setFocusable(false);
-            button.addActionListener(e -> {
-                stopCellEditing();
-                if ("-".equals(currentValue)) {
-                    return;
-                }
-                if (this.actionColumn == 5) {
-                    startEditByRow(currentRow);
-                } else if (this.actionColumn == 6) {
-                    deleteByRow(currentRow);
-                }
-            });
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return currentValue;
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected,
-                int row, int column) {
-            currentRow = row;
-            currentValue = value == null ? "" : String.valueOf(value);
-            button.setText(currentValue);
-            button.setEnabled(!"-".equals(currentValue));
-            if (actionColumn == 6) {
-                button.setForeground(Color.WHITE);
-                button.setBackground(new Color(220, 53, 69));
-            } else {
-                button.setForeground(Color.WHITE);
-                button.setBackground(new Color(13, 110, 253));
-            }
-            panel.setBackground(table.getSelectionBackground());
-            return panel;
-        }
-    }
-
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonThemActionPerformed
         // 1. Lấy frame cha (MainFrame) chứa SachPanel
         javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
@@ -767,10 +687,30 @@ public class SachPanel extends javax.swing.JPanel {
         }
     }
 
+    private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {
+        int row = jTableSach.getSelectedRow();
+        if (row < 0 || row >= currentList.size()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sách để sửa.");
+            return;
+        }
+        startEditByRow(row);
+    }
+
+    private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {
+        int row = jTableSach.getSelectedRow();
+        if (row < 0 || row >= currentList.size()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sách để xoá.");
+            return;
+        }
+        deleteByRow(row);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLamMoi;
+    private javax.swing.JButton jButtonSua;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
+    private javax.swing.JButton jButtonXoa;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JComboBox<String> jComboBoxTimKiem;
     private javax.swing.JLabel jLabelGiaSach;
