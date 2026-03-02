@@ -9,11 +9,16 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
 public class NCCPanel extends javax.swing.JPanel {
+    private final com.libracoreteam.libracore.bus.NCCBUS nccBUS = new com.libracoreteam.libracore.bus.NCCBUS();
+    private javax.swing.table.DefaultTableModel tblModel;
 
     
     public NCCPanel() {
         initComponents();
         InnitButton();
+        initTable();
+        addTableListener();
+        loadDataToTable();
     }
     
         private void InnitButton() {
@@ -26,7 +31,62 @@ public class NCCPanel extends javax.swing.JPanel {
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
             jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
+        }
+        private void initTable() {
+        // Tạo model với 2 cột và không cho phép click đúp để sửa trực tiếp trên bảng
+        tblModel = new javax.swing.table.DefaultTableModel(new Object[]{"Mã NCC", "Tên nhà cung cấp"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; 
+            }
+        };
+        jTableSach1.setModel(tblModel);
+        
+        // Chỉnh kích thước cột (Cột Mã nhỏ lại, cột Tên phình to ra)
+        jTableSach1.getColumnModel().getColumn(0).setPreferredWidth(100);
+        jTableSach1.getColumnModel().getColumn(0).setMaxWidth(150);
+        jTableSach1.getColumnModel().getColumn(1).setPreferredWidth(400);
+
+        // Tranh thủ style lại bảng cho đẹp giống SachPanel
+        jTableSach1.setRowHeight(30);
+        jTableSach1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
     }
+
+    // 2. Hàm lấy dữ liệu từ DB đổ lên bảng
+    public void loadDataToTable() {
+        tblModel.setRowCount(0); // Xóa trắng dữ liệu cũ
+        try {
+            java.util.List<com.libracoreteam.libracore.model.NCC> list = nccBUS.getAll();
+            for (com.libracoreteam.libracore.model.NCC ncc : list) {
+                tblModel.addRow(new Object[]{
+                    ncc.getIdNCC(),
+                    ncc.getTenNCC()
+                });
+            }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu: " + e.getMessage(), "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // 3. Hàm bắt sự kiện khi click vào một dòng trong bảng
+    private void addTableListener() {
+        jTableSach1.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = jTableSach1.getSelectedRow();
+                if (selectedRow >= 0) {
+                    // Lấy dữ liệu từ dòng được chọn
+                    String maNCC = tblModel.getValueAt(selectedRow, 0).toString();
+                    String tenNCC = tblModel.getValueAt(selectedRow, 1).toString();
+
+                    // Đổ dữ liệu lên các ô TextField trên giao diện
+                    jTextFieldMaNCC.setText(maNCC);
+                    jTextFieldNCC.setText(tenNCC);
+                }
+            }
+        });
+    }
+  
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -118,15 +178,23 @@ public class NCCPanel extends javax.swing.JPanel {
 
         jTableSach1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Mã nhà cung cấp", "Tên nhà cung cấp"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTableSach1);
 
         jPanelBoard.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -218,7 +286,14 @@ public class NCCPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonXuatActionPerformed
 
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
-
+        java.awt.Window owner = javax.swing.SwingUtilities.getWindowAncestor(this);
+    
+    // 2. Mở hộp thoại Thêm NCC (Truyền thêm tham số true để khóa màn hình nền)
+    com.libracoreteam.libracore.gui.dialog.ThemNCCDialog dialog = new com.libracoreteam.libracore.gui.dialog.ThemNCCDialog(owner, true);
+    dialog.setVisible(true); 
+    
+    // 3. Sau khi hộp thoại đóng lại, kiểm tra xem đã thêm thành công chưa
+    System.out.println("Dialog Thêm nhà cung cắp đã đóng, tiến hành reload lại bảng...");
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jTextFieldMaNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaNCCActionPerformed
