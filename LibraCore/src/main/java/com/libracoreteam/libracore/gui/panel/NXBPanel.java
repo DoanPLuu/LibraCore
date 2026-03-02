@@ -451,15 +451,6 @@ public class NXBPanel extends javax.swing.JPanel {
         }
     }
 
-    private void startEditByRow(int viewRow) {
-        if (viewRow < 0 || viewRow >= currentList.size()) return;
-        currentSelected = currentList.get(viewRow);
-        fillDetail(currentSelected);
-        selectRowById(currentSelected.getIdNXB());
-        setEditMode(true);
-        jTextFieldTenNXB.requestFocusInWindow();
-    }
-
     private void deleteByRow(int viewRow) {
         if (viewRow < 0 || viewRow >= currentList.size()) return;
         NXB n = currentList.get(viewRow);
