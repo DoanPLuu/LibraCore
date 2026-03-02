@@ -54,6 +54,11 @@ public class SachBUS {
         String k = keyword != null ? keyword.trim() : "";
         return sachDAO.searchActive(k);
     }
+    
+    public List<Sach> searchByTacGia(String keyword) {
+        String k = keyword != null ? keyword.trim() : "";
+        return sachDAO.searchByTacGia(k);
+    }
 
     public List<NXB> getNXBActive() {
         return nxbDAO.getActive();

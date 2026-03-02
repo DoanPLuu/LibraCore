@@ -10,7 +10,7 @@ import java.util.List;
 public class MucPhatDAO {
 
   public MucPhat getPerDayActive() {
-    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa FROM mucphat WHERE LoaiPhat = 'PerDay' AND HoatDong = 1 LIMIT 1";
+    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat WHERE LoaiPhat = 'PerDay' AND HoatDong = 1 LIMIT 1";
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
         ResultSet rs = ps.executeQuery()) {
@@ -23,7 +23,7 @@ public class MucPhatDAO {
   }
 
   public List<MucPhat> getAllFixedActive() {
-    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa FROM mucphat WHERE LoaiPhat = 'Fixed' AND HoatDong = 1 ORDER BY id_MucPhat";
+    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat WHERE LoaiPhat = 'Fixed' AND HoatDong = 1 ORDER BY id_MucPhat";
     List<MucPhat> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -37,7 +37,7 @@ public class MucPhatDAO {
   }
 
   public List<MucPhat> getAll() {
-    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa FROM mucphat ORDER BY LoaiPhat, id_MucPhat";
+    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat ORDER BY LoaiPhat, id_MucPhat";
     List<MucPhat> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -49,7 +49,6 @@ public class MucPhatDAO {
     }
     return list;
   }
-
   public boolean insert(MucPhat mp) {
     String sql = "INSERT INTO mucphat (TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong) VALUES (?,?,?,?,1)";
     try (Connection conn = DBConnection.getConnection();
@@ -98,6 +97,7 @@ public class MucPhatDAO {
     mp.setLoaiPhat(rs.getString("LoaiPhat"));
     mp.setSoTienPhat(rs.getBigDecimal("SoTienPhat"));
     mp.setMoTa(rs.getString("MoTa"));
+    mp.setHoatDong(rs.getBoolean("HoatDong"));//
     return mp;
   }
 }

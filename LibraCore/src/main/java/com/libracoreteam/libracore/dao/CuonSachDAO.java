@@ -15,7 +15,7 @@ public class CuonSachDAO {
 
     public List<CuonSach> getAll() {
         String sql =
-                "SELECT c.id_CuonSach, c.id_Sach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, s.TenSach " +
+                "SELECT c.id_CuonSach, c.id_Sach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, c.id_ChiTietPhieuNhap, s.TenSach " +
                 "FROM CuonSach c " +
                 "JOIN Sach s ON s.id_Sach = c.id_Sach " +
                 "ORDER BY c.id_CuonSach DESC";
@@ -24,7 +24,7 @@ public class CuonSachDAO {
 
     public List<CuonSach> search(String keyword) {
         String sql =
-                "SELECT c.id_CuonSach, c.id_Sach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, s.TenSach " +
+                "SELECT c.id_CuonSach, c.id_Sach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, c.id_ChiTietPhieuNhap, s.TenSach " +
                 "FROM CuonSach c " +
                 "JOIN Sach s ON s.id_Sach = c.id_Sach " +
                 "WHERE c.MaCuonSach LIKE ? OR CAST(c.id_CuonSach AS CHAR) LIKE ? OR CAST(c.id_Sach AS CHAR) LIKE ? OR s.TenSach LIKE ? " +
@@ -116,6 +116,12 @@ public class CuonSachDAO {
 
         boolean daHuy = rs.getBoolean("DaHuy");
         c.setDaHuy(rs.wasNull() ? false : daHuy);
+        
+        // --- BỔ SUNG MAPPING CHO ChiTietPhieuNhap ---
+        int idCTPN = rs.getInt("id_ChiTietPhieuNhap");
+        if (!rs.wasNull()) {
+            c.setIdChiTietPhieuNhap(idCTPN);
+        }
 
         Sach s = new Sach();
         s.setIdSach(c.getIdSach());
