@@ -16,6 +16,7 @@ public class MucPhat {
     private String loaiPhat; // "PerDay", "Fixed"
     private BigDecimal soTienPhat;
     private String moTa;
+    private boolean hoatDong;
     
     public MucPhat() {
     }
@@ -57,6 +58,10 @@ public class MucPhat {
         return moTa;
     }
     
+    public boolean isHoatDong() {
+        return hoatDong;
+    }
+    
     // Setters
     public void setIdMucPhat(int idMucPhat) {
         this.idMucPhat = idMucPhat;
@@ -76,6 +81,10 @@ public class MucPhat {
     
     public void setMoTa(String moTa) {
         this.moTa = moTa;
+    }
+    
+    public void setHoatDong(boolean hoatDong) {
+        this.hoatDong = hoatDong;
     }
     
     // Utility methods

@@ -9,18 +9,11 @@ import com.libracoreteam.libracore.gui.dialog.ChiTietPhieuNhapDialog;
 import com.libracoreteam.libracore.gui.dialog.TaoPhieuNhapDialog;
 import com.libracoreteam.libracore.model.ChiTietPhieuNhap;
 import com.libracoreteam.libracore.model.PhieuNhap;
-import java.awt.Component;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractCellEditor;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -67,6 +60,8 @@ public class NhapSachPanel extends javax.swing.JPanel {
         jPanelNutThem = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
+        jButtonChiTiet = new javax.swing.JButton();
+        jButtonHuyPhieu = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -111,6 +106,16 @@ public class NhapSachPanel extends javax.swing.JPanel {
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
         jPanelNutThem.add(jButtonThem);
+
+        jButtonChiTiet.setText("Chi tiết");
+        jButtonChiTiet.setPreferredSize(new java.awt.Dimension(100, 40));
+        jButtonChiTiet.addActionListener(this::jButtonChiTietActionPerformed);
+        jPanelNutThem.add(jButtonChiTiet);
+
+        jButtonHuyPhieu.setText("Hủy phiếu");
+        jButtonHuyPhieu.setPreferredSize(new java.awt.Dimension(110, 40));
+        jButtonHuyPhieu.addActionListener(this::jButtonHuyPhieuActionPerformed);
+        jPanelNutThem.add(jButtonHuyPhieu);
 
         jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
@@ -163,35 +168,27 @@ public class NhapSachPanel extends javax.swing.JPanel {
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             jButtonDSHuy.setIcon(FontIcon.of(FontAwesomeSolid.ALIGN_JUSTIFY, iconSize, new Color(100, 100, 100)));
             jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm theo mã phiếu hoặc nhà cung cấp");
+            jButtonChiTiet.setIcon(FontIcon.of(FontAwesomeSolid.INFO_CIRCLE, iconSize, new Color(13, 110, 253)));
+            jButtonHuyPhieu.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
     }
 
     private void initTable() {
         tblModel = new DefaultTableModel(
-                new Object[]{"Mã phiếu", "Ngày nhập", "Nhà cung cấp", "Số lượng sách", "Trạng thái", "Chi tiết", "Hủy"},
+                new Object[]{"Mã phiếu", "Ngày nhập", "Nhà cung cấp", "Số lượng sách", "Trạng thái"},
                 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5 || column == 6;
+                return false;
             }
         };
 
         jTableSach.setModel(tblModel);
         jTableSach.getTableHeader().setReorderingAllowed(false);
         jTableSach.setRowHeight(34);
-
-        jTableSach.getColumnModel().getColumn(5).setCellRenderer(new ActionButtonRenderer());
-        jTableSach.getColumnModel().getColumn(5).setCellEditor(new ActionButtonEditor(5));
-        jTableSach.getColumnModel().getColumn(5).setPreferredWidth(90);
-        jTableSach.getColumnModel().getColumn(5).setMaxWidth(110);
-
-        jTableSach.getColumnModel().getColumn(6).setCellRenderer(new ActionButtonRenderer());
-        jTableSach.getColumnModel().getColumn(6).setCellEditor(new ActionButtonEditor(6));
-        jTableSach.getColumnModel().getColumn(6).setPreferredWidth(90);
-        jTableSach.getColumnModel().getColumn(6).setMaxWidth(110);
     }
 
-    private void loadData() {
+    public void loadData() {
         try {
             if (showingCancelled) {
                 currentList = phieuNhapBUS.getDaHuy();
@@ -217,9 +214,7 @@ public class NhapSachPanel extends javax.swing.JPanel {
                     p.getNgayNhap() == null ? "" : p.getNgayNhap(),
                     nccText,
                     p.getSoLuongSach() == null ? 0 : p.getSoLuongSach(),
-                    p.getTrangThai(),
-                    "Xem",
-                    p.isDaHuy() ? "-" : "Hủy"
+                    p.getTrangThai()
             });
         }
     }
@@ -321,86 +316,29 @@ public class NhapSachPanel extends javax.swing.JPanel {
         showingCancelled = true;
         loadData();
     }//GEN-LAST:event_jButtonDSHuyActionPerformed
-
-    private class ActionButtonRenderer extends JPanel implements TableCellRenderer {
-        private final JButton button = new JButton();
-
-        ActionButtonRenderer() {
-            super(new FlowLayout(FlowLayout.CENTER, 4, 3));
-            setOpaque(true);
-            button.setFocusable(false);
-            add(button);
+    
+    private void jButtonChiTietActionPerformed(java.awt.event.ActionEvent evt) {
+        int row = jTableSach.getSelectedRow();
+        if (row < 0 || row >= currentList.size()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một phiếu nhập để xem chi tiết.");
+            return;
         }
-
-        @Override
-        public Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected,
-                                                       boolean hasFocus, int row, int column) {
-            String text = value == null ? "" : String.valueOf(value);
-            button.setText(text);
-            button.setEnabled(!"-".equals(text));
-            if (column == 6) {
-                button.setForeground(Color.WHITE);
-                button.setBackground(new Color(220, 53, 69));
-            } else {
-                button.setForeground(Color.BLACK);
-                button.setBackground(new Color(220, 220, 220));
-            }
-            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-            return this;
-        }
+        showDetailByRow(row);
     }
 
-    private class ActionButtonEditor extends AbstractCellEditor implements TableCellEditor {
-        private final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 3));
-        private final JButton button = new JButton();
-        private final int actionColumn;
-        private int currentRow = -1;
-        private String currentValue = "";
-
-        ActionButtonEditor(int actionColumn) {
-            this.actionColumn = actionColumn;
-            panel.add(button);
-            button.setFocusable(false);
-            button.addActionListener(e -> {
-                stopCellEditing();
-                if ("-".equals(currentValue)) {
-                    return;
-                }
-                if (this.actionColumn == 5) {
-                    showDetailByRow(currentRow);
-                } else if (this.actionColumn == 6) {
-                    cancelByRow(currentRow);
-                }
-            });
+    private void jButtonHuyPhieuActionPerformed(java.awt.event.ActionEvent evt) {
+        int row = jTableSach.getSelectedRow();
+        if (row < 0 || row >= currentList.size()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một phiếu nhập để huỷ.");
+            return;
         }
-
-        @Override
-        public Object getCellEditorValue() {
-            return currentValue;
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected,
-                                                     int row, int column) {
-            currentRow = row;
-            currentValue = value == null ? "" : String.valueOf(value);
-            button.setText(currentValue);
-            button.setEnabled(!"-".equals(currentValue));
-            if (actionColumn == 6) {
-                button.setForeground(Color.WHITE);
-                button.setBackground(new Color(220, 53, 69));
-            } else {
-                button.setForeground(Color.BLACK);
-                button.setBackground(new Color(220, 220, 220));
-            }
-            panel.setBackground(table.getSelectionBackground());
-            return panel;
-        }
+        cancelByRow(row);
     }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonChiTiet;
     private javax.swing.JButton jButtonDSHuy;
+    private javax.swing.JButton jButtonHuyPhieu;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;

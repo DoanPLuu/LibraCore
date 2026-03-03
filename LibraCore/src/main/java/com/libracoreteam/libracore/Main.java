@@ -9,10 +9,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.libracoreteam.libracore.util.DBConnection;
 import java.sql.Connection;
 
-/**
- *
- * @author luuis
- */
+
 public class Main {
 
     public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package com.libracoreteam.libracore.gui.dialog;
 
+import com.libracoreteam.libracore.dao.TacGiaDAO;
+import com.libracoreteam.libracore.model.TacGia;
 import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
@@ -10,19 +12,25 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class ThemTacGiaDialog extends JDialog {
+public class SuaTacGiaDialog extends JDialog {
     // ===== Fields =====
     private JTextField txtTenTacGia;
     private JSpinner spnNgaySinh;
     private JTextField txtNoiSinh;
     private JTextField txtSDT;
+    private JCheckBox chkHoatDong; // Form sửa phải có thêm cái này
     
     private JButton btnLuu;
     private JButton btnHuy;
 
-    public ThemTacGiaDialog(Frame parent, boolean modal) {
-        super(parent, "Thêm tác giả", modal);
+    private TacGia currentTacGia;
+    private boolean isSaved = false;
+
+    public SuaTacGiaDialog(Frame parent, boolean modal, TacGia tacGia) {
+        super(parent, "Sửa thông tin tác giả", modal);
+        this.currentTacGia = tacGia;
         initComponents();
+        loadDataToForm(); // Đổ dữ liệu cũ lên form
     }
 
     private void initComponents() {
@@ -44,7 +52,6 @@ public class ThemTacGiaDialog extends JDialog {
         spnNgaySinh = new JSpinner(dateModel);
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
         spnNgaySinh.setEditor(dateEditor);
-        spnNgaySinh.setValue(new Date()); // Mặc định là ngày hiện tại
         
         formPanel.add(new JLabel("Ngày sinh:"));
         formPanel.add(spnNgaySinh);
@@ -59,14 +66,18 @@ public class ThemTacGiaDialog extends JDialog {
         formPanel.add(new JLabel("Số điện thoại:"));
         formPanel.add(txtSDT);
 
+        // ===== Trạng thái hoạt động =====
+        chkHoatDong = new JCheckBox("Còn hoạt động");
+        formPanel.add(new JLabel("Trạng thái:"));
+        formPanel.add(chkHoatDong);
+
         // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        btnLuu = new JButton("Xác nhận");
+        btnLuu = new JButton("Cập nhật");
         btnHuy = new JButton("Hủy");
         
-        // Thêm icon cho buttons
         int iconSize = 16;
-        btnLuu.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(40, 167, 69)));
+        btnLuu.setIcon(FontIcon.of(FontAwesomeSolid.SAVE, iconSize, new Color(13, 110, 253)));
         btnHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(220, 53, 69)));
 
         buttonPanel.add(btnLuu);
@@ -75,7 +86,6 @@ public class ThemTacGiaDialog extends JDialog {
         btnLuu.addActionListener(e -> onSave());
         btnHuy.addActionListener(e -> dispose());
 
-        // ===== Layout tổng =====
         setLayout(new BorderLayout());
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -85,34 +95,50 @@ public class ThemTacGiaDialog extends JDialog {
         setResizable(false);
     }
 
-    private void onSave() {
-        // 1. Lấy và Validate dữ liệu
-        String tenTacGia = txtTenTacGia.getText().trim();
-        String noiSinh = txtNoiSinh.getText().trim();
-        String sdt = txtSDT.getText().trim();
+    // Hàm này hút dữ liệu từ object truyền vào đắp lên giao diện
+    private void loadDataToForm() {
+        if (currentTacGia == null) return;
+        
+        txtTenTacGia.setText(currentTacGia.getTenTacGia());
+        txtNoiSinh.setText(currentTacGia.getNoiSinh() != null ? currentTacGia.getNoiSinh() : "");
+        txtSDT.setText(currentTacGia.getSdt() != null ? currentTacGia.getSdt() : "");
+        chkHoatDong.setSelected(currentTacGia.isHoatDong());
 
+        if (currentTacGia.getNgaySinh() != null) {
+            Date date = Date.from(currentTacGia.getNgaySinh().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            spnNgaySinh.setValue(date);
+        }
+    }
+
+    private void onSave() {
+        String tenTacGia = txtTenTacGia.getText().trim();
         if (tenTacGia.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên tác giả không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Chuyển Date sang LocalDate
-        java.util.Date selectedDate = (java.util.Date) spnNgaySinh.getValue();
-        java.time.LocalDate ngaySinh = selectedDate.toInstant()
-                .atZone(java.time.ZoneId.systemDefault())
-                .toLocalDate();
+        // Cập nhật lại Object hiện tại
+        currentTacGia.setTenTacGia(tenTacGia);
+        currentTacGia.setNoiSinh(txtNoiSinh.getText().trim());
+        currentTacGia.setSdt(txtSDT.getText().trim());
+        currentTacGia.setHoatDong(chkHoatDong.isSelected());
+
+        Date selectedDate = (Date) spnNgaySinh.getValue();
+        LocalDate ngaySinh = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        currentTacGia.setNgaySinh(ngaySinh);
         
-        // 2. Gom vào DTO
-        com.libracoreteam.libracore.model.TacGia tacGia = new com.libracoreteam.libracore.model.TacGia(tenTacGia, ngaySinh, noiSinh, sdt);
-        
-        // 3. Gọi DAO để lưu
-        com.libracoreteam.libracore.dao.TacGiaDAO tacGiaDAO = new com.libracoreteam.libracore.dao.TacGiaDAO();
-        if (tacGiaDAO.insert(tacGia)) {
-            JOptionPane.showMessageDialog(this, "Thêm tác giả thành công!");
+        // Gọi DAO để UPDATE
+        TacGiaDAO tacGiaDAO = new TacGiaDAO();
+        if (tacGiaDAO.update(currentTacGia)) {
+            isSaved = true;
+            JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
             dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Lỗi khi lưu tác giả vào cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật vào cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
-}
 
+    public boolean isSaved() {
+        return isSaved;
+    }
+}

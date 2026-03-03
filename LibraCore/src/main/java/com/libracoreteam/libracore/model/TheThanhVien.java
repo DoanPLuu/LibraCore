@@ -6,10 +6,7 @@ package com.libracoreteam.libracore.model;
 
 import java.time.LocalDate;
 
-/**
- *
- * @author luuis
- */
+
 public class TheThanhVien {
     private int idTheThanhVien;
     private int idDocGia;
@@ -36,6 +33,14 @@ public class TheThanhVien {
         this.ngayHetHan = ngayHetHan;
         this.trangThai = "HoatDong";
     }
+
+    public TheThanhVien(int idDocGia){
+        this.idDocGia=idDocGia;
+        this.ngayCap=LocalDate.now();
+        this.ngayHetHan=ngayCap.plusYears(1);
+        this.trangThai="HoatDong";
+    }
+    
     
     // Getters
     public int getIdTheThanhVien() {
@@ -101,7 +106,28 @@ public class TheThanhVien {
         return "TheThanhVien{" +
                 "idTheThanhVien=" + idTheThanhVien +
                 ", idDocGia=" + idDocGia +
-                ", trangThai='" + trangThai + '\'' +
+                ", TrangThai='" + trangThai + '\'' +
                 '}';
+    }
+
+    public void GiaHanThe(int soNam){
+        if(this.ngayHetHan.isBefore(LocalDate.now())){
+            this.ngayHetHan=LocalDate.now().plusYears(soNam);
+        }else this.ngayHetHan=this.ngayHetHan.plusYears(soNam);
+        this.trangThai="HoatDong";
+    }
+    
+    public void GiaHanTheoThang(int soThang) {
+        if(this.ngayHetHan.isBefore(LocalDate.now())){
+            this.ngayHetHan = LocalDate.now().plusMonths(soThang);
+        } else {
+            this.ngayHetHan = this.ngayHetHan.plusMonths(soThang);
+        }
+        this.trangThai = "HoatDong";
+    }
+
+    public void GiaHanDenNgayCuThe(LocalDate ngayChot) {
+        this.ngayHetHan = ngayChot;
+        this.trangThai = "HoatDong";
     }
 }

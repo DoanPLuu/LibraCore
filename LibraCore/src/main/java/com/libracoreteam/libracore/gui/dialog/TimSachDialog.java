@@ -1,6 +1,6 @@
 package com.libracoreteam.libracore.gui.dialog;
 
-import com.libracoreteam.libracore.dao.SachDAO;
+import com.libracoreteam.libracore.bus.SachBUS;
 import com.libracoreteam.libracore.model.Sach;
 
 import javax.swing.*;
@@ -14,14 +14,16 @@ import java.util.List;
 
 public class TimSachDialog extends JDialog {
 
-    private final SachDAO sachDAO = new SachDAO();
+    
+    private final SachBUS sachBUS = new SachBUS(); 
+    
     private JTable tblResults;
     private DefaultTableModel tableModel;
     private Sach selectedSach = null;
     private JTextField txtSearch;
 
     public TimSachDialog(JDialog parent, JTextField sourceTextField) {
-        super(parent, false); // Không block màn hình dưới hoàn toàn, chỉ là popup
+        super(parent, false); 
         setUndecorated(true);
         getRootPane().setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
@@ -35,7 +37,7 @@ public class TimSachDialog extends JDialog {
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        String[] cols = { "ID", "Tên sách", "Nhà xuất bản" }; // Thể loại hoặc NXB tùy ý
+        String[] cols = { "ID", "Tên sách", "Nhà xuất bản" }; 
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -67,7 +69,7 @@ public class TimSachDialog extends JDialog {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     selectRowAndClose();
-                    e.consume(); // Prevent default enter behavior
+                    e.consume(); 
                 } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     selectedSach = null;
                     setVisible(false);
@@ -81,7 +83,9 @@ public class TimSachDialog extends JDialog {
 
     public void searchAndShow(String keyword) {
         tableModel.setRowCount(0);
-        List<Sach> results = sachDAO.searchActive(keyword);
+        
+        // Gọi searchActive từ BUS
+        List<Sach> results = sachBUS.searchActive(keyword);
 
         if (results.isEmpty()) {
             setVisible(false);
@@ -89,9 +93,6 @@ public class TimSachDialog extends JDialog {
         }
 
         for (Sach s : results) {
-            // NXB column will be empty for now since we don't have NXBDAO loaded inside
-            // Sach logic easily here,
-            // but we can just show the id or skip it. Let's just show ID for demo.
             tableModel.addRow(
                     new Object[] { s, s.getTenSach(), "NXB ID: " + (s.getIdNXB() != null ? s.getIdNXB() : "N/A") });
         }
@@ -102,7 +103,6 @@ public class TimSachDialog extends JDialog {
             setVisible(true);
         }
 
-        // If results exist, select the first one automatically
         if (tblResults.getRowCount() > 0) {
             tblResults.setRowSelectionInterval(0, 0);
         }
@@ -111,7 +111,7 @@ public class TimSachDialog extends JDialog {
     private void selectRowAndClose() {
         int row = tblResults.getSelectedRow();
         if (row >= 0) {
-            selectedSach = (Sach) tableModel.getValueAt(row, 0); // We stored the whole object in Col 0
+            selectedSach = (Sach) tableModel.getValueAt(row, 0); 
         }
         setVisible(false);
     }

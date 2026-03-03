@@ -60,13 +60,25 @@ public class ThemTheLoaiDialog extends JDialog {
     }
 
     private void onSave() {
-        System.out.println("=== Thêm thể loại ===");
-        System.out.println("Tên thể loại: " + txtTenTheLoai.getText());
-        
-        // TODO: Validate dữ liệu trước khi lưu
-        // TODO: Gọi BUS/Service để insert vào DB
-        
-        dispose();
+        String tenTheLoai = txtTenTheLoai.getText().trim();
+
+        // 1. Validate dữ liệu
+        if (tenTheLoai.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên thể loại không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 2. Gom vào DTO
+        com.libracoreteam.libracore.model.TheLoai tl = new com.libracoreteam.libracore.model.TheLoai(tenTheLoai);
+
+        // 3. Gọi DAO để lưu (Nếu team ông bắt buộc phải có TheLoaiBUS thì ông bọc qua BUS nhé, tui gọi thẳng DAO cho lẹ)
+        com.libracoreteam.libracore.dao.TheLoaiDAO theLoaiDAO = new com.libracoreteam.libracore.dao.TheLoaiDAO();
+        if (theLoaiDAO.insert(tl)) {
+            JOptionPane.showMessageDialog(this, "Thêm thể loại thành công!");
+            dispose(); // Đóng form
+        } else {
+            JOptionPane.showMessageDialog(this, "Lỗi khi lưu thể loại vào cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
 
