@@ -14,20 +14,20 @@ import com.libracoreteam.libracore.gui.panel.PhatPanel;
 import com.libracoreteam.libracore.gui.panel.MucPhatPanel;
 import com.libracoreteam.libracore.gui.panel.ThanhVienPanel;
 import com.libracoreteam.libracore.gui.panel.TheThanhVienPanel;
+import com.libracoreteam.libracore.gui.panel.ThongKeSachPanel;
 
 import com.libracoreteam.libracore.gui.panel.TaiKhoanCaNhanPanel;
 import com.libracoreteam.libracore.gui.panel.NhanVienPanel;
 import com.libracoreteam.libracore.gui.panel.TaiKhoanPanel;
 import com.libracoreteam.libracore.gui.panel.VaiTroPanel;
+
 import javax.swing.*;
 import java.awt.*;
-
 
 public class MainFrame extends javax.swing.JFrame {
     private MenuPanel menuPanel;
     private JPanel contentPanel;
     private CardLayout cardLayout;
-
 
     private DashboardPanel dashboardPanel;
     private SachPanel sachPanel;
@@ -39,16 +39,16 @@ public class MainFrame extends javax.swing.JFrame {
     private TheThanhVienPanel theThanhVienPanel;
     private NhapSachPanel nhapSachPanel;
     private NCCPanel nccPanel;
+
     private NhanVienPanel nhanVienPanel;
     private TaiKhoanPanel taiKhoanPanel;
     private VaiTroPanel vaiTroPanel;
-    // private ThongKeSachPanel thongKeSachPanel;
-    // private ThongKeMuonTraPanel thongKeMuonTraPanel;
-    // private ThongKeTienPhatPanel thongKeTienPhatPanel;
     private TaiKhoanCaNhanPanel taiKhoanCaNhanPanel;
+
     private MuonTraSachPanel muonTraSachPanel;
     private PhatPanel phatPanel;
     private MucPhatPanel mucPhatPanel;
+    private ThongKeSachPanel thongKeSachPanel;
 
     public MainFrame() {
         initComponents();
@@ -59,20 +59,15 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-
         menuPanel = new MenuPanel(this);
         add(menuPanel, BorderLayout.WEST);
-
 
         contentPanel = new JPanel();
         cardLayout = new CardLayout();
         contentPanel.setLayout(cardLayout);
         contentPanel.setBackground(Color.WHITE);
 
-
         createContentPanels();
-
-
         cardLayout.show(contentPanel, "DASHBOARD");
 
         add(contentPanel, BorderLayout.CENTER);
@@ -83,11 +78,11 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void createContentPanels() {
-
+        // DASHBOARD
         dashboardPanel = new DashboardPanel();
         contentPanel.add(dashboardPanel, "DASHBOARD");
 
-
+        // BOOK group
         contentPanel.add(createPlaceholderPanel("Quản lý sách"), "BOOK");
 
         sachPanel = new SachPanel();
@@ -105,7 +100,7 @@ public class MainFrame extends javax.swing.JFrame {
         theLoaiPanel = new TheLoaiPanel();
         contentPanel.add(theLoaiPanel, "BOOK_5");
 
-
+        // MEMBER group
         contentPanel.add(createPlaceholderPanel("Quản lý thành viên"), "MEMBER");
 
         thanhVienPanel = new ThanhVienPanel();
@@ -114,13 +109,13 @@ public class MainFrame extends javax.swing.JFrame {
         theThanhVienPanel = new TheThanhVienPanel();
         contentPanel.add(theThanhVienPanel, "MEMBER_2");
 
-
+        // BORROW group
         contentPanel.add(createPlaceholderPanel("Quản lý mượn - trả"), "BORROW");
 
         muonTraSachPanel = new MuonTraSachPanel();
         contentPanel.add(muonTraSachPanel, "BORROW_1");
 
-
+        // FINE group
         contentPanel.add(createPlaceholderPanel("Quản lý phạt - trả phạt"), "FINE");
 
         phatPanel = new PhatPanel();
@@ -129,7 +124,7 @@ public class MainFrame extends javax.swing.JFrame {
         mucPhatPanel = new MucPhatPanel();
         contentPanel.add(mucPhatPanel, "FINE_2");
 
-
+        // IMPORT group
         contentPanel.add(createPlaceholderPanel("Quản lý nhập sách"), "IMPORT");
 
         nhapSachPanel = new NhapSachPanel();
@@ -138,18 +133,14 @@ public class MainFrame extends javax.swing.JFrame {
         nccPanel = new NCCPanel();
         contentPanel.add(nccPanel, "IMPORT_2");
 
-
+        // USER group
         contentPanel.add(createPlaceholderPanel("Quản lý người dùng"), "USER");
-        contentPanel.add(createPlaceholderPanel("Người dùng"), "USER_1");
-        contentPanel.add(createPlaceholderPanel("Tài khoản"), "USER_2");
-        contentPanel.add(createPlaceholderPanel("Vai trò"), "USER_3");
 
         // USER_1: Nhân viên
         nhanVienPanel = new NhanVienPanel();
         contentPanel.add(nhanVienPanel, "USER_1");
 
         // USER_2: Tài khoản
-
         taiKhoanPanel = new TaiKhoanPanel();
         contentPanel.add(taiKhoanPanel, "USER_2");
 
@@ -157,13 +148,16 @@ public class MainFrame extends javax.swing.JFrame {
         vaiTroPanel = new VaiTroPanel();
         contentPanel.add(vaiTroPanel, "USER_3");
 
-        //ACCOUNT: Tài khoản cá nhân;
+        // ACCOUNT: Tài khoản cá nhân
         taiKhoanCaNhanPanel = new TaiKhoanCaNhanPanel();
         contentPanel.add(taiKhoanCaNhanPanel, "ACCOUNT");
 
-
+        // REPORT group
         contentPanel.add(createPlaceholderPanel("Thống kê báo cáo"), "REPORT");
-        contentPanel.add(createPlaceholderPanel("Thống kê sách"), "REPORT_1");
+
+        thongKeSachPanel = new ThongKeSachPanel();
+        contentPanel.add(thongKeSachPanel, "REPORT_1");
+
         contentPanel.add(createPlaceholderPanel("Thống kê mượn trả sách"), "REPORT_2");
         contentPanel.add(createPlaceholderPanel("Thống kê tiền phạt"), "REPORT_3");
     }
@@ -187,36 +181,45 @@ public class MainFrame extends javax.swing.JFrame {
 
             switch (screenName) {
                 case "DASHBOARD":
-                    if (dashboardPanel != null) dashboardPanel.loadData();
+                    if (dashboardPanel != null)
+                        dashboardPanel.loadData();
                     break;
                 case "BOOK_1":
-                    if (sachPanel != null) sachPanel.loadActiveToTable();
+                    if (sachPanel != null)
+                        sachPanel.loadActiveToTable();
                     break;
                 case "BOOK_2":
-                    if (cuonSachPanel != null) cuonSachPanel.loadData();
+                    if (cuonSachPanel != null)
+                        cuonSachPanel.loadData();
                     break;
                 case "BOOK_3":
-                    // Nếu TacGiaPanel có hàm load thì ông đổi tên hàm dưới đây cho đúng
-                    // if (tacGiaPanel != null) tacGiaPanel.loadActiveToTable();
+                    // nếu TacGiaPanel có hàm load, bạn thêm ở đây
                     break;
                 case "BOOK_4":
-                    if (nxbPanel != null) nxbPanel.loadActiveToTable();
+                    if (nxbPanel != null)
+                        nxbPanel.loadActiveToTable();
                     break;
                 case "MEMBER_1":
-                    if (thanhVienPanel != null) thanhVienPanel.loadData();
+                    if (thanhVienPanel != null)
+                        thanhVienPanel.loadData();
                     break;
                 case "MEMBER_2":
-                    if (theThanhVienPanel != null) theThanhVienPanel.loadData();
+                    if (theThanhVienPanel != null)
+                        theThanhVienPanel.loadData();
                     break;
                 case "BORROW_1":
-                    if (muonTraSachPanel != null) muonTraSachPanel.loadData();
+                    if (muonTraSachPanel != null)
+                        muonTraSachPanel.loadData();
                     break;
                 case "FINE_1":
-                    if (phatPanel != null) phatPanel.loadData();
+                    if (phatPanel != null)
+                        phatPanel.loadData();
                     break;
                 case "IMPORT_1":
-                    if (nhapSachPanel != null) nhapSachPanel.loadData();
+                    if (nhapSachPanel != null)
+                        nhapSachPanel.loadData();
                     break;
+                // Bạn có thể bổ sung thêm case cho USER_1, USER_2, USER_3, ACCOUNT, REPORT_1 nếu cần reload
             }
         } catch (Exception e) {
             System.err.println("✗ Không tìm thấy màn hình: " + screenName);
