@@ -5,6 +5,8 @@
 package com.libracoreteam.libracore.gui.panel;
 
 import com.libracoreteam.libracore.gui.MainFrame;
+import com.libracoreteam.libracore.gui.LoginFrame;
+import com.libracoreteam.libracore.util.UserSession;
 import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
@@ -45,7 +47,7 @@ public class MenuPanel extends JPanel {
     // 3: Quản lý mượn - trả    -> Mượn - trả sách
     // 4: Quản lý phạt - trả phạt -> Phạt, Mức phạt
     // 5: Quản lý nhập sách     -> Nhập sách, Nhà cung cấp
-    // 6: Quản lý người dùng    -> Người dùng, Tài khoản, Vai trò
+    // 6: Quản lý người dùng    -> Nhân viên, Tài khoản, Vai trò
     // 7: Thống kê báo cáo      -> Thống kê sách, Thống kê mượn trả, Thống kê tiền phạt
     private String[][] menuItems = {
         {"Dashboard"},
@@ -54,7 +56,7 @@ public class MenuPanel extends JPanel {
         {"Quản lý mượn - trả", "Mượn - trả sách"},
         {"Quản lý phạt - trả phạt", "Phạt", "Mức phạt"},
         {"Quản lý nhập sách", "Nhập sách", "Nhà cung cấp"},
-        {"Quản lý người dùng", "Người dùng", "Tài khoản", "Vai trò"},
+        {"Quản lý người dùng", "Nhân viên", "Tài khoản", "Vai trò"},
         {"Thống kê báo cáo", "Thống kê sách", "Thống kê mượn trả sách", "Thống kê tiền phạt"}
     };
     
@@ -87,14 +89,55 @@ public class MenuPanel extends JPanel {
         logoutBtn.setToolTipText("Đăng xuất khỏi hệ thống");
         logoutBtn.setHorizontalAlignment(SwingConstants.LEFT);
     
-        // Chưa gắn chức năng, chỉ UI
-        // accountBtn.addActionListener(e -> { ... });
-        // logoutBtn.addActionListener(e -> { ... });
+
+         accountBtn.addActionListener(e -> handleAccountButton());
+         logoutBtn.addActionListener(e -> handleLogoutButton());
     
         panel.add(accountBtn);
         panel.add(logoutBtn, "gapy 4");
     
         return panel;
+    }
+
+
+    private void handleAccountButton() {
+        // 1. Đóng tất cả các menu con đang mở cho giao diện gọn gàng
+        closeAllSubMenusExcept(-1); // Truyền -1 vì nút này không thuộc menu nào trong mảng menuItems
+
+        // 2. Xóa trạng thái đang chọn (highlight) của các menu item khác
+        if (selectedMenuItem != null) {
+            selectedMenuItem.setSelected(false);
+            selectedMenuItem = null;
+        }
+
+        // 3. Gọi MainFrame để hiển thị Panel Tài khoản cá nhân
+        mainFrame.showScreen("ACCOUNT");
+    }
+
+    private void handleLogoutButton() {
+        int xacNhan = JOptionPane.showConfirmDialog(
+                mainFrame,
+                "Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?",
+                "Xác nhận đăng xuất",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (xacNhan == JOptionPane.YES_OPTION) {
+            // Xóa phiên làm việc
+            UserSession.getInstance().logout();
+
+            // Đóng cửa sổ hiện tại
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window != null) {
+                window.dispose();
+            }
+
+            // Mở lại màn hình đăng nhập
+            EventQueue.invokeLater(() -> {
+                new LoginFrame().setVisible(true);
+            });
+        }
     }
     
     private void initComponents() {
@@ -144,7 +187,7 @@ public class MenuPanel extends JPanel {
             case 3: return "Quản lý mượn - trả sách";
             case 4: return "Quản lý phạt và trả phạt";
             case 5: return "Quản lý nhập sách và nhà cung cấp";
-            case 6: return "Quản lý người dùng, tài khoản, vai trò";
+            case 6: return "Quản lý nhân viên, tài khoản, vai trò";
             case 7: return "Thống kê sách, mượn trả và tiền phạt";
             default: return "";
         }
@@ -186,7 +229,7 @@ public class MenuPanel extends JPanel {
                 }
             case 6: // Quản lý người dùng
                 switch (subIndex) {
-                    case 1: return "Quản lý thông tin người dùng";
+                    case 1: return "Quản lý thông tin nhân viên";
                     case 2: return "Quản lý tài khoản đăng nhập";
                     case 3: return "Quản lý vai trò/quyền hạn";
                     default: return "";
