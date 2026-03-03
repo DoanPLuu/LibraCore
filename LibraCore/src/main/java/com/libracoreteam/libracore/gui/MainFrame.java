@@ -15,6 +15,10 @@ import com.libracoreteam.libracore.gui.panel.MucPhatPanel;
 import com.libracoreteam.libracore.gui.panel.ThanhVienPanel;
 import com.libracoreteam.libracore.gui.panel.TheThanhVienPanel;
 
+import com.libracoreteam.libracore.gui.panel.TaiKhoanCaNhanPanel;
+import com.libracoreteam.libracore.gui.panel.NhanVienPanel;
+import com.libracoreteam.libracore.gui.panel.TaiKhoanPanel;
+import com.libracoreteam.libracore.gui.panel.VaiTroPanel;
 import javax.swing.*;
 import java.awt.*;
 
@@ -24,20 +28,27 @@ public class MainFrame extends javax.swing.JFrame {
     private JPanel contentPanel;
     private CardLayout cardLayout;
 
-    
+
     private DashboardPanel dashboardPanel;
     private SachPanel sachPanel;
     private NXBPanel nxbPanel;
     private CuonSachPanel cuonSachPanel;
     private TacGiaPanel tacGiaPanel;
     private TheLoaiPanel theLoaiPanel;
-    private ThanhVienPanel thanhVienPanel;           
-    private TheThanhVienPanel theThanhVienPanel;     
+    private ThanhVienPanel thanhVienPanel;
+    private TheThanhVienPanel theThanhVienPanel;
     private NhapSachPanel nhapSachPanel;
-    private NCCPanel nccPanel;                    
+    private NCCPanel nccPanel;
+    private NhanVienPanel nhanVienPanel;
+    private TaiKhoanPanel taiKhoanPanel;
+    private VaiTroPanel vaiTroPanel;
+    // private ThongKeSachPanel thongKeSachPanel;
+    // private ThongKeMuonTraPanel thongKeMuonTraPanel;
+    // private ThongKeTienPhatPanel thongKeTienPhatPanel;
+    private TaiKhoanCaNhanPanel taiKhoanCaNhanPanel;
     private MuonTraSachPanel muonTraSachPanel;
-    private PhatPanel phatPanel;                     
-    private MucPhatPanel mucPhatPanel;               
+    private PhatPanel phatPanel;
+    private MucPhatPanel mucPhatPanel;
 
     public MainFrame() {
         initComponents();
@@ -48,20 +59,20 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-       
+
         menuPanel = new MenuPanel(this);
         add(menuPanel, BorderLayout.WEST);
 
-       
+
         contentPanel = new JPanel();
         cardLayout = new CardLayout();
         contentPanel.setLayout(cardLayout);
         contentPanel.setBackground(Color.WHITE);
 
-       
+
         createContentPanels();
 
-        
+
         cardLayout.show(contentPanel, "DASHBOARD");
 
         add(contentPanel, BorderLayout.CENTER);
@@ -72,11 +83,11 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void createContentPanels() {
-        
+
         dashboardPanel = new DashboardPanel();
         contentPanel.add(dashboardPanel, "DASHBOARD");
 
-     
+
         contentPanel.add(createPlaceholderPanel("Quản lý sách"), "BOOK");
 
         sachPanel = new SachPanel();
@@ -94,7 +105,7 @@ public class MainFrame extends javax.swing.JFrame {
         theLoaiPanel = new TheLoaiPanel();
         contentPanel.add(theLoaiPanel, "BOOK_5");
 
-      
+
         contentPanel.add(createPlaceholderPanel("Quản lý thành viên"), "MEMBER");
 
         thanhVienPanel = new ThanhVienPanel();
@@ -103,13 +114,13 @@ public class MainFrame extends javax.swing.JFrame {
         theThanhVienPanel = new TheThanhVienPanel();
         contentPanel.add(theThanhVienPanel, "MEMBER_2");
 
-       
+
         contentPanel.add(createPlaceholderPanel("Quản lý mượn - trả"), "BORROW");
 
         muonTraSachPanel = new MuonTraSachPanel();
         contentPanel.add(muonTraSachPanel, "BORROW_1");
 
-       
+
         contentPanel.add(createPlaceholderPanel("Quản lý phạt - trả phạt"), "FINE");
 
         phatPanel = new PhatPanel();
@@ -118,22 +129,39 @@ public class MainFrame extends javax.swing.JFrame {
         mucPhatPanel = new MucPhatPanel();
         contentPanel.add(mucPhatPanel, "FINE_2");
 
-       
+
         contentPanel.add(createPlaceholderPanel("Quản lý nhập sách"), "IMPORT");
-        
+
         nhapSachPanel = new NhapSachPanel();
         contentPanel.add(nhapSachPanel, "IMPORT_1");
 
         nccPanel = new NCCPanel();
         contentPanel.add(nccPanel, "IMPORT_2");
 
-       
+
         contentPanel.add(createPlaceholderPanel("Quản lý người dùng"), "USER");
         contentPanel.add(createPlaceholderPanel("Người dùng"), "USER_1");
         contentPanel.add(createPlaceholderPanel("Tài khoản"), "USER_2");
         contentPanel.add(createPlaceholderPanel("Vai trò"), "USER_3");
 
-       
+        // USER_1: Nhân viên
+        nhanVienPanel = new NhanVienPanel();
+        contentPanel.add(nhanVienPanel, "USER_1");
+
+        // USER_2: Tài khoản
+
+        taiKhoanPanel = new TaiKhoanPanel();
+        contentPanel.add(taiKhoanPanel, "USER_2");
+
+        // USER_3: Vai trò
+        vaiTroPanel = new VaiTroPanel();
+        contentPanel.add(vaiTroPanel, "USER_3");
+
+        //ACCOUNT: Tài khoản cá nhân;
+        taiKhoanCaNhanPanel = new TaiKhoanCaNhanPanel();
+        contentPanel.add(taiKhoanCaNhanPanel, "ACCOUNT");
+
+
         contentPanel.add(createPlaceholderPanel("Thống kê báo cáo"), "REPORT");
         contentPanel.add(createPlaceholderPanel("Thống kê sách"), "REPORT_1");
         contentPanel.add(createPlaceholderPanel("Thống kê mượn trả sách"), "REPORT_2");
@@ -169,7 +197,7 @@ public class MainFrame extends javax.swing.JFrame {
                     break;
                 case "BOOK_3":
                     // Nếu TacGiaPanel có hàm load thì ông đổi tên hàm dưới đây cho đúng
-                    // if (tacGiaPanel != null) tacGiaPanel.loadActiveToTable(); 
+                    // if (tacGiaPanel != null) tacGiaPanel.loadActiveToTable();
                     break;
                 case "BOOK_4":
                     if (nxbPanel != null) nxbPanel.loadActiveToTable();
