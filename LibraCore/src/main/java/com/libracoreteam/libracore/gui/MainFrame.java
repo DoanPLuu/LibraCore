@@ -46,7 +46,6 @@ public class MainFrame extends javax.swing.JFrame {
     // private ThongKeMuonTraPanel thongKeMuonTraPanel;
     // private ThongKeTienPhatPanel thongKeTienPhatPanel;
     private TaiKhoanCaNhanPanel taiKhoanCaNhanPanel;
-    private NCCPanel nccPanel;
     private MuonTraSachPanel muonTraSachPanel;
     private PhatPanel phatPanel;
     private MucPhatPanel mucPhatPanel;
