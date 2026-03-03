@@ -7,18 +7,11 @@ package com.libracoreteam.libracore.gui.panel;
 import com.libracoreteam.libracore.bus.CuonSachBUS;
 import com.libracoreteam.libracore.model.CuonSach;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractCellEditor;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -63,6 +56,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jButtonLamMoi = new javax.swing.JButton();
         jPanelNut = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
+        jButtonHuyCuon = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -123,6 +117,11 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
         jPanelNut.add(jButtonXuat);
+
+        jButtonHuyCuon.setText("Hủy cuốn");
+        jButtonHuyCuon.setPreferredSize(new java.awt.Dimension(110, 40));
+        jButtonHuyCuon.addActionListener(this::jButtonHuyCuonActionPerformed);
+        jPanelNut.add(jButtonHuyCuon);
 
         jPanelCongCu.add(jPanelNut, java.awt.BorderLayout.EAST);
 
@@ -288,16 +287,18 @@ public class CuonSachPanel extends javax.swing.JPanel {
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm theo mã cuốn sách / mã sách / tên sách");
 
+            jButtonHuyCuon.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+
     }
 
     private void initTable() {
         tblModel = new DefaultTableModel(
-                new Object[]{"Mã cuốn sách", "Mã sách", "Tên sách", "Tình trạng", "Trạng thái mượn", "Đã huỷ", "Hủy"},
+                new Object[]{"Mã cuốn sách", "Mã sách", "Tên sách", "Tình trạng", "Trạng thái mượn", "Đã huỷ"},
                 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 6;
+                return false;
             }
         };
 
@@ -305,11 +306,6 @@ public class CuonSachPanel extends javax.swing.JPanel {
         jTableSach.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTableSach.getTableHeader().setReorderingAllowed(false);
         jTableSach.setRowHeight(34);
-
-        jTableSach.getColumnModel().getColumn(6).setCellRenderer(new ActionButtonRenderer());
-        jTableSach.getColumnModel().getColumn(6).setCellEditor(new ActionButtonEditor());
-        jTableSach.getColumnModel().getColumn(6).setPreferredWidth(90);
-        jTableSach.getColumnModel().getColumn(6).setMaxWidth(110);
     }
 
     private void bindEvents() {
@@ -351,8 +347,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
                     tenSach,
                     valueOrEmpty(c.getTinhTrangSach()),
                     valueOrEmpty(c.getTrangThaiMuon()),
-                    c.isDaHuy() ? "Có" : "Không",
-                    c.isDaHuy() ? "-" : "Hủy"
+                    c.isDaHuy() ? "Có" : "Không"
             });
         }
     }
@@ -473,65 +468,14 @@ public class CuonSachPanel extends javax.swing.JPanel {
     private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
         // Khong dung: panel phai o che do read-only.
     }//GEN-LAST:event_jButtonXacNhanActionPerformed
+    
 
-    private class ActionButtonRenderer extends JPanel implements TableCellRenderer {
-        private final JButton button = new JButton();
-
-        ActionButtonRenderer() {
-            super(new FlowLayout(FlowLayout.CENTER, 4, 3));
-            setOpaque(true);
-            button.setFocusable(false);
-            add(button);
+    private void jButtonHuyCuonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (currentSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một cuốn sách để huỷ.");
+            return;
         }
-
-        @Override
-        public Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected,
-                                                       boolean hasFocus, int row, int column) {
-            String text = value == null ? "" : String.valueOf(value);
-            button.setText(text);
-            button.setEnabled(!"-".equals(text));
-            button.setForeground(Color.WHITE);
-            button.setBackground(new Color(220, 53, 69));
-            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-            return this;
-        }
-    }
-
-    private class ActionButtonEditor extends AbstractCellEditor implements TableCellEditor {
-        private final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 3));
-        private final JButton button = new JButton();
-        private int currentRow = -1;
-        private String currentValue = "";
-
-        ActionButtonEditor() {
-            panel.add(button);
-            button.setFocusable(false);
-            button.setForeground(Color.WHITE);
-            button.setBackground(new Color(220, 53, 69));
-            button.addActionListener(e -> {
-                stopCellEditing();
-                if ("-".equals(currentValue)) {
-                    return;
-                }
-                cancelByRow(currentRow);
-            });
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return currentValue;
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected,
-                                                     int row, int column) {
-            currentRow = row;
-            currentValue = value == null ? "" : String.valueOf(value);
-            button.setText(currentValue);
-            button.setEnabled(!"-".equals(currentValue));
-            panel.setBackground(table.getSelectionBackground());
-            return panel;
-        }
+        doCancel(currentSelected);
     }
 
 
@@ -539,6 +483,7 @@ public class CuonSachPanel extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.JButton jButtonHuy;
+    private javax.swing.JButton jButtonHuyCuon;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXacNhan;

@@ -6,6 +6,7 @@ package com.libracoreteam.libracore.gui.panel;
 
 import com.libracoreteam.libracore.bus.NXBBUS;
 import com.libracoreteam.libracore.gui.dialog.ThemNXBDialog;
+import com.libracoreteam.libracore.gui.dialog.SuaNXBDialog;
 import com.libracoreteam.libracore.model.NXB;
 import java.awt.*;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -15,18 +16,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractCellEditor;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.FlowLayout;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.Box;
@@ -87,6 +82,8 @@ public class NXBPanel extends javax.swing.JPanel {
         jPanelNutThem = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
+        jButtonSua = new javax.swing.JButton();
+        jButtonXoa = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -153,6 +150,16 @@ public class NXBPanel extends javax.swing.JPanel {
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
         jPanelNutThem.add(jButtonThem);
+
+        jButtonSua.setText("Sửa");
+        jButtonSua.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonSua.addActionListener(this::jButtonSuaActionPerformed);
+        jPanelNutThem.add(jButtonSua);
+
+        jButtonXoa.setText("Xóa");
+        jButtonXoa.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonXoa.addActionListener(this::jButtonXoaActionPerformed);
+        jPanelNutThem.add(jButtonXoa);
 
         jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
@@ -310,16 +317,19 @@ public class NXBPanel extends javax.swing.JPanel {
             jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
             jPanelButton.add(Box.createRigidArea(new Dimension(0, 40)));
 
+            jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
+            jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+
     }
 
     private void initTable() {
         tblModel = new DefaultTableModel(
-                new Object[]{"Mã", "Tên NXB", "Địa chỉ", "SĐT", "Thao tác"},
+                new Object[]{"Mã", "Tên NXB", "Địa chỉ", "SĐT", "Trạng thái"},
                 0
         ) {
             @Override
             public boolean isCellEditable(int row, int col) {
-                return col == 4; // chỉ cột thao tác có editor
+                return false;
             }
         };
 
@@ -327,11 +337,6 @@ public class NXBPanel extends javax.swing.JPanel {
         jTableSach.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTableSach.getTableHeader().setReorderingAllowed(false);
 
-        // Renderer + Editor cho cột thao tác
-        jTableSach.getColumnModel().getColumn(4).setCellRenderer(new ActionCellRenderer());
-        jTableSach.getColumnModel().getColumn(4).setCellEditor(new ActionCellEditor());
-        jTableSach.getColumnModel().getColumn(4).setPreferredWidth(90);
-        jTableSach.getColumnModel().getColumn(4).setMaxWidth(110);
         jTableSach.setSelectionBackground(new Color(220, 220, 220)); // Màu nền khi chọn
         jTableSach.setSelectionForeground(Color.BLACK);              // Màu chữ khi chọn
         jTableSach.setRowHeight(30);
@@ -380,7 +385,7 @@ public class NXBPanel extends javax.swing.JPanel {
                     n.getTenNXB(),
                     n.getDiaChi(),
                     n.getSdt(),
-                    null
+                    n.isHoatDong() ? "Hoạt động" : "Ngừng"
             });
         }
     }
@@ -446,15 +451,6 @@ public class NXBPanel extends javax.swing.JPanel {
         }
     }
 
-    private void startEditByRow(int viewRow) {
-        if (viewRow < 0 || viewRow >= currentList.size()) return;
-        currentSelected = currentList.get(viewRow);
-        fillDetail(currentSelected);
-        selectRowById(currentSelected.getIdNXB());
-        setEditMode(true);
-        jTextFieldTenNXB.requestFocusInWindow();
-    }
-
     private void deleteByRow(int viewRow) {
         if (viewRow < 0 || viewRow >= currentList.size()) return;
         NXB n = currentList.get(viewRow);
@@ -484,81 +480,6 @@ public class NXBPanel extends javax.swing.JPanel {
         }
     }
 
-    private class ActionCellRenderer extends JPanel implements TableCellRenderer {
-        private final JButton btnEdit = new JButton();
-        private final JButton btnDelete = new JButton();
-
-        ActionCellRenderer() {
-            super(new FlowLayout(FlowLayout.CENTER, 6, 0));
-            setOpaque(true);
-
-            int iconSize = 16;
-            btnEdit.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
-            btnDelete.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
-
-            btnEdit.setFocusable(false);
-            btnDelete.setFocusable(false);
-            btnEdit.setBorderPainted(false);
-            btnDelete.setBorderPainted(false);
-            btnEdit.setContentAreaFilled(false);
-            btnDelete.setContentAreaFilled(false);
-
-            add(btnEdit);
-            add(btnDelete);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-            return this;
-        }
-    }
-
-    private class ActionCellEditor extends AbstractCellEditor implements TableCellEditor {
-        private final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 0));
-        private final JButton btnEdit = new JButton();
-        private final JButton btnDelete = new JButton();
-        private int currentRow = -1;
-
-        ActionCellEditor() {
-            panel.setOpaque(true);
-
-            int iconSize = 16;
-            btnEdit.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
-            btnDelete.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
-
-            btnEdit.setFocusable(false);
-            btnDelete.setFocusable(false);
-            btnEdit.setBorderPainted(false);
-            btnDelete.setBorderPainted(false);
-            btnEdit.setContentAreaFilled(false);
-            btnDelete.setContentAreaFilled(false);
-
-            btnEdit.addActionListener(e -> {
-                stopCellEditing();
-                startEditByRow(currentRow);
-            });
-            btnDelete.addActionListener(e -> {
-                stopCellEditing();
-                deleteByRow(currentRow);
-            });
-
-            panel.add(btnEdit);
-            panel.add(btnDelete);
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return null;
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected, int row, int column) {
-            currentRow = row;
-            panel.setBackground(table.getSelectionBackground());
-            return panel;
-        }
-    }
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
         // 1. Lấy frame cha (MainFrame) chứa NXBPanel
@@ -749,6 +670,36 @@ public class NXBPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonXacNhanActionPerformed
 
+    private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {
+        int row = jTableSach.getSelectedRow();
+        if (row < 0 || row >= currentList.size()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một NXB để sửa.");
+            return;
+        }
+
+        currentSelected = currentList.get(row);
+        javax.swing.JFrame parentFrame =
+                (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        SuaNXBDialog dialog = new SuaNXBDialog(parentFrame, true, currentSelected);
+        dialog.setVisible(true);
+
+        if (dialog.isSaved()) {
+            int id = currentSelected.getIdNXB();
+            loadActiveToTable();
+            selectRowById(id);
+        }
+    }
+
+    private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {
+        int row = jTableSach.getSelectedRow();
+        if (row < 0 || row >= currentList.size()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một NXB để xoá.");
+            return;
+        }
+        deleteByRow(row);
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler2;
@@ -757,9 +708,11 @@ public class NXBPanel extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler5;
     private javax.swing.JButton jButtonHuy;
     private javax.swing.JButton jButtonLamMoi;
+    private javax.swing.JButton jButtonSua;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXacNhan;
+    private javax.swing.JButton jButtonXoa;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JLabel jLabelDiaChiNXB;
     private javax.swing.JLabel jLabelMaNXB;
