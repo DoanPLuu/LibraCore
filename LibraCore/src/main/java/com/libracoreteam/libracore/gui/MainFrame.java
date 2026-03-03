@@ -9,6 +9,10 @@ import com.libracoreteam.libracore.gui.panel.NhapSachPanel;
 import com.libracoreteam.libracore.gui.panel.TacGiaPanel;
 import com.libracoreteam.libracore.gui.panel.TheLoaiPanel;
 import com.libracoreteam.libracore.gui.panel.NCCPanel;
+import com.libracoreteam.libracore.gui.panel.TaiKhoanCaNhanPanel;
+import com.libracoreteam.libracore.gui.panel.NhanVienPanel;
+import com.libracoreteam.libracore.gui.panel.TaiKhoanPanel;
+import com.libracoreteam.libracore.gui.panel.VaiTroPanel;
 import javax.swing.*;
 import java.awt.*;
 
@@ -35,14 +39,14 @@ public class MainFrame extends javax.swing.JFrame {
     // private PhatPanel phatPanel;
     // private MucPhatPanel mucPhatPanel;
     private NhapSachPanel nhapSachPanel;
-
     private NCCPanel nccPanel;
-    // private NguoiDungPanel nguoiDungPanel;
-    // private TaiKhoanPanel taiKhoanPanel;
-    // private VaiTroPanel vaiTroPanel;
+    private NhanVienPanel nhanVienPanel;
+    private TaiKhoanPanel taiKhoanPanel;
+    private VaiTroPanel vaiTroPanel;
     // private ThongKeSachPanel thongKeSachPanel;
     // private ThongKeMuonTraPanel thongKeMuonTraPanel;
     // private ThongKeTienPhatPanel thongKeTienPhatPanel;
+    private TaiKhoanCaNhanPanel taiKhoanCaNhanPanel;
 
     public MainFrame() {
         initComponents();
@@ -188,23 +192,22 @@ public class MainFrame extends javax.swing.JFrame {
         // USER: Parent menu
         contentPanel.add(createPlaceholderPanel("Quản lý người dùng"), "USER");
 
-        // USER_1: Người dùng
-        // TODO: Uncomment khi tạo NguoiDungPanel
-        // nguoiDungPanel = new NguoiDungPanel();
-        // contentPanel.add(nguoiDungPanel, "USER_1");
-        contentPanel.add(createPlaceholderPanel("Người dùng"), "USER_1");
+        // USER_1: Nhân viên
+        nhanVienPanel = new NhanVienPanel();
+        contentPanel.add(nhanVienPanel, "USER_1");
 
         // USER_2: Tài khoản
-        // TODO: Uncomment khi tạo TaiKhoanPanel
-        // taiKhoanPanel = new TaiKhoanPanel();
-        // contentPanel.add(taiKhoanPanel, "USER_2");
-        contentPanel.add(createPlaceholderPanel("Tài khoản"), "USER_2");
+
+        taiKhoanPanel = new TaiKhoanPanel();
+        contentPanel.add(taiKhoanPanel, "USER_2");
 
         // USER_3: Vai trò
-        // TODO: Uncomment khi tạo VaiTroPanel
-        // vaiTroPanel = new VaiTroPanel();
-        // contentPanel.add(vaiTroPanel, "USER_3");
-        contentPanel.add(createPlaceholderPanel("Vai trò"), "USER_3");
+        vaiTroPanel = new VaiTroPanel();
+        contentPanel.add(vaiTroPanel, "USER_3");
+
+        //ACCOUNT: Tài khoản cá nhân;
+        taiKhoanCaNhanPanel = new TaiKhoanCaNhanPanel();
+        contentPanel.add(taiKhoanCaNhanPanel, "ACCOUNT");
 
         // ========== THỐNG KÊ BÁO CÁO ==========
         // REPORT: Parent menu
