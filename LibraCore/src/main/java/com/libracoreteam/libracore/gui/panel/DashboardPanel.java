@@ -112,9 +112,6 @@ public class DashboardPanel extends JPanel {
         }
     }
 
-    /**
-     * Tiện ích cấu hình font cho Label số liệu
-     */
     private JLabel createValueLabel() {
         JLabel lbl = new JLabel("0");
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 40));
@@ -122,26 +119,17 @@ public class DashboardPanel extends JPanel {
         return lbl;
     }
 
-    /**
-     * Tiện ích vẽ một Thẻ (Card) màu sắc
-     */
     private JPanel createCard(String title, JLabel lblValue, FontAwesomeSolid iconType, Color bgColor) {
         JPanel card = new JPanel(new MigLayout("insets 20", "[grow][]", "[][grow]"));
         card.setBackground(bgColor);
-        
-        // Tiêu đề thẻ
         JLabel lblTitle = new JLabel(title);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblTitle.setForeground(new Color(255, 255, 255, 220)); // Trắng mờ
-        
-        // Icon trang trí (Nằm góc trên bên phải)
         JLabel lblIcon = new JLabel();
         lblIcon.setIcon(FontIcon.of(iconType, 50, new Color(255, 255, 255, 100))); // Trắng mờ 100
-        
         card.add(lblTitle, "wrap");           // Tiêu đề ở trên, wrap xuống dòng
         card.add(lblValue, "growy, bottom");  // Số liệu chìm xuống dưới
         card.add(lblIcon, "dock east");       // Icon neo vào mép phải
-        
         return card;
     }
 }

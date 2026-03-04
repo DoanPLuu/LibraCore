@@ -1,5 +1,16 @@
 package com.libracoreteam.libracore.gui.panel;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.libracoreteam.libracore.bus.ThongKeBUS;
 import com.toedter.calendar.JDateChooser;
 import org.jfree.chart.ChartFactory;
@@ -13,12 +24,18 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 /**
  * Panel thống kê sách theo ngày.
@@ -47,6 +64,7 @@ public class ThongKeSachPanel extends JPanel {
     private final JDateChooser dateTo;
     private final JComboBox<String> comboLoai;
     private final JButton btnThongKe;
+    private final JButton btnXuatPDF;
 
     private JFreeChart chart;
     private ChartPanel chartPanel;
@@ -92,12 +110,20 @@ public class ThongKeSachPanel extends JPanel {
         btnThongKe.setFocusPainted(false);
         btnThongKe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        btnXuatPDF = new JButton("Xuất PDF");
+        btnXuatPDF.setPreferredSize(new Dimension(100, 32));
+        btnXuatPDF.setBackground(new Color(0xC62828));
+        btnXuatPDF.setForeground(Color.WHITE);
+        btnXuatPDF.setFocusPainted(false);
+        btnXuatPDF.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
         toolbar.add(new JLabel("Từ ngày"));
         toolbar.add(dateFrom);
         toolbar.add(new JLabel("Đến ngày"));
         toolbar.add(dateTo);
         toolbar.add(comboLoai);
         toolbar.add(btnThongKe);
+        toolbar.add(btnXuatPDF);
 
         add(toolbar, BorderLayout.NORTH);
 
@@ -149,9 +175,157 @@ public class ThongKeSachPanel extends JPanel {
 
         // ── Events ───────────────────────────────────────────────────────────
         btnThongKe.addActionListener(e -> runThongKe());
+        btnXuatPDF.addActionListener(e -> exportPDF());
 
         // Load mặc định
         runThongKe();
+    }
+
+    // ─── Export PDF ──────────────────────────────────────────────────────────
+
+    private void exportPDF() {
+        if (tblModel.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Không có dữ liệu để xuất. Vui lòng thống kê trước.",
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Lưu file PDF");
+        chooser.setFileFilter(new FileNameExtensionFilter("PDF files (*.pdf)", "pdf"));
+        chooser.setSelectedFile(new File("ThongKeSach.pdf"));
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
+            return;
+
+        File file = chooser.getSelectedFile();
+        if (!file.getName().toLowerCase().endsWith(".pdf")) {
+            file = new File(file.getAbsolutePath() + ".pdf");
+        }
+
+        try {
+            Document doc = new Document(PageSize.A4, 36, 36, 50, 36);
+            PdfWriter.getInstance(doc, new FileOutputStream(file));
+            doc.open();
+
+            // ── Font Unicode (hỗ trợ tiếng Việt) ────────────────────────────
+            // Thử Arial trước, fallback sang DejaVu nếu không tìm thấy
+            String[] fontPaths = {
+                    "C:/Windows/Fonts/arial.ttf",
+                    "C:/Windows/Fonts/Arial.ttf",
+                    "C:/Windows/Fonts/times.ttf"
+            };
+            String fontPathBold = "C:/Windows/Fonts/arialbd.ttf";
+            String resolvedFont = fontPaths[0];
+            for (String fp : fontPaths) {
+                if (new File(fp).exists()) {
+                    resolvedFont = fp;
+                    break;
+                }
+            }
+            if (!new File(resolvedFont).exists()) {
+                JOptionPane.showMessageDialog(this,
+                        "Không tìm thấy font Arial trên máy. Tiếng Việt có thể bị lỗi.",
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            }
+            BaseFont bf = BaseFont.createFont(resolvedFont, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont bfBold = new File(fontPathBold).exists()
+                    ? BaseFont.createFont(fontPathBold, BaseFont.IDENTITY_H, BaseFont.EMBEDDED)
+                    : bf;
+
+            com.itextpdf.text.Font titleFont = new com.itextpdf.text.Font(bfBold, 16, com.itextpdf.text.Font.BOLD,
+                    BaseColor.DARK_GRAY);
+            com.itextpdf.text.Font subFont = new com.itextpdf.text.Font(bf, 10, com.itextpdf.text.Font.NORMAL,
+                    BaseColor.GRAY);
+            com.itextpdf.text.Font headerFont = new com.itextpdf.text.Font(bfBold, 10, com.itextpdf.text.Font.BOLD,
+                    BaseColor.WHITE);
+            com.itextpdf.text.Font cellFont = new com.itextpdf.text.Font(bf, 9, com.itextpdf.text.Font.NORMAL,
+                    BaseColor.DARK_GRAY);
+
+            Paragraph title = new Paragraph(
+                    (String) comboLoai.getSelectedItem() + " - Báo cáo thống kê", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(4);
+            doc.add(title);
+
+            String rangeLabel = "Từ " + (getDateFrom() != null ? getDateFrom().format(FMT) : "?") +
+                    " đến " + (getDateTo() != null ? getDateTo().format(FMT) : "?");
+            Paragraph sub = new Paragraph(rangeLabel, subFont);
+            sub.setAlignment(Element.ALIGN_CENTER);
+            sub.setSpacingAfter(12);
+            doc.add(sub);
+
+            // ── Biểu đồ ──────────────────────────────────────────────────────
+            int chartW = 750, chartH = 350;
+            BufferedImage chartImg = chart.createBufferedImage(chartW, chartH);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(chartImg, "png", baos);
+            com.itextpdf.text.Image pdfImg = com.itextpdf.text.Image.getInstance(baos.toByteArray());
+            float pageWidth = doc.getPageSize().getWidth() - doc.leftMargin() - doc.rightMargin();
+            pdfImg.scaleToFit(pageWidth, pageWidth * chartH / chartW);
+            pdfImg.setAlignment(Element.ALIGN_CENTER);
+            doc.add(pdfImg);
+
+            doc.add(Chunk.NEWLINE);
+
+            // ── Bảng dữ liệu ─────────────────────────────────────────────────
+            int colCount = tblModel.getColumnCount();
+            PdfPTable pdfTable = new PdfPTable(colCount);
+            pdfTable.setWidthPercentage(100);
+            pdfTable.setSpacingBefore(10);
+
+            // Header row
+            BaseColor headerBg = new BaseColor(0x15, 0x65, 0xC0);
+            for (int c = 0; c < colCount; c++) {
+                PdfPCell cell = new PdfPCell(new Phrase(tblModel.getColumnName(c), headerFont));
+                cell.setBackgroundColor(headerBg);
+                cell.setPadding(6);
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setBorderColor(BaseColor.LIGHT_GRAY);
+                pdfTable.addCell(cell);
+            }
+
+            // Data rows
+            for (int r = 0; r < tblModel.getRowCount(); r++) {
+                BaseColor rowBg = (r % 2 == 0) ? BaseColor.WHITE : new BaseColor(0xF5, 0xF5, 0xF5);
+                for (int c = 0; c < colCount; c++) {
+                    Object val = tblModel.getValueAt(r, c);
+                    PdfPCell cell = new PdfPCell(new Phrase(val == null ? "" : val.toString(), cellFont));
+                    cell.setBackgroundColor(rowBg);
+                    cell.setPadding(5);
+                    cell.setBorderColor(BaseColor.LIGHT_GRAY);
+                    pdfTable.addCell(cell);
+                }
+            }
+
+            doc.add(pdfTable);
+
+            // ── Footer ───────────────────────────────────────────────────────
+            doc.add(Chunk.NEWLINE);
+            com.itextpdf.text.Font footFont = new com.itextpdf.text.Font(bf, 8, com.itextpdf.text.Font.ITALIC,
+                    BaseColor.GRAY);
+            Paragraph footer = new Paragraph(
+                    "Xuất lúc: " + java.time.LocalDateTime.now()
+                            .format(DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")),
+                    footFont);
+            footer.setAlignment(Element.ALIGN_RIGHT);
+            doc.add(footer);
+
+            doc.close();
+
+            int choice = JOptionPane.showConfirmDialog(this,
+                    "Xuất PDF thành công!\nBạn có muốn mở file ngay không?",
+                    "Thành công", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (choice == JOptionPane.YES_OPTION) {
+                Desktop.getDesktop().open(file);
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Lỗi khi xuất PDF: " + ex.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
     }
 
     // ─── Core logic ──────────────────────────────────────────────────────────
