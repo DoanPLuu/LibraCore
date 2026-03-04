@@ -69,7 +69,8 @@ public class SachBUS {
     }
 
     public List<TheLoai> getTheLoaiActive() {
-        return theLoaiDAO.getActive();
+        // Đổi thành getAll() vì hàm này ở DAO đã được thiết lập để chỉ lấy dữ liệu đang hoạt động
+        return theLoaiDAO.getAll(); 
     }
 
     public List<Integer> getTacGiaIdsBySach(int idSach) {

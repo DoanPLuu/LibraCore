@@ -22,4 +22,16 @@ public class TacGiaBUS {
         }
         return dao.insert(tacGia);
     }
+    public boolean softDelete(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Mã tác giả không hợp lệ!");
+        }
+        return dao.softDelete(id);
+    }
+    public List<TacGia> search(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return dao.getAll();
+        }
+        return dao.search(keyword.trim());
+    }
 }
