@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MucPhatDAO {
+public class MucPhatDAO{
 
   public MucPhat getPerDayActive() {
     String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat WHERE LoaiPhat = 'PerDay' AND HoatDong = 1 LIMIT 1";

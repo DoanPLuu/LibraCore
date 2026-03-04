@@ -33,110 +33,148 @@ public class TheThanhVienPanel extends JPanel {
     }
 
     private void initComponents() {
-        setLayout(new BorderLayout(10, 10));
-        setBackground(Color.WHITE);
+        setLayout(new BorderLayout()); // Bỏ gap để giống SachPanel
+        setBackground(new Color(240, 240, 240));
 
-        // 1. Tiêu đề
-        JLabel lblTitle = new JLabel("QUẢN LÝ THẺ THÀNH VIÊN", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblTitle.setForeground(new Color(0, 102, 51));
-        add(lblTitle, BorderLayout.NORTH);
+        // ==========================================
+        // CỘT TRÁI: TOP-BAR VÀ BẢNG
+        // ==========================================
+        JPanel jPanelLeft = new JPanel(new BorderLayout());
 
-        // 2. Bảng danh sách (CENTER)
+        // 1. Top-Bar (Clone y xì SachPanel)
+        JPanel jPanelLeftTop = new JPanel(new BorderLayout());
+        jPanelLeftTop.setBackground(new Color(255, 153, 153));
+
+        JPanel jPanelCongCu = new JPanel(new BorderLayout());
+        jPanelCongCu.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
+
+        JPanel jPanelTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        
+        JTextField txtSearch = new JTextField();
+        txtSearch.setPreferredSize(new Dimension(150, 40));
+        txtSearch.putClientProperty("JTextField.placeholderText", "Tìm kiếm...");
+        
+        JButton btnSearch = new JButton();
+        btnSearch.setPreferredSize(new Dimension(40, 40));
+        btnSearch.setIcon(org.kordamp.ikonli.swing.FontIcon.of(org.kordamp.ikonli.fontawesome5.FontAwesomeSolid.SEARCH, 16, new Color(100, 100, 100)));
+        
+        JButton btnRefresh = new JButton();
+        btnRefresh.setPreferredSize(new Dimension(40, 40));
+        btnRefresh.setIcon(org.kordamp.ikonli.swing.FontIcon.of(org.kordamp.ikonli.fontawesome5.FontAwesomeSolid.SYNC_ALT, 16, new Color(100, 100, 100)));
+        btnRefresh.addActionListener(e -> loadData());
+
+        jPanelTimKiem.add(txtSearch);
+        jPanelTimKiem.add(btnSearch);
+        jPanelTimKiem.add(btnRefresh);
+
+        jPanelCongCu.add(jPanelTimKiem, BorderLayout.WEST);
+        jPanelLeftTop.add(jPanelCongCu, BorderLayout.CENTER);
+        jPanelLeft.add(jPanelLeftTop, BorderLayout.NORTH);
+
+        // 2. Bảng
+        JPanel jPanelBoard = new JPanel(new BorderLayout());
+        jPanelBoard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
         String[] columns = {"Mã thẻ", "Mã ĐG", "Tên Độc Giả", "Ngày cấp", "Ngày hết hạn", "Trạng thái"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Không cho sửa trực tiếp trên bảng
-            }
+            public boolean isCellEditable(int row, int column) { return false; }
         };
         table = new JTable(tableModel);
-        table.setRowHeight(30);
+        table.setRowHeight(34);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.setSelectionBackground(new Color(220, 220, 220)); 
+        table.setSelectionForeground(Color.BLACK);
 
-        // Sự kiện click vào bảng
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
                 showDetail(table.getSelectedRow());
             }
         });
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
-
-        // 3. Panel thao tác bên phải (EAST)
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBackground(Color.WHITE);
-        rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        rightPanel.setPreferredSize(new Dimension(300, 0));
-
-        // Form hiển thị thông tin
-        rightPanel.add(new JLabel("Mã thẻ:"));
-        txtIdThe = new JTextField();
-        txtIdThe.setEditable(false);
-        rightPanel.add(txtIdThe);
-        rightPanel.add(Box.createVerticalStrut(10));
-
-        rightPanel.add(new JLabel("Tên độc giả:"));
-        txtTenDocGia = new JTextField();
-        txtTenDocGia.setEditable(false);
-        rightPanel.add(txtTenDocGia);
-        rightPanel.add(Box.createVerticalStrut(10));
-
-        rightPanel.add(new JLabel("Ngày hết hạn:"));
-        txtNgayHetHan = new JTextField();
-        txtNgayHetHan.setEditable(false);
-        rightPanel.add(txtNgayHetHan);
-        rightPanel.add(Box.createVerticalStrut(10));
-
-        rightPanel.add(new JLabel("Trạng thái:"));
-        txtTrangThai = new JTextField();
-        txtTrangThai.setEditable(false);
-        rightPanel.add(txtTrangThai);
-        rightPanel.add(Box.createVerticalStrut(20));
-
-        // ==========================================
-        // KHU VỰC CÁC NÚT CHỨC NĂNG (ĐÃ BỔ SUNG)
-        // ==========================================
+        jPanelBoard.add(new JScrollPane(table), BorderLayout.CENTER);
+        jPanelLeft.add(jPanelBoard, BorderLayout.CENTER);
         
+        add(jPanelLeft, BorderLayout.CENTER);
+
+        // ==========================================
+        // CỘT PHẢI: FORM THÔNG TIN (Chuẩn form Sách)
+        // ==========================================
+        JPanel jPanelRight = new JPanel(new BorderLayout());
+        jPanelRight.setBorder(BorderFactory.createEmptyBorder(10, 0, 50, 20));
+        jPanelRight.setPreferredSize(new Dimension(306, 306)); // Khóa cứng size theo chuẩn sếp Leader
+
+        // Tiêu đề
+        JPanel jPanelTop = new JPanel();
+        JLabel jLabelTitle = new JLabel("THÔNG TIN THẺ");
+        jLabelTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        jPanelTop.add(jLabelTitle);
+        jPanelRight.add(jPanelTop, BorderLayout.PAGE_START);
+
+        // Form Fields
+        JPanel jPanelBottom = new JPanel();
+        jPanelBottom.setLayout(new BoxLayout(jPanelBottom, BoxLayout.Y_AXIS));
+
+        JPanel jPanelFields = new JPanel();
+        jPanelFields.setLayout(new BoxLayout(jPanelFields, BoxLayout.Y_AXIS));
+
+        txtIdThe = new JTextField(); 
+        txtTenDocGia = new JTextField(); 
+        txtNgayHetHan = new JTextField(); 
+        txtTrangThai = new JTextField(); 
+
+        jPanelFields.add(createFieldPanel("Mã thẻ:", txtIdThe));
+        jPanelFields.add(createFieldPanel("Tên độc giả:", txtTenDocGia));
+        jPanelFields.add(createFieldPanel("Ngày hết hạn:", txtNgayHetHan));
+        jPanelFields.add(createFieldPanel("Trạng thái:", txtTrangThai));
+
+        // Khu vực Nút bấm hành động (Chỉnh lại độ dày 40px, xếp cách nhau 10px)
+        JPanel pnlButtons = new JPanel(new GridLayout(0, 1, 0, 10));
+        pnlButtons.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+
+        Dimension btnSize = new Dimension(0, 30); // Độ dày nút chuẩn 40px
+
         JButton btnGiaHan = new JButton("Gia hạn 1 năm");
-        btnGiaHan.setBackground(new Color(0, 153, 76));
-        btnGiaHan.setForeground(Color.WHITE);
-        btnGiaHan.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnGiaHan.addActionListener(e -> actionGiaHan());
-        rightPanel.add(btnGiaHan);
-        rightPanel.add(Box.createVerticalStrut(10));
+        btnGiaHan.setBackground(new Color(21, 110, 71)); btnGiaHan.setForeground(Color.WHITE);
+        btnGiaHan.setPreferredSize(btnSize); btnGiaHan.addActionListener(e -> actionGiaHan());
 
         JButton btnGiaHanThang = new JButton("Gia hạn theo tháng");
-        btnGiaHanThang.setBackground(new Color(0, 153, 76));
-        btnGiaHanThang.setForeground(Color.WHITE);
-        btnGiaHanThang.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnGiaHanThang.addActionListener(e -> actionGiaHanThang());
-        rightPanel.add(btnGiaHanThang);
-        rightPanel.add(Box.createVerticalStrut(10));
+        btnGiaHanThang.setBackground(new Color(21, 110, 71)); btnGiaHanThang.setForeground(Color.WHITE);
+        btnGiaHanThang.setPreferredSize(btnSize); btnGiaHanThang.addActionListener(e -> actionGiaHanThang());
 
         JButton btnGiaHanNgay = new JButton("Chỉnh sửa hạn cụ thể");
-        btnGiaHanNgay.setBackground(new Color(0, 153, 76));
-        btnGiaHanNgay.setForeground(Color.WHITE);
-        btnGiaHanNgay.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnGiaHanNgay.addActionListener(e -> actionGiaHanNgay());
-        rightPanel.add(btnGiaHanNgay);
-        rightPanel.add(Box.createVerticalStrut(10));
+        btnGiaHanNgay.setBackground(new Color(21, 110, 71)); btnGiaHanNgay.setForeground(Color.WHITE);
+        btnGiaHanNgay.setPreferredSize(btnSize); btnGiaHanNgay.addActionListener(e -> actionGiaHanNgay());
 
         JButton btnKhoa = new JButton("Khóa / Mở khóa thẻ");
-        btnKhoa.setBackground(new Color(204, 0, 0));
-        btnKhoa.setForeground(Color.WHITE);
-        btnKhoa.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnKhoa.addActionListener(e -> actionKhoaThe());
-        rightPanel.add(btnKhoa);
-        rightPanel.add(Box.createVerticalStrut(10));
+        btnKhoa.setBackground(new Color(220, 53, 69)); btnKhoa.setForeground(Color.WHITE);
+        btnKhoa.setPreferredSize(btnSize); btnKhoa.addActionListener(e -> actionKhoaThe());
 
-        JButton btnLamMoi = new JButton("Làm mới danh sách");
-        btnLamMoi.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnLamMoi.addActionListener(e -> loadData());
-        rightPanel.add(btnLamMoi);
+        pnlButtons.add(btnGiaHan);
+        pnlButtons.add(btnGiaHanThang);
+        pnlButtons.add(btnGiaHanNgay);
+        pnlButtons.add(btnKhoa);
+        
+        jPanelFields.add(pnlButtons);
+        jPanelBottom.add(jPanelFields);
+        jPanelRight.add(jPanelBottom, BorderLayout.CENTER);
 
-        add(rightPanel, BorderLayout.EAST);
+        add(jPanelRight, BorderLayout.EAST);
+    }
+
+    // Hàm Helper đắp đúng công thức EmptyBorder(3, 0, 3, 0) của sếp Leader
+    private JPanel createFieldPanel(String labelText, JTextField textField) {
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0)); 
+        
+        JLabel label = new JLabel(labelText);
+        textField.setEditable(false);
+        textField.setFocusable(false);
+        
+        panel.add(label);
+        panel.add(textField);
+        return panel;
     }
 
     // Load dữ liệu lên bảng
