@@ -29,7 +29,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
     }
 
     private void initTable() {
-        tblModel = new DefaultTableModel(new Object[]{"Mã TG", "Tên tác giả", "Ngày sinh", "Nơi sinh", "SĐT", "Trạng thái"}, 0) {
+        tblModel = new DefaultTableModel(new Object[]{"Mã TG", "Tên tác giả", "Ngày sinh", "Nơi sinh", "SĐT"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -51,7 +51,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
                     tg.getNgaySinh() != null ? tg.getNgaySinh() : "", 
                     tg.getNoiSinh() != null ? tg.getNoiSinh() : "", 
                     tg.getSdt() != null ? tg.getSdt() : "",
-                    tg.isHoatDong() ? "Hoạt động" : "Ngừng"
                 });
             }
         } catch (Exception e) {
@@ -64,14 +63,38 @@ public class TacGiaPanel extends javax.swing.JPanel {
         String keyword = jTextFieldTimKiem.getText();
         if (keyword != null) keyword = keyword.trim();
 
+        // Nếu ô tìm kiếm rỗng hoặc là chữ mặc định
         if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
             loadData();
             return;
         }
 
         try {
-            // Cần viết thêm hàm search() trong TacGiaBUS nếu muốn tìm kiếm thật
-            // Tạm thời để trống hoặc dùng hàm lọc thủ công trên list
+            // Gọi BUS để tìm kiếm
+            currentList = bus.search(keyword);
+            
+            // Xóa dữ liệu cũ và đổ dữ liệu mới lên bảng
+            tblModel.setRowCount(0);
+            for (TacGia tg : currentList) {
+                tblModel.addRow(new Object[]{
+                    tg.getIdTacGia(), 
+                    tg.getTenTacGia(), 
+                    tg.getNgaySinh() != null ? tg.getNgaySinh() : "", 
+                    tg.getNoiSinh() != null ? tg.getNoiSinh() : "", 
+                    tg.getSdt() != null ? tg.getSdt() : "",
+                });
+            }
+            
+            // Làm sạch các ô điền thông tin bên phải sau khi tìm
+            jTableSach.clearSelection();
+            jTextFieldMaTacGia.setText("");
+            jTextFieldTenTacGia.setText("");
+            jTextFieldNgaySinhTacGia.setText("");
+            jTextFieldNoiSinhTacGia.setText("");
+            jTextFieldSDTTacGia.setText("");
+            jTextFieldTrangThai.setText("");
+            currentSelected = null;
+            
         } catch (Exception ex) {
             System.out.println("Lỗi tìm kiếm: " + ex.getMessage());
         }
@@ -116,6 +139,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jButtonSua = new javax.swing.JButton(); // Khai báo nút Sửa
+        jButtonXoa = new javax.swing.JButton(); // Khai báo nút Xóa
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -142,8 +166,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jPanelTrangThai1 = new javax.swing.JPanel();
         jLabelTrangThai = new javax.swing.JLabel();
         jTextFieldTrangThai = new javax.swing.JTextField();
-        
-        // ĐÃ XÓA jPanelButton (chứa nút Xác nhận / Huỷ)
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -171,7 +193,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
-        // Gắn 3 nút: Xuất - Thêm - Sửa
+        // Gắn 4 nút: Xuất - Thêm - Sửa - Xóa
         jButtonXuat.setText("Xuất");
         jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
@@ -186,6 +208,11 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jButtonSua.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonSua.addActionListener(this::jButtonSuaActionPerformed);
         jPanelNutThem.add(jButtonSua);
+
+        jButtonXoa.setText("Xóa");
+        jButtonXoa.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonXoa.addActionListener(this::jButtonXoaActionPerformed);
+        jPanelNutThem.add(jButtonXoa);
 
         jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
@@ -308,7 +335,8 @@ public class TacGiaPanel extends javax.swing.JPanel {
             jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-            jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253))); // Icon nút Sửa
+            jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253))); 
+            jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69))); // Icon nút Xóa
     }
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -330,16 +358,75 @@ public class TacGiaPanel extends javax.swing.JPanel {
         loadData(); 
     }
 
+    // Sự kiện Nút Xóa
+    private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {
+        if (currentSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một tác giả trên bảng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc muốn xoá (ngừng hoạt động) tác giả \"" + currentSelected.getTenTacGia() + "\" không?",
+                "Xác nhận xoá",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (choice == JOptionPane.YES_OPTION) {
+            try {
+                boolean ok = bus.softDelete(currentSelected.getIdTacGia());
+                
+                if (!ok) {
+                    JOptionPane.showMessageDialog(this, "Xoá thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                JOptionPane.showMessageDialog(this, "Đã xoá (ngừng hoạt động) tác giả thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Tải lại bảng
+                loadData(); 
+                
+                // Clear form
+                jTableSach.clearSelection();
+                jTextFieldMaTacGia.setText("");
+                jTextFieldTenTacGia.setText("");
+                jTextFieldNgaySinhTacGia.setText("");
+                jTextFieldNoiSinhTacGia.setText("");
+                jTextFieldSDTTacGia.setText("");
+                jTextFieldTrangThai.setText("");
+                currentSelected = null;
+                
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {}
     private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {
         thucHienTimKiem();
     }
     
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {
-        jTextFieldTimKiem.setText("");
+// Trả ô tìm kiếm về mặc định
+        jTextFieldTimKiem.setText("Tìm kiếm...");
+        
+        // Tải lại toàn bộ dữ liệu
         loadData();
+        
+        // Làm sạch form bên phải
+        jTableSach.clearSelection();
+        jTextFieldMaTacGia.setText("");
+        jTextFieldTenTacGia.setText("");
+        jTextFieldNgaySinhTacGia.setText("");
+        jTextFieldNoiSinhTacGia.setText("");
+        jTextFieldSDTTacGia.setText("");
+        jTextFieldTrangThai.setText("");
+        currentSelected = null;
     }
 
+    private javax.swing.JButton jButtonXoa;
     private javax.swing.JButton jButtonSua;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;

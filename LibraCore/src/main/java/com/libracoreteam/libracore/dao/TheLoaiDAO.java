@@ -27,16 +27,9 @@ public class TheLoaiDAO {
 
     /* ==================== READ ==================== */
 
-    public List<TheLoai> getActive() {
-        String sql = BASE_SELECT +
-                " WHERE " + COL_HOAT_DONG + " = ?" +
-                " ORDER BY " + COL_TEN + " ASC";
-
-        return queryList(sql, ps -> ps.setBoolean(1, true));
-    }
-
+// 1. Sửa hàm getAll: Chỉ lấy thể loại đang hoạt động
     public List<TheLoai> getAll() {
-        String sql = BASE_SELECT + " ORDER BY " + COL_TEN + " ASC";
+        String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 ORDER BY " + COL_TEN + " ASC";
         return queryList(sql, null);
     }
 
@@ -55,6 +48,43 @@ public class TheLoaiDAO {
         } catch (SQLException e) {
             throw new RuntimeException("TheLoaiDAO.getById failed", e);
         }
+    }
+    /*======WRITE========*/
+    // 2. Hàm Cập nhật (Sửa)
+    public boolean update(TheLoai tl) {
+        String sql = "UPDATE TheLoai SET TenTheLoai = ? WHERE id_TheLoai = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tl.getTenTheLoai());
+            ps.setInt(2, tl.getIdTheLoai());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 3. Hàm Xóa mềm (Đổi trạng thái HoatDong thành 0)
+    public boolean softDelete(int id) {
+        String sql = "UPDATE TheLoai SET HoatDong = 0 WHERE id_TheLoai = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 4. Hàm Tìm kiếm (Tìm theo cả ID và Tên)
+    public List<TheLoai> search(String keyword) {
+        String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 AND (" + COL_ID + " LIKE ? OR " + COL_TEN + " LIKE ?) ORDER BY " + COL_TEN + " ASC";
+        return queryList(sql, ps -> {
+            String k = "%" + keyword + "%";
+            ps.setString(1, k);
+            ps.setString(2, k);
+        });
     }
 
     /* ==================== HELPERS ==================== */

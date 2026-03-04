@@ -79,7 +79,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         add(contentPanel, BorderLayout.CENTER);
 
-        setMinimumSize(new Dimension(1100, 700));
+        setMinimumSize(new Dimension(1400, 800));
         setSize(1600, 900);
         setLocationRelativeTo(null);
     }

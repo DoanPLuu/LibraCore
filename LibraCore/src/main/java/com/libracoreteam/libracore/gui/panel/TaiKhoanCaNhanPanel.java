@@ -59,8 +59,6 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
         jLabelMaNgaySinh = new javax.swing.JLabel();
         jTextFieldNgaySinh = new javax.swing.JTextField();
         jPanelGioiTinh = new javax.swing.JPanel();
-        jLabelGioiTinh = new javax.swing.JLabel();
-        jTextFieldGioiTinh = new javax.swing.JTextField();
         jPanelSDT = new javax.swing.JPanel();
         jLabelSDT = new javax.swing.JLabel();
         jTextFieldSDT = new javax.swing.JTextField();
@@ -125,6 +123,7 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
 
         jPanelBoard.add(jPanelTopRight, java.awt.BorderLayout.PAGE_START);
 
+        jPanelBottom.setPreferredSize(new java.awt.Dimension(250, 366));
         jPanelBottom.setLayout(new javax.swing.BoxLayout(jPanelBottom, javax.swing.BoxLayout.Y_AXIS));
 
         jPanelTen.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
@@ -168,15 +167,6 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
 
         jPanelGioiTinh.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
         jPanelGioiTinh.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelGioiTinh.setText("GIới tính:");
-        jPanelGioiTinh.add(jLabelGioiTinh);
-
-        jTextFieldGioiTinh.setEditable(false);
-        jTextFieldGioiTinh.setFocusable(false);
-        jTextFieldGioiTinh.addActionListener(this::jTextFieldGioiTinhActionPerformed);
-        jPanelGioiTinh.add(jTextFieldGioiTinh);
-
         jPanelBottom.add(jPanelGioiTinh);
 
         jPanelSDT.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
@@ -264,10 +254,6 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldNgaySinhActionPerformed
 
-    private void jTextFieldGioiTinhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldGioiTinhActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldGioiTinhActionPerformed
-
     private void jTextFieldSDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSDTActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldSDTActionPerformed
@@ -304,7 +290,6 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonicon;
     private javax.swing.JLabel jLabelDiaChi;
     private javax.swing.JLabel jLabelEmail;
-    private javax.swing.JLabel jLabelGioiTinh;
     private javax.swing.JLabel jLabelMaNgaySinh;
     private javax.swing.JLabel jLabelSDT;
     private javax.swing.JLabel jLabelTen;
@@ -328,7 +313,6 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanelVaiTro;
     private javax.swing.JTextField jTextFieldDiaChi;
     private javax.swing.JTextField jTextFieldEmail;
-    private javax.swing.JTextField jTextFieldGioiTinh;
     private javax.swing.JTextField jTextFieldNgaySinh;
     private javax.swing.JTextField jTextFieldSDT;
     private javax.swing.JTextField jTextFieldTen;

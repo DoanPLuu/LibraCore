@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChiTietPhieuMuonDAO {
+public class ChiTietPhieuMuonDAO{
 
     public List<ChiTietPhieuMuon> getByPhieuMuonId(int idPhieuMuon) {
         List<ChiTietPhieuMuon> list = new ArrayList<>();

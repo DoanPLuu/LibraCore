@@ -56,29 +56,24 @@ public class NCCBUS {
         return ncc;
     }
 
-    public boolean update(int idNCC, String tenNCC) {
-        if (idNCC <= 0) {
-            throw new IllegalArgumentException("ID Nhà cung cấp không hợp lệ");
+public boolean update(com.libracoreteam.libracore.model.NCC ncc) {
+        // Kiểm tra dữ liệu hợp lệ trước khi đẩy xuống DAO
+        if (ncc == null) {
+            return false;
         }
-
-        tenNCC = safeTrim(tenNCC);
-
-        // Kiểm tra dữ liệu đầu vào
-        validateForCreateOrUpdate(idNCC, tenNCC);
-
-        NCC ncc = new NCC();
-        ncc.setIdNCC(idNCC);
-        ncc.setTenNCC(tenNCC);
-
+        if (ncc.getTenNCC() == null || ncc.getTenNCC().trim().isEmpty()) {
+            throw new IllegalArgumentException("Tên nhà cung cấp không được để trống!");
+        }
+        
+        // Gọi DAO để thực thi lệnh SQL
         return nccDAO.update(ncc);
     }
 
-    // Dùng xóa thật vì bảng NCC không có cột HoatDong
-    public boolean delete(int idNCC) {
-        if (idNCC <= 0) {
-            throw new IllegalArgumentException("ID Nhà cung cấp không hợp lệ");
+        public boolean softDelete(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Mã nhà cung cấp không hợp lệ!");
         }
-        return nccDAO.delete(idNCC);
+        return nccDAO.softDelete(id);
     }
 
     /* ==================== VALIDATION ==================== */
@@ -102,4 +97,5 @@ public class NCCBUS {
     private static String safeTrim(String s) {
         return s == null ? null : s.trim();
     }
+
 }
