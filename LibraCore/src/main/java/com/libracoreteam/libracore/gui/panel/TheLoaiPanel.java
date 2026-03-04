@@ -2,6 +2,7 @@ package com.libracoreteam.libracore.gui.panel;
 
 import com.libracoreteam.libracore.bus.TheLoaiBUS;
 import com.libracoreteam.libracore.gui.dialog.ThemTheLoaiDialog;
+import com.libracoreteam.libracore.gui.dialog.SuaTheLoaiDialog;
 import com.libracoreteam.libracore.model.TheLoai;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
@@ -79,6 +80,11 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         jPanelNutThem = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
+        
+        // Khởi tạo nút Sửa và Xóa
+        jButtonSua = new javax.swing.JButton();
+        jButtonXoa = new javax.swing.JButton();
+
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -94,8 +100,6 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         jLabelTenTheLoai = new javax.swing.JLabel();
         jTextFieldTenTheLoai = new javax.swing.JTextField();
         jPanelButton = new javax.swing.JPanel();
-        jButtonXacNhan = new javax.swing.JButton();
-        jButtonHuy = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
@@ -141,6 +145,18 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
         jPanelNutThem.add(jButtonThem);
+
+        // Đưa nút Sửa vào
+        jButtonSua.setText("Sửa");
+        jButtonSua.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonSua.addActionListener(this::jButtonSuaActionPerformed);
+        jPanelNutThem.add(jButtonSua);
+
+        // Đưa nút Xóa vào
+        jButtonXoa.setText("Xóa");
+        jButtonXoa.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonXoa.addActionListener(this::jButtonXoaActionPerformed);
+        jPanelNutThem.add(jButtonXoa);
 
         jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
@@ -205,15 +221,6 @@ public class TheLoaiPanel extends javax.swing.JPanel {
 
         jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
 
-        jButtonXacNhan.setText("Xác nhận");
-        jButtonXacNhan.setPreferredSize(new java.awt.Dimension(110, 40));
-        jButtonXacNhan.addActionListener(this::jButtonXacNhanActionPerformed);
-        jPanelButton.add(jButtonXacNhan);
-
-        jButtonHuy.setText("Huỷ");
-        jButtonHuy.setPreferredSize(new java.awt.Dimension(110, 40));
-        jPanelButton.add(jButtonHuy);
-
         jPanelFields.add(jPanelButton);
         jPanelFields.add(filler2);
         jPanelFields.add(filler3);
@@ -238,8 +245,10 @@ public class TheLoaiPanel extends javax.swing.JPanel {
             jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-            jButtonXacNhan.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(0, 100, 0)));
-            jButtonHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(100, 0, 0)));
+            
+            // Icon cho Sửa và Xóa
+            jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253))); 
+            jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69))); 
     }
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -247,6 +256,57 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         ThemTheLoaiDialog dialog = new ThemTheLoaiDialog(parentFrame, true);
         dialog.setVisible(true);
         loadData(); 
+    }
+
+    // Sự kiện Nút Sửa
+    private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {
+        if (currentSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một thể loại để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+        SuaTheLoaiDialog dialog = new SuaTheLoaiDialog(parentFrame, true, currentSelected);
+        dialog.setVisible(true);
+        loadData(); 
+    }
+
+    // Sự kiện Nút Xóa
+    private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {
+        if (currentSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một thể loại để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc muốn xoá (ngừng hoạt động) thể loại \"" + currentSelected.getTenTheLoai() + "\" không?",
+                "Xác nhận xoá",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (choice == JOptionPane.YES_OPTION) {
+            try {
+                boolean ok = bus.softDelete(currentSelected.getIdTheLoai());
+                
+                if (!ok) {
+                    JOptionPane.showMessageDialog(this, "Xoá thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                JOptionPane.showMessageDialog(this, "Đã xoá (ngừng hoạt động) thể loại thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                
+                loadData(); 
+                
+                jTableSach.clearSelection();
+                jTextFieldMaTheLoai.setText("");
+                jTextFieldTenTheLoai.setText("");
+                currentSelected = null;
+                
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void jTextFieldMaTheLoaiActionPerformed(java.awt.event.ActionEvent evt) {}
@@ -259,7 +319,6 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         loadData();
     }
 
-    private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {}
 
     private javax.swing.Box.Filler filler10;
     private javax.swing.Box.Filler filler2;
@@ -270,11 +329,11 @@ public class TheLoaiPanel extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler7;
     private javax.swing.Box.Filler filler8;
     private javax.swing.Box.Filler filler9;
-    private javax.swing.JButton jButtonHuy;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
+    private javax.swing.JButton jButtonSua; // Khai báo nút sửa
+    private javax.swing.JButton jButtonXoa; // Khai báo nút xóa
     private javax.swing.JButton jButtonTimKiem;
-    private javax.swing.JButton jButtonXacNhan;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JLabel jLabelMaTheLoai;
     private javax.swing.JLabel jLabelTenTheLoai;

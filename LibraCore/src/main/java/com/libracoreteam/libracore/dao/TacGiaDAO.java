@@ -33,10 +33,11 @@ public class TacGiaDAO {
         return queryList(sql, ps -> ps.setBoolean(1, true));
     }
 
+// Sửa lại hàm getAll để chỉ lấy Tác giả đang hoạt động
     public List<TacGia> getAll() {
-        String sql = BASE_SELECT + " ORDER BY " + COL_TEN + " ASC";
+        String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 ORDER BY " + COL_TEN + " ASC";
         return queryList(sql, null);
-    }
+    }   
 
     public TacGia getById(int id) {
         String sql = BASE_SELECT + " WHERE " + COL_ID + " = ?";
@@ -148,6 +149,20 @@ public class TacGiaDAO {
             ps.setString(2, k);
             ps.setString(3, k);
             ps.setString(4, k);
+        });
+    }
+// Sửa lại hàm search để chỉ tìm Tác giả đang hoạt động
+    public List<TacGia> search(String keyword) {
+        String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 AND (" + COL_ID + " LIKE ? OR " + COL_TEN + " LIKE ?) ORDER BY " + COL_TEN + " ASC";
+
+        return queryList(sql, ps -> {
+            try {
+                String k = "%" + keyword + "%";
+                ps.setString(1, k); 
+                ps.setString(2, k); 
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         });
     }
 
