@@ -1,28 +1,35 @@
 package com.libracoreteam.libracore.gui;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import com.libracoreteam.libracore.gui.panel.CuonSachPanel;
-import com.libracoreteam.libracore.gui.panel.MenuPanel;
 import com.libracoreteam.libracore.gui.panel.DashboardPanel;
-import com.libracoreteam.libracore.gui.panel.SachPanel;
-import com.libracoreteam.libracore.gui.panel.NXBPanel;
-import com.libracoreteam.libracore.gui.panel.NhapSachPanel;
-import com.libracoreteam.libracore.gui.panel.TacGiaPanel;
-import com.libracoreteam.libracore.gui.panel.TheLoaiPanel;
-import com.libracoreteam.libracore.gui.panel.NCCPanel;
-import com.libracoreteam.libracore.gui.panel.MuonTraSachPanel;
-import com.libracoreteam.libracore.gui.panel.PhatPanel;
+import com.libracoreteam.libracore.gui.panel.MenuPanel;
 import com.libracoreteam.libracore.gui.panel.MucPhatPanel;
+import com.libracoreteam.libracore.gui.panel.MuonTraSachPanel;
+import com.libracoreteam.libracore.gui.panel.NCCPanel;
+import com.libracoreteam.libracore.gui.panel.NXBPanel;
+import com.libracoreteam.libracore.gui.panel.NhanVienPanel;
+import com.libracoreteam.libracore.gui.panel.NhapSachPanel;
+import com.libracoreteam.libracore.gui.panel.PhatPanel;
+import com.libracoreteam.libracore.gui.panel.SachPanel;
+import com.libracoreteam.libracore.gui.panel.TacGiaPanel;
+import com.libracoreteam.libracore.gui.panel.TaiKhoanCaNhanPanel;
+import com.libracoreteam.libracore.gui.panel.TaiKhoanPanel;
 import com.libracoreteam.libracore.gui.panel.ThanhVienPanel;
+import com.libracoreteam.libracore.gui.panel.TheLoaiPanel;
 import com.libracoreteam.libracore.gui.panel.TheThanhVienPanel;
 import com.libracoreteam.libracore.gui.panel.ThongKeSachPanel;
-
-import com.libracoreteam.libracore.gui.panel.TaiKhoanCaNhanPanel;
-import com.libracoreteam.libracore.gui.panel.NhanVienPanel;
-import com.libracoreteam.libracore.gui.panel.TaiKhoanPanel;
 import com.libracoreteam.libracore.gui.panel.VaiTroPanel;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class MainFrame extends javax.swing.JFrame {
     private MenuPanel menuPanel;
