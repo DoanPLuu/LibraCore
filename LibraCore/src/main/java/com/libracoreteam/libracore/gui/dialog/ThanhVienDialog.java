@@ -2,9 +2,15 @@ package com.libracoreteam.libracore.gui.dialog;
 
 import com.libracoreteam.libracore.bus.DocGiaBUS;
 import com.libracoreteam.libracore.model.DocGia;
+import net.miginfocom.swing.MigLayout;
+import org.kordamp.ikonli.swing.FontIcon;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class ThanhVienDialog extends JDialog {
     private DocGiaBUS docGiaBUS;
@@ -12,8 +18,8 @@ public class ThanhVienDialog extends JDialog {
     private boolean isSuccess = false;
 
     // Components
-    private JTextField txtTen, txtNgaySinh, txtSdt, txtEmail, txtDiaChi;
-    private JComboBox<String> cboGioiTinh;
+    private JTextField txtTen, txtSdt, txtEmail, txtDiaChi;
+    private JSpinner spnNgaySinh; // Thay thế JTextField bằng JSpinner xịn xò
 
     public ThanhVienDialog(JFrame parent, DocGia docGia) {
         super(parent, docGia == null ? "Thêm Độc Giả" : "Sửa Độc Giả", true);
@@ -21,87 +27,107 @@ public class ThanhVienDialog extends JDialog {
         this.docGiaBUS = new DocGiaBUS();
 
         initComponents();
-        fillData(); // Nếu là sửa thì điền dữ liệu vào ô
+        fillData();
 
-        setSize(400, 450);
+        pack(); // Tự động co giãn theo nội dung, không fix cứng Size nữa
         setLocationRelativeTo(parent);
+        setResizable(false);
     }
 
     private void initComponents() {
-        setLayout(new BorderLayout(10, 10));
+        // Dùng MigLayout chuẩn mực giống ThemSachDialog
+        JPanel formPanel = new JPanel(
+                new MigLayout(
+                        "wrap 2, insets 20, gapx 15, gapy 12",
+                        "[right][grow, fill]",
+                        "[]"
+                )
+        );
 
-        // Form nhập liệu
-        JPanel pnlCenter = new JPanel(new GridLayout(6, 2, 10, 10));
-        pnlCenter.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // 1. Họ Tên
+        txtTen = new JTextField(20);
+        formPanel.add(new JLabel("Họ tên:"));
+        formPanel.add(txtTen);
 
-        pnlCenter.add(new JLabel("Họ tên:"));
-        txtTen = new JTextField();
-        pnlCenter.add(txtTen);
+        // 2. Ngày Sinh (Sử dụng JSpinner Date)
+        SpinnerDateModel dateModel = new SpinnerDateModel();
+        spnNgaySinh = new JSpinner(dateModel);
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
+        spnNgaySinh.setEditor(dateEditor);
+        formPanel.add(new JLabel("Ngày sinh:"));
+        formPanel.add(spnNgaySinh);
 
-        pnlCenter.add(new JLabel("Ngày sinh (yyyy-MM-dd):"));
-        txtNgaySinh = new JTextField(LocalDate.now().toString()); // Placeholder
-        pnlCenter.add(txtNgaySinh);
+        // 3. Số điện thoại
+        txtSdt = new JTextField(15);
+        formPanel.add(new JLabel("Số điện thoại:"));
+        formPanel.add(txtSdt);
 
-        pnlCenter.add(new JLabel("Giới tính:"));
-        cboGioiTinh = new JComboBox<>(new String[]{"Nam", "Nữ", "Khác"});
-        pnlCenter.add(cboGioiTinh);
+        // 4. Email
+        txtEmail = new JTextField(20);
+        formPanel.add(new JLabel("Email:"));
+        formPanel.add(txtEmail);
 
-        pnlCenter.add(new JLabel("Số điện thoại:"));
-        txtSdt = new JTextField();
-        pnlCenter.add(txtSdt);
+        // 5. Địa chỉ
+        txtDiaChi = new JTextField(20);
+        formPanel.add(new JLabel("Địa chỉ:"));
+        formPanel.add(txtDiaChi);
 
-        pnlCenter.add(new JLabel("Email:"));
-        txtEmail = new JTextField();
-        pnlCenter.add(txtEmail);
-
-        pnlCenter.add(new JLabel("Địa chỉ:"));
-        txtDiaChi = new JTextField();
-        pnlCenter.add(txtDiaChi);
-
-        add(pnlCenter, BorderLayout.CENTER);
-
-        // Nút bấm
-        JPanel pnlBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnLuu = new JButton("Lưu");
+        // ===== Buttons =====
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        JButton btnLuu = new JButton("Xác nhận");
         JButton btnHuy = new JButton("Hủy");
-
-        btnLuu.setBackground(new Color(0, 153, 76));
-        btnLuu.setForeground(Color.WHITE);
+        
+        int iconSize = 16;
+        btnLuu.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(40, 167, 69)));
+        btnHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(220, 53, 69)));
 
         btnLuu.addActionListener(e -> save());
         btnHuy.addActionListener(e -> dispose());
 
-        pnlBottom.add(btnLuu);
-        pnlBottom.add(btnHuy);
-        add(pnlBottom, BorderLayout.SOUTH);
+        buttonPanel.add(btnLuu);
+        buttonPanel.add(btnHuy);
+
+        setLayout(new BorderLayout());
+        add(formPanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private void fillData() {
         if (docGiaEdit != null) {
             txtTen.setText(docGiaEdit.getTenDocGia());
-            txtNgaySinh.setText(docGiaEdit.getNgaySinh().toString());
             txtSdt.setText(docGiaEdit.getSdt());
             txtEmail.setText(docGiaEdit.getEmail());
             txtDiaChi.setText(docGiaEdit.getDiaChi());
+
+            // Convert LocalDate từ DB sang java.util.Date cho JSpinner
+            if (docGiaEdit.getNgaySinh() != null) {
+                Date date = Date.from(docGiaEdit.getNgaySinh().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                spnNgaySinh.setValue(date);
+            }
         }
     }
 
     private void save() {
         try {
-            // Lấy dữ liệu từ form
-            String ten = txtTen.getText();
-            LocalDate ngSinh = LocalDate.parse(txtNgaySinh.getText());
-            String sdt = txtSdt.getText();
-            String email = txtEmail.getText();
-            String diachi = txtDiaChi.getText();
+            String ten = txtTen.getText().trim();
+            String sdt = txtSdt.getText().trim();
+            String email = txtEmail.getText().trim();
+            String diachi = txtDiaChi.getText().trim();
+
+            if(ten.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Họ tên không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Convert Date từ JSpinner về lại LocalDate cho DB
+            Date selectedDate = (Date) spnNgaySinh.getValue();
+            LocalDate ngSinh = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
             String msg;
             if (docGiaEdit == null) {
-                // Thêm mới
-                DocGia dg = new DocGia(0,ten,diachi,ngSinh,sdt,email,true);
+                DocGia dg = new DocGia(0, ten, diachi, ngSinh, sdt, email, true);
                 msg = docGiaBUS.addDocGia(dg);
             } else {
-                // Cập nhật
                 docGiaEdit.setTenDocGia(ten);
                 docGiaEdit.setNgaySinh(ngSinh);
                 docGiaEdit.setSdt(sdt);
@@ -116,7 +142,7 @@ public class ThanhVienDialog extends JDialog {
                 dispose();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày sinh hoặc dữ liệu!");
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra trong quá trình lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
