@@ -184,7 +184,6 @@ public class MainFrame extends javax.swing.JFrame {
     public void showScreen(String screenName) {
         try {
             cardLayout.show(contentPanel, screenName);
-            System.out.println("✓ Đã chuyển sang màn hình: " + screenName);
 
             switch (screenName) {
                 case "DASHBOARD":

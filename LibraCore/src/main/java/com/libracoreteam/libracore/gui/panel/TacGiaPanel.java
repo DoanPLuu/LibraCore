@@ -92,7 +92,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
             jTextFieldNgaySinhTacGia.setText("");
             jTextFieldNoiSinhTacGia.setText("");
             jTextFieldSDTTacGia.setText("");
-            jTextFieldTrangThai.setText("");
             currentSelected = null;
             
         } catch (Exception ex) {
@@ -110,7 +109,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
                 jTextFieldNgaySinhTacGia.setText(currentSelected.getNgaySinh() != null ? currentSelected.getNgaySinh().toString() : "");
                 jTextFieldNoiSinhTacGia.setText(currentSelected.getNoiSinh() != null ? currentSelected.getNoiSinh() : "");
                 jTextFieldSDTTacGia.setText(currentSelected.getSdt() != null ? currentSelected.getSdt() : "");
-                jTextFieldTrangThai.setText(currentSelected.isHoatDong() ? "Hoạt động" : "Ngừng");
             }
         });
         
@@ -163,9 +161,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jPanelTrangThai = new javax.swing.JPanel();
         jLabelSDTTacGia = new javax.swing.JLabel();
         jTextFieldSDTTacGia = new javax.swing.JTextField();
-        jPanelTrangThai1 = new javax.swing.JPanel();
-        jLabelTrangThai = new javax.swing.JLabel();
-        jTextFieldTrangThai = new javax.swing.JTextField();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -310,18 +305,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelTrangThai);
 
-        jPanelTrangThai1.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelTrangThai1.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelTrangThai.setText("Trạng thái hoạt động:");
-        jPanelTrangThai1.add(jLabelTrangThai);
-
-        jTextFieldTrangThai.setEditable(false);
-        jTextFieldTrangThai.setFocusable(false);
-        jPanelTrangThai1.add(jTextFieldTrangThai);
-
-        jPanelFields.add(jPanelTrangThai1);
-
         jPanelBottom.add(jPanelFields);
 
         jPanelRight.add(jPanelBottom, java.awt.BorderLayout.CENTER);
@@ -394,7 +377,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
                 jTextFieldNgaySinhTacGia.setText("");
                 jTextFieldNoiSinhTacGia.setText("");
                 jTextFieldSDTTacGia.setText("");
-                jTextFieldTrangThai.setText("");
                 currentSelected = null;
                 
             } catch (RuntimeException ex) {
@@ -422,7 +404,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jTextFieldNgaySinhTacGia.setText("");
         jTextFieldNoiSinhTacGia.setText("");
         jTextFieldSDTTacGia.setText("");
-        jTextFieldTrangThai.setText("");
         currentSelected = null;
     }
 
@@ -438,7 +419,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelSDTTacGia;
     private javax.swing.JLabel jLabelTenTacGia;
     private javax.swing.JLabel jLabelTitle;
-    private javax.swing.JLabel jLabelTrangThai;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
@@ -455,7 +435,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanelTimKiem;
     private javax.swing.JPanel jPanelTop;
     private javax.swing.JPanel jPanelTrangThai;
-    private javax.swing.JPanel jPanelTrangThai1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSach;
     private javax.swing.JTextField jTextFieldMaTacGia;
@@ -464,5 +443,4 @@ public class TacGiaPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldSDTTacGia;
     private javax.swing.JTextField jTextFieldTenTacGia;
     private javax.swing.JTextField jTextFieldTimKiem;
-    private javax.swing.JTextField jTextFieldTrangThai;
 }
