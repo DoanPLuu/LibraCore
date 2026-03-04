@@ -105,8 +105,6 @@ public class NXBPanel extends javax.swing.JPanel {
         jLabelSDT = new javax.swing.JLabel();
         jTextFieldSDT = new javax.swing.JTextField();
         jPanelTrangThai = new javax.swing.JPanel();
-        jLabelTrangThai = new javax.swing.JLabel();
-        jTextFieldTrangThai = new javax.swing.JTextField();
         jPanelButton = new javax.swing.JPanel();
         jButtonXacNhan = new javax.swing.JButton();
         jButtonHuy = new javax.swing.JButton();
@@ -267,18 +265,7 @@ public class NXBPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelSDT);
 
-        jPanelTrangThai.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        jPanelTrangThai.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelTrangThai.setText("Trạng thái:");
-        jPanelTrangThai.add(jLabelTrangThai);
-
-        jTextFieldTrangThai.setEditable(false);
-        jTextFieldTrangThai.setFocusable(false);
-        jTextFieldTrangThai.addActionListener(this::jTextFieldTrangThaiActionPerformed);
-        jPanelTrangThai.add(jTextFieldTrangThai);
-
-        jPanelFields.add(jPanelTrangThai);
+        // Panel trạng thái đã được lược bỏ khỏi UI (chỉ hiển thị các NXB đang hoạt động)
 
         jPanelButton.setMinimumSize(new java.awt.Dimension(250, 60));
         jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
@@ -324,7 +311,7 @@ public class NXBPanel extends javax.swing.JPanel {
 
     private void initTable() {
         tblModel = new DefaultTableModel(
-                new Object[]{"Mã", "Tên NXB", "Địa chỉ", "SĐT", "Trạng thái"},
+                new Object[]{"Mã", "Tên NXB", "Địa chỉ", "SĐT"},
                 0
         ) {
             @Override
@@ -384,8 +371,7 @@ public class NXBPanel extends javax.swing.JPanel {
                     n.getIdNXB(),
                     n.getTenNXB(),
                     n.getDiaChi(),
-                    n.getSdt(),
-                    n.isHoatDong() ? "Hoạt động" : "Ngừng"
+                    n.getSdt()
             });
         }
     }
@@ -396,7 +382,6 @@ public class NXBPanel extends javax.swing.JPanel {
         jTextFieldTenNXB.setText(n.getTenNXB());
         jTextFieldDiaChiNXB.setText(n.getDiaChi());
         jTextFieldSDT.setText(n.getSdt());
-        jTextFieldTrangThai.setText(n.isHoatDong() ? "Hoạt động" : "Ngừng");
     }
 
     private void clearDetail() {
@@ -404,7 +389,6 @@ public class NXBPanel extends javax.swing.JPanel {
         jTextFieldTenNXB.setText("");
         jTextFieldDiaChiNXB.setText("");
         jTextFieldSDT.setText("");
-        jTextFieldTrangThai.setText("");
     }
 
     private void setEditMode(boolean on) {
@@ -427,11 +411,9 @@ public class NXBPanel extends javax.swing.JPanel {
         jTextFieldSDT.setEditable(on);
         jTextFieldSDT.setFocusable(on);
 
-        // Mã + Trạng thái giữ readonly (đỡ phải đổi GUI builder sang checkbox/combobox)
+        // Mã giữ readonly (đỡ phải đổi GUI builder sang checkbox/combobox)
         jTextFieldMaNXB.setEditable(false);
         jTextFieldMaNXB.setFocusable(false);
-        jTextFieldTrangThai.setEditable(false);
-        jTextFieldTrangThai.setFocusable(false);
 
         jButtonXacNhan.setText("Lưu");
     }
@@ -500,10 +482,6 @@ public class NXBPanel extends javax.swing.JPanel {
     private void jTextFieldDiaChiNXBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDiaChiNXBActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldDiaChiNXBActionPerformed
-
-    private void jTextFieldTrangThaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTrangThaiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTrangThaiActionPerformed
 
     private void jTextFieldSDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSDTActionPerformed
         // TODO add your handling code here:
@@ -719,7 +697,6 @@ public class NXBPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelSDT;
     private javax.swing.JLabel jLabelTenNXB;
     private javax.swing.JLabel jLabelTitle;
-    private javax.swing.JLabel jLabelTrangThai;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanelBoard;
     private javax.swing.JPanel jPanelBottom;
@@ -744,6 +721,5 @@ public class NXBPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldSDT;
     private javax.swing.JTextField jTextFieldTenNXB;
     private javax.swing.JTextField jTextFieldTimKiem;
-    private javax.swing.JTextField jTextFieldTrangThai;
     // End of variables declaration//GEN-END:variables
 }
