@@ -32,7 +32,6 @@ public class NCCPanel extends javax.swing.JPanel {
             int iconSize = 16;
 
             jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
-            jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
@@ -185,7 +184,6 @@ public class NCCPanel extends javax.swing.JPanel {
         jButtonTimKiem = new javax.swing.JButton();
         jButtonLamMoi = new javax.swing.JButton();
         jPanelNutThem = new javax.swing.JPanel();
-        jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jButtonSua = new javax.swing.JButton();
         jButtonXoa = new javax.swing.JButton();
@@ -238,11 +236,6 @@ public class NCCPanel extends javax.swing.JPanel {
         jPanelTimKiem.add(jButtonLamMoi);
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
-
-        jButtonXuat.setText("Xuất");
-        jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
-        jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
-        jPanelNutThem.add(jButtonXuat);
 
         jButtonThem.setText("Thêm");
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
@@ -375,10 +368,6 @@ public class NCCPanel extends javax.swing.JPanel {
         currentSelected = null;
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
-    private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
-
-    }//GEN-LAST:event_jButtonXuatActionPerformed
-
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
         java.awt.Window owner = javax.swing.SwingUtilities.getWindowAncestor(this);
     
@@ -483,7 +472,6 @@ public class NCCPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXoa;
-    private javax.swing.JButton jButtonXuat;
     private javax.swing.JLabel jLabelMaNCC;
     private javax.swing.JLabel jLabelTenNCC;
     private javax.swing.JLabel jLabelTitle;
