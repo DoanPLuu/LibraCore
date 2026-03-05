@@ -5,9 +5,13 @@ import com.libracoreteam.libracore.model.PhieuNhap;
 import com.libracoreteam.libracore.model.Sach;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,33 +36,43 @@ public class ChiTietPhieuNhapDialog extends JDialog {
         this.phieuNhap = phieuNhap;
         this.details = details == null ? Collections.<ChiTietPhieuNhap>emptyList() : details;
 
-        setTitle("Chi tiết phiếu nhập");
-        setSize(900, 600);
-        setLocationRelativeTo(parent);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
         initComponents();
         loadData();
     }
 
     private void initComponents() {
-        setLayout(new BorderLayout(10, 10));
+        setTitle("Chi tiết phiếu nhập #" + phieuNhap.getIdPhieuNhap());
+        setLayout(new BorderLayout(6, 6));
 
-        JPanel headerPanel = new JPanel(new MigLayout("wrap 4, insets 16", "[right][grow][right][grow]"));
-        headerPanel.add(new JLabel("Mã phiếu:"));
-        headerPanel.add(new JLabel(String.valueOf(phieuNhap.getIdPhieuNhap())));
-        headerPanel.add(new JLabel("Ngày nhập:"));
-        headerPanel.add(new JLabel(phieuNhap.getNgayNhap() == null ? "" : String.valueOf(phieuNhap.getNgayNhap())));
+        // ===== Panel thông tin giống các dialog phiếu mượn/phạt =====
+        JPanel infoPanel = new JPanel(new GridLayout(4, 2, 6, 4));
+        infoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin phiếu nhập"));
 
-        headerPanel.add(new JLabel("Nhà cung cấp:"));
+        String maPhieu = String.valueOf(phieuNhap.getIdPhieuNhap());
+        String ngayNhap = phieuNhap.getNgayNhap() == null ? "" : phieuNhap.getNgayNhap().toString();
         String tenNcc = "";
         if (phieuNhap.getNcc() != null && phieuNhap.getNcc().getTenNCC() != null) {
             tenNcc = phieuNhap.getNcc().getTenNCC();
         }
-        headerPanel.add(new JLabel(tenNcc));
-        headerPanel.add(new JLabel("Trạng thái:"));
-        headerPanel.add(new JLabel(phieuNhap.getTrangThai() == null ? "" : phieuNhap.getTrangThai()));
-        add(headerPanel, BorderLayout.NORTH);
+        String trangThai = phieuNhap.getTrangThai() == null ? "" : phieuNhap.getTrangThai();
+
+        String tenNhanVien = "";
+        if (phieuNhap.getNhanVien() != null && phieuNhap.getNhanVien().getTenNhanVien() != null) {
+            tenNhanVien = phieuNhap.getNhanVien().getTenNhanVien();
+        } else if (phieuNhap.getIdNhanVien() > 0) {
+            tenNhanVien = "Mã NV: " + phieuNhap.getIdNhanVien();
+        }
+
+        infoPanel.add(new JLabel("Mã phiếu:"));
+        infoPanel.add(new JLabel(maPhieu));
+        infoPanel.add(new JLabel("Ngày nhập:"));
+        infoPanel.add(new JLabel(ngayNhap));
+        infoPanel.add(new JLabel("Nhà cung cấp:"));
+        infoPanel.add(new JLabel(tenNcc));
+        infoPanel.add(new JLabel("Nhân viên xử lý:"));
+        infoPanel.add(new JLabel(tenNhanVien));
+
+        add(infoPanel, BorderLayout.NORTH);
 
         tableModel = new DefaultTableModel(
                 new Object[]{"STT", "Tên sách", "Số lượng", "Đơn giá", "Thành tiền"},
@@ -80,6 +94,20 @@ public class ChiTietPhieuNhapDialog extends JDialog {
         bottomPanel.add(new JLabel("    "));
         bottomPanel.add(lblTongTien);
         add(bottomPanel, BorderLayout.SOUTH);
+
+        // ===== Nút đóng giống các dialog khác =====
+        JButton btnDong = new JButton("Đóng");
+        btnDong.addActionListener(e -> dispose());
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        btnPanel.add(btnDong);
+        add(btnPanel, BorderLayout.PAGE_END);
+
+        getRootPane().setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
+        pack();
+        setMinimumSize(new java.awt.Dimension(650, 420));
+        setLocationRelativeTo(getParent());
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     private void loadData() {

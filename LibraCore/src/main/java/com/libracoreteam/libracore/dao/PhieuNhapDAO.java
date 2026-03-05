@@ -2,6 +2,7 @@ package com.libracoreteam.libracore.dao;
 
 import com.libracoreteam.libracore.model.ChiTietPhieuNhap;
 import com.libracoreteam.libracore.model.NCC;
+import com.libracoreteam.libracore.model.NhanVien;
 import com.libracoreteam.libracore.model.PhieuNhap;
 import com.libracoreteam.libracore.model.Sach;
 import com.libracoreteam.libracore.util.DBConnection;
@@ -24,9 +25,11 @@ public class PhieuNhapDAO {
 
     public List<PhieuNhap> getActive() {
         String sql =
-                "SELECT p.id_PhieuNhap, p.id_NCC, p.NgayNhap, p.SoLuongSach, p.id_NhanVien, p.TrangThai, n.TenNCC " +
+                "SELECT p.id_PhieuNhap, p.id_NCC, p.NgayNhap, p.SoLuongSach, p.id_NhanVien, p.TrangThai, " +
+                "       n.TenNCC, nv.TenNhanVien " +
                 "FROM PhieuNhap p " +
                 "LEFT JOIN NCC n ON n.id_NCC = p.id_NCC " +
+                "LEFT JOIN NhanVien nv ON nv.id_NhanVien = p.id_NhanVien " +
                 "WHERE p.TrangThai <> ? " +
                 "ORDER BY p.id_PhieuNhap DESC";
         return queryList(sql, false, "DaHuy");
@@ -34,9 +37,11 @@ public class PhieuNhapDAO {
 
     public List<PhieuNhap> getDaHuy() {
         String sql =
-                "SELECT p.id_PhieuNhap, p.id_NCC, p.NgayNhap, p.SoLuongSach, p.id_NhanVien, p.TrangThai, n.TenNCC " +
+                "SELECT p.id_PhieuNhap, p.id_NCC, p.NgayNhap, p.SoLuongSach, p.id_NhanVien, p.TrangThai, " +
+                "       n.TenNCC, nv.TenNhanVien " +
                 "FROM PhieuNhap p " +
                 "LEFT JOIN NCC n ON n.id_NCC = p.id_NCC " +
+                "LEFT JOIN NhanVien nv ON nv.id_NhanVien = p.id_NhanVien " +
                 "WHERE p.TrangThai = ? " +
                 "ORDER BY p.id_PhieuNhap DESC";
         return queryList(sql, false, "DaHuy");
@@ -44,9 +49,11 @@ public class PhieuNhapDAO {
 
     public List<PhieuNhap> search(String keyword, boolean onlyDaHuy) {
         String sql =
-                "SELECT p.id_PhieuNhap, p.id_NCC, p.NgayNhap, p.SoLuongSach, p.id_NhanVien, p.TrangThai, n.TenNCC " +
+                "SELECT p.id_PhieuNhap, p.id_NCC, p.NgayNhap, p.SoLuongSach, p.id_NhanVien, p.TrangThai, " +
+                "       n.TenNCC, nv.TenNhanVien " +
                 "FROM PhieuNhap p " +
                 "LEFT JOIN NCC n ON n.id_NCC = p.id_NCC " +
+                "LEFT JOIN NhanVien nv ON nv.id_NhanVien = p.id_NhanVien " +
                 "WHERE " + (onlyDaHuy ? "p.TrangThai = ?" : "p.TrangThai <> ?") +
                 " AND (CAST(p.id_PhieuNhap AS CHAR) LIKE ? OR COALESCE(n.TenNCC, '') LIKE ?) " +
                 "ORDER BY p.id_PhieuNhap DESC";
@@ -352,6 +359,19 @@ public class PhieuNhapDAO {
         p.setSoLuongSach(rs.wasNull() ? null : soLuongSach);
 
         p.setIdNhanVien(rs.getInt("id_NhanVien"));
+
+        String tenNhanVien = null;
+        try {
+            tenNhanVien = rs.getString("TenNhanVien");
+        } catch (SQLException ignore) {
+        }
+        if (tenNhanVien != null) {
+            NhanVien nv = new NhanVien();
+            nv.setIdNhanVien(p.getIdNhanVien());
+            nv.setTenNhanVien(tenNhanVien);
+            p.setNhanVien(nv);
+        }
+
         p.setTrangThai(rs.getString("TrangThai"));
         return p;
     }
