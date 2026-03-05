@@ -7,11 +7,24 @@ package com.libracoreteam.libracore.gui.panel;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import java.awt.Color;
+import com.libracoreteam.libracore.bus.NhanVienBUS;
+import com.libracoreteam.libracore.bus.TaiKhoanBUS;
+import com.libracoreteam.libracore.model.NhanVien;
+import com.libracoreteam.libracore.model.TaiKhoan;
+import com.libracoreteam.libracore.util.UserSession;
+import com.libracoreteam.libracore.gui.dialog.SuaThongTinDialog;
+import com.libracoreteam.libracore.gui.dialog.DoiMatKhauDialog;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Sang
  */
 public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
+    
+    private NhanVienBUS nhanVienBUS = new NhanVienBUS();
+    private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
+    private NhanVien currentEmployee;
 
     /**
      * Creates new form TaiKhoanCaNhanPanel
@@ -19,6 +32,7 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
     public TaiKhoanCaNhanPanel() {
         initComponents();
         InnitButton();
+        loadUserInfo();
     }
     
         private void InnitButton() {
@@ -29,7 +43,7 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
             jButtonDoiMatKhau.setIcon(FontIcon.of(FontAwesomeSolid.KEY, iconSize, new Color(0, 100, 0)));
             jButtonCapNhap.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(100, 0, 0)));
     }
-
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -38,6 +52,7 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanelTop = new javax.swing.JPanel();
         jLabelTitle = new javax.swing.JLabel();
@@ -266,13 +281,197 @@ public class TaiKhoanCaNhanPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldEmailActionPerformed
 
+    private void loadUserInfo() {
+        try {
+            UserSession session = UserSession.getInstance();
+            int idTaiKhoan = session.getIdTaiKhoan();
+            
+            // Lấy thông tin nhân viên
+            currentEmployee = nhanVienBUS.getByIdTaiKhoan(idTaiKhoan);
+            
+            if (currentEmployee != null) {
+                // Load dữ liệu vào text fields
+                jTextFieldTen.setText(currentEmployee.getTenNhanVien());
+                jTextFieldVaiTro.setText(session.getVaiTro());
+                
+                if (currentEmployee.getNgaySinh() != null) {
+                    jTextFieldNgaySinh.setText(currentEmployee.getNgaySinh().toString());
+                }
+                
+                jTextFieldSDT.setText(currentEmployee.getSdt() != null ? currentEmployee.getSdt() : "");
+                jTextFieldDiaChi.setText(currentEmployee.getDiaChi() != null ? currentEmployee.getDiaChi() : "");
+                jTextFieldEmail.setText(currentEmployee.getEmail() != null ? currentEmployee.getEmail() : "");
+                
+                // Disable edit mode by default
+                setReadOnlyMode();
+            } else {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin nhân viên!", 
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), 
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void setReadOnlyMode() {
+        // Tất cả các field sẽ là read-only
+        jTextFieldSDT.setEditable(false);
+        jTextFieldDiaChi.setEditable(false);
+        jTextFieldEmail.setEditable(false);
+    }
+
     private void jButtonCapNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCapNhapActionPerformed
-        // TODO add your handling code here:
+        // Mở dialog sửa thông tin
+        SuaThongTinDialog dialog = new SuaThongTinDialog(
+                (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), 
+                currentEmployee);
+        dialog.setVisible(true);
+        
+        if (dialog.isConfirmed()) {
+            // Lấy dữ liệu từ dialog
+            String sdt = dialog.getSDT();
+            String diaChi = dialog.getDiaChi();
+            String email = dialog.getEmail();
+            
+            // Validate và lưu
+            if (validateAndSave(sdt, diaChi, email)) {
+                JOptionPane.showMessageDialog(this, "Cập nhập thông tin thành công!", 
+                        "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                // Reload lại dữ liệu
+                loadUserInfo();
+            }
+        }
     }//GEN-LAST:event_jButtonCapNhapActionPerformed
+    
+    private boolean validateAndSave(String sdt, String diaChi, String email) {
+        try {
+            // Validate input
+            if (sdt.isEmpty() || diaChi.isEmpty() || email.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", 
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            
+            // Validate email
+            if (!isValidEmail(email)) {
+                JOptionPane.showMessageDialog(this, "Email không hợp lệ!", 
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            
+            // Validate phone
+            if (!sdt.matches("^\\d{10}$")) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại phải bao gồm 10 chữ số!", 
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            
+            // Update employee info
+            currentEmployee.setSdt(sdt);
+            currentEmployee.setDiaChi(diaChi);
+            currentEmployee.setEmail(email);
+            
+            // Save to database
+            if (nhanVienBUS.update(currentEmployee)) {
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(this, "Lỗi khi cập nhập thông tin!", 
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), 
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            return false;
+        }
+    }
+    
+    private boolean isValidEmail(String email) {
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    }
 
     private void jButtonDoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDoiMatKhauActionPerformed
-        // TODO add your handling code here:
+        showChangePasswordDialog();
     }//GEN-LAST:event_jButtonDoiMatKhauActionPerformed
+    
+    private void showChangePasswordDialog() {
+        DoiMatKhauDialog dialog = new DoiMatKhauDialog(
+                (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this));
+        dialog.setVisible(true);
+        
+        if (dialog.isConfirmed()) {
+            String oldPassword = dialog.getOldPassword();
+            String newPassword = dialog.getNewPassword();
+            String confirmPassword = dialog.getConfirmPassword();
+            
+            if (changePassword(oldPassword, newPassword, confirmPassword)) {
+                JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công!", 
+                        "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+    
+    private boolean changePassword(String oldPassword, String newPassword, String confirmPassword) {
+        try {
+            // Validate input
+            if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", 
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            
+            // Check if new password matches confirm password
+            if (!newPassword.equals(confirmPassword)) {
+                JOptionPane.showMessageDialog(this, "Mật khẩu mới không khớp!", 
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            
+            // Check if new password is at least 6 characters
+            if (newPassword.length() < 6) {
+                JOptionPane.showMessageDialog(this, "Mật khẩu mới phải có ít nhất 6 ký tự!", 
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            
+            // Get current account
+            UserSession session = UserSession.getInstance();
+            int idTaiKhoan = session.getIdTaiKhoan();
+            TaiKhoan account = taiKhoanBUS.getById(idTaiKhoan);
+            
+            if (account == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy tài khoản!", 
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            
+            // Verify old password (should be hashed in real application)
+            if (!account.getMatKhau().equals(oldPassword)) {
+                JOptionPane.showMessageDialog(this, "Mật khẩu hiện tại không đúng!", 
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            
+            // Update password
+            account.setMatKhau(newPassword);
+            
+            if (taiKhoanBUS.update(account)) {
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(this, "Lỗi khi đổi mật khẩu!", 
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), 
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            return false;
+        }
+    }
 
     private void jButtoniconActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoniconActionPerformed
         // TODO add your handling code here:

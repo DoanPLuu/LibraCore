@@ -4,24 +4,82 @@
  */
 package com.libracoreteam.libracore.gui.panel;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import java.awt.Color;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
+
+import javax.swing.table.DefaultTableModel;
+import com.libracoreteam.libracore.bus.TaiKhoanBUS;
+import com.libracoreteam.libracore.model.TaiKhoan;
+import com.libracoreteam.libracore.gui.dialog.ThemTaiKhoanDialog;
+import com.libracoreteam.libracore.gui.dialog.SuaTaiKhoanDialog;
+import java.util.List;
 
 /**
  *
  * @author ASUS
  */
 public class TaiKhoanPanel extends javax.swing.JPanel {
-
+    
+    private DefaultTableModel tableModel;
+    private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
     /**
      * Creates new form TaiKhoanPanel
      */
     public TaiKhoanPanel() {
         initComponents();
-        InnitButton();
+        customComponets();
+        initTable();
+        loadDataToTable();
+        
+    }
+    
+    private void initTable() {
+        tableModel = new DefaultTableModel(
+            new Object [][] {},
+            new String [] {"Mã Tài Khoản", "Tên Đăng Nhập", "Vai Trò"}
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Khóa không cho người dùng sửa trực tiếp trên bảng
+            }
+        };
+        jTable1.setModel(tableModel);
+        jTable1.setRowHeight(30);   
     }
 
+    private void loadDataToTable() {
+        tableModel.setRowCount(0);
+        List<TaiKhoan> listTaiKhoan = taiKhoanBUS.getAll();
+        
+        for (TaiKhoan tk : listTaiKhoan) {
+            Object[] row = {
+                tk.getIdTaiKhoan(),
+                tk.getTaiKhoan(),
+                getVaiTroName(tk.getIdVaiTro())
+            };
+            tableModel.addRow(row);
+        }
+    }
+
+    private String getVaiTroName(int idVaiTro) {
+        switch (idVaiTro) {
+            case 1: return "Admin";
+            case 2: return "Nhân Viên";
+            case 3: return "Quản Lý";
+            default: return "Khác";
+        }
+    }
+
+    private void clearFields() {
+        jTextFieldMaTaiKhoan.setText("");
+        jTextFieldTenDangNhap.setText("");
+        jPasswordField1.setText("");
+        jTable1.clearSelection();
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,12 +93,11 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jPanelLeftTop = new javax.swing.JPanel();
         jPanelCongCu = new javax.swing.JPanel();
         jPanelTimKiem = new javax.swing.JPanel();
-        jComboBoxTimKiem = new javax.swing.JComboBox<>();
         jTextFieldTimKiem = new javax.swing.JTextField();
         jButtonTimKiem = new javax.swing.JButton();
         jButtonLamMoi = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jPanelNutDieuKhien = new javax.swing.JPanel();
-        jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jButtonSua = new javax.swing.JButton();
         jButtonXoa = new javax.swing.JButton();
@@ -60,7 +117,7 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jTextFieldTenDangNhap = new javax.swing.JTextField();
         jPanelMatKhau = new javax.swing.JPanel();
         jLabelMatKhau = new javax.swing.JLabel();
-        jTextFieldMatKhau = new javax.swing.JTextField();
+        jPasswordField1 = new javax.swing.JPasswordField();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
@@ -81,25 +138,22 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jPanelCongCu.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 0, 20));
         jPanelCongCu.setLayout(new java.awt.BorderLayout());
 
-        jComboBoxTimKiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo ID", "Theo Tên Đăng Nhập", " " }));
-        jComboBoxTimKiem.setPreferredSize(new java.awt.Dimension(110, 40));
-        jComboBoxTimKiem.addActionListener(this::jComboBoxTimKiemActionPerformed);
-        jPanelTimKiem.add(jComboBoxTimKiem);
-
         jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
+        jTextFieldTimKiem.addActionListener(this::jTextFieldTimKiemActionPerformed);
         jPanelTimKiem.add(jTextFieldTimKiem);
 
         jButtonTimKiem.setPreferredSize(new java.awt.Dimension(40, 40));
         jPanelTimKiem.add(jButtonTimKiem);
 
         jButtonLamMoi.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonLamMoi.addActionListener(this::jButtonLamMoiActionPerformed);
         jPanelTimKiem.add(jButtonLamMoi);
 
-        jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
+        jCheckBox1.setText("Hiện đã khóa");
+        jCheckBox1.setPreferredSize(new java.awt.Dimension(93, 40));
+        jPanelTimKiem.add(jCheckBox1);
 
-        jButtonXuat.setText("Xuất");
-        jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
-        jPanelNutDieuKhien.add(jButtonXuat);
+        jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
         jButtonThem.setText("Thêm");
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
@@ -128,15 +182,20 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "ID", "Tên Đăng Nhập", "Mật Khẩu"
+                "ID", "Tên Đăng Nhập"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jPanelBoard.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -164,6 +223,9 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
 
         jLabelMaTaiKhoan.setText("Mã Tài Khoản");
         jPanelMaTaiKhoan.add(jLabelMaTaiKhoan);
+
+        jTextFieldMaTaiKhoan.setEditable(false);
+        jTextFieldMaTaiKhoan.setBackground(new java.awt.Color(255, 255, 255));
         jPanelMaTaiKhoan.add(jTextFieldMaTaiKhoan);
 
         jPanelFields.add(jPanelMaTaiKhoan);
@@ -173,6 +235,8 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jLabelTenDangNhap.setText("Tên Đăng Nhập");
         jPanelTenDangNhap.add(jLabelTenDangNhap);
 
+        jTextFieldTenDangNhap.setEditable(false);
+        jTextFieldTenDangNhap.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldTenDangNhap.addActionListener(this::jTextFieldTenDangNhapActionPerformed);
         jPanelTenDangNhap.add(jTextFieldTenDangNhap);
 
@@ -182,7 +246,7 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
 
         jLabelMatKhau.setText("Mật Khẩu");
         jPanelMatKhau.add(jLabelMatKhau);
-        jPanelMatKhau.add(jTextFieldMatKhau);
+        jPanelMatKhau.add(jPasswordField1);
 
         jPanelFields.add(jPanelMatKhau);
         jPanelFields.add(filler1);
@@ -201,36 +265,118 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         add(jPanelRight, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void InnitButton() {
+    private void customComponets() {
         int iconSize = 16;
         jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
-        jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
         jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
         jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
         jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
         jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
         jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm kiếm");
+        jPasswordField1.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
     }
     
-    private void jComboBoxTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTimKiemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxTimKiemActionPerformed
-
+    
+    
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
-        // TODO add your handling code here:
+        ThemTaiKhoanDialog dialog = new ThemTaiKhoanDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true);
+        dialog.setVisible(true);
+        
+        if (dialog.isSaved()) {
+            loadDataToTable();
+            clearFields();
+        }
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuaActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần sửa!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int idTaiKhoan = (int) tableModel.getValueAt(selectedRow, 0);
+        TaiKhoan tk = taiKhoanBUS.getById(idTaiKhoan);
+        
+        if (tk != null) {
+            SuaTaiKhoanDialog dialog = new SuaTaiKhoanDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true, tk);
+            dialog.setVisible(true);
+            
+            if (dialog.isSaved()) {
+                loadDataToTable();
+                clearFields();
+            }
+        }
     }//GEN-LAST:event_jButtonSuaActionPerformed
 
     private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXoaActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần xóa!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int idTaiKhoan = (int) tableModel.getValueAt(selectedRow, 0);
+        
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn xóa tài khoản này?",
+                "Xác nhận xóa",
+                javax.swing.JOptionPane.YES_NO_OPTION
+        );
+        
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            if (taiKhoanBUS.delete(idTaiKhoan)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Xóa tài khoản thành công!");
+                loadDataToTable();
+                clearFields();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi xóa tài khoản!", "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_jButtonXoaActionPerformed
 
     private void jTextFieldTenDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTenDangNhapActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldTenDangNhapActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow >= 0) {
+            try {
+                // Lấy ID Tài Khoản từ cột 0 của dòng được chọn
+                int idTaiKhoan = Integer.parseInt(tableModel.getValueAt(selectedRow, 0).toString());
+                
+                // Gọi BUS lấy thông tin chi tiết
+                TaiKhoan tk = taiKhoanBUS.getById(idTaiKhoan);
+                
+                if (tk != null) {
+                    // Đẩy dữ liệu lên các ô TextField
+                    jTextFieldMaTaiKhoan.setText(String.valueOf(tk.getIdTaiKhoan()));
+                    jTextFieldTenDangNhap.setText(tk.getTaiKhoan() != null ? tk.getTaiKhoan() : "");
+                    jPasswordField1.setText(tk.getMatKhau() != null ? tk.getMatKhau() : "");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu từ bảng!");
+            }
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
+        loadDataToTable(); // 1. Tải lại dữ liệu mới nhất từ Database
+        clearFields();     // 2. Xóa trắng các ô nhập liệu bên phải
+        
+        // 3. Reset luôn cả khu vực tìm kiếm (nếu có)
+        jTextFieldTimKiem.setText(""); 
+        
+    }//GEN-LAST:event_jButtonLamMoiActionPerformed
+
+    private void jTextFieldTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTimKiemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -247,8 +393,7 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXoa;
-    private javax.swing.JButton jButtonXuat;
-    private javax.swing.JComboBox<String> jComboBoxTimKiem;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabelMaTaiKhoan;
     private javax.swing.JLabel jLabelMatKhau;
     private javax.swing.JLabel jLabelTenDangNhap;
@@ -266,10 +411,10 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanelTenDangNhap;
     private javax.swing.JPanel jPanelTimKiem;
     private javax.swing.JPanel jPanelTop;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextFieldMaTaiKhoan;
-    private javax.swing.JTextField jTextFieldMatKhau;
     private javax.swing.JTextField jTextFieldTenDangNhap;
     private javax.swing.JTextField jTextFieldTimKiem;
     // End of variables declaration//GEN-END:variables

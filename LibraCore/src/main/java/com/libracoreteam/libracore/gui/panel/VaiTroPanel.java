@@ -35,12 +35,10 @@ public class VaiTroPanel extends javax.swing.JPanel {
         jPanelLeftTop = new javax.swing.JPanel();
         jPanelCongCu = new javax.swing.JPanel();
         jPanelTimKiem = new javax.swing.JPanel();
-        jComboBoxTimKiem = new javax.swing.JComboBox<>();
         jTextFieldTimKiem = new javax.swing.JTextField();
         jButtonTimKiem = new javax.swing.JButton();
         jButtonLamMoi = new javax.swing.JButton();
         jPanelNutDieuKhien = new javax.swing.JPanel();
-        jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jButtonSua = new javax.swing.JButton();
         jButtonXoa = new javax.swing.JButton();
@@ -79,11 +77,6 @@ public class VaiTroPanel extends javax.swing.JPanel {
         jPanelCongCu.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 0, 20));
         jPanelCongCu.setLayout(new java.awt.BorderLayout());
 
-        jComboBoxTimKiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo ID", "Theo Vai Trò" }));
-        jComboBoxTimKiem.setPreferredSize(new java.awt.Dimension(110, 40));
-        jComboBoxTimKiem.addActionListener(this::jComboBoxTimKiemActionPerformed);
-        jPanelTimKiem.add(jComboBoxTimKiem);
-
         jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
         jPanelTimKiem.add(jTextFieldTimKiem);
 
@@ -91,13 +84,10 @@ public class VaiTroPanel extends javax.swing.JPanel {
         jPanelTimKiem.add(jButtonTimKiem);
 
         jButtonLamMoi.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonLamMoi.addActionListener(this::jButtonLamMoiActionPerformed);
         jPanelTimKiem.add(jButtonLamMoi);
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
-
-        jButtonXuat.setText("Xuất");
-        jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
-        jPanelNutDieuKhien.add(jButtonXuat);
 
         jButtonThem.setText("Thêm");
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
@@ -195,7 +185,6 @@ public class VaiTroPanel extends javax.swing.JPanel {
     private void InnitButton() {
         int iconSize = 16;
         jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
-        jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
         jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
         jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
         jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
@@ -204,10 +193,6 @@ public class VaiTroPanel extends javax.swing.JPanel {
     }
     
    
-    private void jComboBoxTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTimKiemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxTimKiemActionPerformed
-
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonThemActionPerformed
@@ -223,6 +208,10 @@ public class VaiTroPanel extends javax.swing.JPanel {
     private void jTextFieldVaiTroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldVaiTroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldVaiTroActionPerformed
+
+    private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -240,8 +229,6 @@ public class VaiTroPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXoa;
-    private javax.swing.JButton jButtonXuat;
-    private javax.swing.JComboBox<String> jComboBoxTimKiem;
     private javax.swing.JLabel jLabelMaVaiTro;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabelVaiTro;
