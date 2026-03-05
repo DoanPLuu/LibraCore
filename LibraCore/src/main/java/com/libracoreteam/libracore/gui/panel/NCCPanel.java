@@ -324,14 +324,17 @@ public class NCCPanel extends javax.swing.JPanel {
         jPanelFields.add(jPanelMa);
 
         jPanelTen.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTen.setPreferredSize(new java.awt.Dimension(234, 105));
         jPanelTen.setLayout(new java.awt.GridLayout(0, 1));
 
         jLabelTenNCC.setText("Tên nhà cung cấp:");
         jLabelTenNCC.setPreferredSize(new java.awt.Dimension(95, 16));
         jPanelTen.add(jLabelTenNCC);
 
+        jTextTenNCC.setEditable(false);
         jTextTenNCC.setColumns(20);
         jTextTenNCC.setRows(5);
+        jTextTenNCC.setPreferredSize(new java.awt.Dimension(200, 60));
         jScrollPane2.setViewportView(jTextTenNCC);
 
         jPanelTen.add(jScrollPane2);

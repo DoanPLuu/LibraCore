@@ -29,6 +29,8 @@ import com.libracoreteam.libracore.gui.panel.ThanhVienPanel;
 import com.libracoreteam.libracore.gui.panel.TheLoaiPanel;
 import com.libracoreteam.libracore.gui.panel.TheThanhVienPanel;
 import com.libracoreteam.libracore.gui.panel.ThongKeSachPanel;
+import com.libracoreteam.libracore.gui.panel.ThongKeMuonTraPanel; 
+import com.libracoreteam.libracore.gui.panel.ThongKeTienPhatPanel;
 import com.libracoreteam.libracore.gui.panel.VaiTroPanel;
 
 public class MainFrame extends javax.swing.JFrame {
@@ -56,6 +58,8 @@ public class MainFrame extends javax.swing.JFrame {
     private PhatPanel phatPanel;
     private MucPhatPanel mucPhatPanel;
     private ThongKeSachPanel thongKeSachPanel;
+    private ThongKeMuonTraPanel thongKeMuonTraPanel;
+    private ThongKeTienPhatPanel thongKeTienPhatPanel;
 
     public MainFrame() {
         initComponents();
@@ -165,8 +169,11 @@ public class MainFrame extends javax.swing.JFrame {
         thongKeSachPanel = new ThongKeSachPanel();
         contentPanel.add(thongKeSachPanel, "REPORT_1");
 
-        contentPanel.add(createPlaceholderPanel("Thống kê mượn trả sách"), "REPORT_2");
-        contentPanel.add(createPlaceholderPanel("Thống kê tiền phạt"), "REPORT_3");
+        thongKeMuonTraPanel = new ThongKeMuonTraPanel();
+        contentPanel.add(thongKeMuonTraPanel, "REPORT_2");
+
+        thongKeTienPhatPanel = new ThongKeTienPhatPanel();
+        contentPanel.add(thongKeTienPhatPanel, "REPORT_3");
     }
 
     private JPanel createPlaceholderPanel(String title) {
