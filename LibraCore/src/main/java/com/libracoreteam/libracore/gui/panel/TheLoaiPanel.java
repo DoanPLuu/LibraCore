@@ -10,8 +10,17 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class TheLoaiPanel extends javax.swing.JPanel {
 
@@ -311,12 +320,73 @@ public class TheLoaiPanel extends javax.swing.JPanel {
 
     private void jTextFieldMaTheLoaiActionPerformed(java.awt.event.ActionEvent evt) {}
 
-    private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {}
+    private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {
+        List<TheLoai> listToExport = (currentList != null && !currentList.isEmpty())
+                ? currentList
+                : bus.getAll();
+        if (listToExport == null || listToExport.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu thể loại để xuất.");
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Xuất danh sách thể loại ra Excel");
+        chooser.setFileFilter(new FileNameExtensionFilter("Excel (*.xlsx)", "xlsx"));
+        chooser.setAcceptAllFileFilterUsed(true);
+
+        String defaultName = "TheLoai_" + System.currentTimeMillis() + ".xlsx";
+        chooser.setSelectedFile(new File(defaultName));
+
+        int result = chooser.showSaveDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) return;
+
+        File file = chooser.getSelectedFile();
+        if (file == null) return;
+        String path = file.getAbsolutePath();
+        if (!path.toLowerCase().endsWith(".xlsx")) {
+            file = new File(path + ".xlsx");
+        }
+
+        try {
+            exportTheLoaiToExcel(file, listToExport);
+            JOptionPane.showMessageDialog(this, "Xuất Excel thành công:\n" + file.getAbsolutePath());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Xuất Excel thất bại: " + ex.getMessage());
+        }
+    }
 
     private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {}
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {
         loadData();
+    }
+
+    private void exportTheLoaiToExcel(File file, List<TheLoai> list) throws IOException {
+        try (Workbook wb = new XSSFWorkbook()) {
+            Sheet sheet = wb.createSheet("TheLoai");
+
+            int r = 0;
+            Row header = sheet.createRow(r++);
+            String[] headers = { "Mã thể loại", "Tên thể loại", "Trạng thái" };
+            for (int c = 0; c < headers.length; c++) {
+                header.createCell(c).setCellValue(headers[c]);
+            }
+
+            for (TheLoai tl : list) {
+                Row row = sheet.createRow(r++);
+                row.createCell(0).setCellValue(tl.getIdTheLoai());
+                row.createCell(1).setCellValue(tl.getTenTheLoai() != null ? tl.getTenTheLoai() : "");
+                row.createCell(2).setCellValue(tl.isHoatDong() ? "Hoạt động" : "Ngừng");
+            }
+
+            for (int c = 0; c < headers.length; c++) {
+                sheet.autoSizeColumn(c);
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                wb.write(fos);
+            }
+        }
     }
 
 

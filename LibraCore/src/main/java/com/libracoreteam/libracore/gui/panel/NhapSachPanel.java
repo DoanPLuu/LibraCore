@@ -10,10 +10,19 @@ import com.libracoreteam.libracore.gui.dialog.TaoPhieuNhapDialog;
 import com.libracoreteam.libracore.model.ChiTietPhieuNhap;
 import com.libracoreteam.libracore.model.PhieuNhap;
 import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -283,7 +292,44 @@ public class NhapSachPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
-        JOptionPane.showMessageDialog(this, "Chức năng xuất phiếu nhập sẽ bổ sung sau.");
+            // Dùng danh sách đang hiển thị nếu có, nếu không thì tải lại theo trạng thái hiện tại
+        List<PhieuNhap> listToExport;
+        if (currentList != null && !currentList.isEmpty()) {
+            listToExport = currentList;
+        } else {
+            try {
+                listToExport = showingCancelled
+                        ? phieuNhapBUS.getDaHuy()
+                        : phieuNhapBUS.getActive();
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this, "Không tải được danh sách phiếu nhập để xuất: " + ex.getMessage());
+                return;
+            }
+        }
+        if (listToExport == null || listToExport.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu phiếu nhập để xuất.");
+            return;
+        }
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Xuất danh sách phiếu nhập ra Excel");
+        chooser.setFileFilter(new FileNameExtensionFilter("Excel (*.xlsx)", "xlsx"));
+        chooser.setAcceptAllFileFilterUsed(true);
+        String defaultName = "PhieuNhap_" + System.currentTimeMillis() + ".xlsx";
+        chooser.setSelectedFile(new File(defaultName));
+        int result = chooser.showSaveDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) return;
+        File file = chooser.getSelectedFile();
+        if (file == null) return;
+        String path = file.getAbsolutePath();
+        if (!path.toLowerCase().endsWith(".xlsx")) {
+            file = new File(path + ".xlsx");
+        }
+        try {
+            exportPhieuNhapToExcel(file, listToExport);
+            JOptionPane.showMessageDialog(this, "Xuất Excel thành công:\n" + file.getAbsolutePath());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Xuất Excel thất bại: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jButtonXuatActionPerformed
 
     private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTimKiemActionPerformed
@@ -333,6 +379,62 @@ public class NhapSachPanel extends javax.swing.JPanel {
             return;
         }
         cancelByRow(row);
+    }
+    
+    private void exportPhieuNhapToExcel(File file, List<PhieuNhap> list) throws IOException {
+        try (Workbook wb = new XSSFWorkbook()) {
+            Sheet sheet = wb.createSheet("PhieuNhap");
+
+            int r = 0;
+            Row header = sheet.createRow(r++);
+            String[] headers = {
+                    "Mã phiếu",
+                    "Ngày nhập",
+                    "Nhà cung cấp",
+                    "Số lượng sách",
+                    "Trạng thái"
+            };
+            for (int c = 0; c < headers.length; c++) {
+                header.createCell(c).setCellValue(headers[c]);
+            }
+
+            for (PhieuNhap p : list) {
+                Row row = sheet.createRow(r++);
+
+                // Mã phiếu
+                row.createCell(0).setCellValue(p.getIdPhieuNhap());
+
+                // Ngày nhập
+                row.createCell(1).setCellValue(
+                        p.getNgayNhap() != null ? p.getNgayNhap().toString() : ""
+                );
+
+                // Nhà cung cấp (tên)
+                String nccText = "";
+                if (p.getNcc() != null && p.getNcc().getTenNCC() != null) {
+                    nccText = p.getNcc().getTenNCC();
+                }
+                row.createCell(2).setCellValue(nccText);
+
+                // Số lượng sách
+                row.createCell(3).setCellValue(
+                        p.getSoLuongSach() != null ? p.getSoLuongSach() : 0
+                );
+
+                // Trạng thái
+                row.createCell(4).setCellValue(
+                        p.getTrangThai() != null ? p.getTrangThai() : ""
+                );
+            }
+
+            for (int c = 0; c < headers.length; c++) {
+                sheet.autoSizeColumn(c);
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                wb.write(fos);
+            }
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

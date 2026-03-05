@@ -79,7 +79,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jButtonLamMoi = new javax.swing.JButton();
         jCheckBox1 = new javax.swing.JCheckBox();
         jPanelNutDieuKhien = new javax.swing.JPanel();
-        jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jButtonSua = new javax.swing.JButton();
         jButtonXoa = new javax.swing.JButton();
@@ -217,11 +216,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
-        jButtonXuat.setText("Xuất");
-        jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
-        jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
-        jPanelNutDieuKhien.add(jButtonXuat);
-
         jButtonThem.setText("Thêm");
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
@@ -279,7 +273,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         int iconSize = 16;
 
         jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
-        jButtonXuat.setIcon(FontIcon.of(FontAwesomeSolid.FILE_EXPORT, iconSize, new Color(100, 100, 100)));
         jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
         jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
         jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
@@ -431,10 +424,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
-    private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
-        
-    }//GEN-LAST:event_jButtonXuatActionPerformed
-
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
         loadDataToTable(); // Tải lại dữ liệu mới nhất
         clearFields();     // Xóa trắng Text Field bên phải
@@ -453,7 +442,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXoa;
-    private javax.swing.JButton jButtonXuat;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabelDiaChi;
     private javax.swing.JLabel jLabelEmail;

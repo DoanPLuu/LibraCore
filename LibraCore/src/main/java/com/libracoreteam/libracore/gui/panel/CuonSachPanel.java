@@ -7,13 +7,22 @@ package com.libracoreteam.libracore.gui.panel;
 import com.libracoreteam.libracore.bus.CuonSachBUS;
 import com.libracoreteam.libracore.model.CuonSach;
 import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -435,7 +444,41 @@ public class CuonSachPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextFieldDaHuyActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
-        JOptionPane.showMessageDialog(this, "Chức năng xuất sẽ bổ sung sau.");
+        List<CuonSach> listToExport = (currentList != null && !currentList.isEmpty())
+                ? currentList
+                : cuonSachBUS.getAll();
+
+        if (listToExport == null || listToExport.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu cuốn sách để xuất.");
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Xuất danh sách cuốn sách ra Excel");
+        chooser.setFileFilter(new FileNameExtensionFilter("Excel (*.xlsx)", "xlsx"));
+        chooser.setAcceptAllFileFilterUsed(true);
+
+        String defaultName = "CuonSach_" + System.currentTimeMillis() + ".xlsx";
+        chooser.setSelectedFile(new File(defaultName));
+
+        int result = chooser.showSaveDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION)
+            return;
+
+        File file = chooser.getSelectedFile();
+        if (file == null)
+            return;
+        String path = file.getAbsolutePath();
+        if (!path.toLowerCase().endsWith(".xlsx")) {
+            file = new File(path + ".xlsx");
+        }
+
+        try {
+            exportCuonSachToExcel(file, listToExport);
+            JOptionPane.showMessageDialog(this, "Xuất Excel thành công:\n" + file.getAbsolutePath());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Xuất Excel thất bại: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jButtonXuatActionPerformed
 
     private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTimKiemActionPerformed
@@ -476,6 +519,48 @@ public class CuonSachPanel extends javax.swing.JPanel {
             return;
         }
         doCancel(currentSelected);
+    }
+
+    private void exportCuonSachToExcel(File file, List<CuonSach> list) throws IOException {
+        try (Workbook wb = new XSSFWorkbook()) {
+            Sheet sheet = wb.createSheet("CuonSach");
+
+            int r = 0;
+            Row header = sheet.createRow(r++);
+            String[] headers = {
+                    "Mã cuốn sách",
+                    "Mã sách",
+                    "Tên sách",
+                    "Tình trạng",
+                    "Trạng thái mượn",
+                    "Đã huỷ"
+            };
+            for (int c = 0; c < headers.length; c++) {
+                header.createCell(c).setCellValue(headers[c]);
+            }
+
+            for (CuonSach c : list) {
+                Row row = sheet.createRow(r++);
+                row.createCell(0).setCellValue(valueOrEmpty(c.getMaCuonSach()));
+                row.createCell(1).setCellValue(c.getIdSach());
+                String tenSach = "";
+                if (c.getSach() != null && c.getSach().getTenSach() != null) {
+                    tenSach = c.getSach().getTenSach();
+                }
+                row.createCell(2).setCellValue(tenSach);
+                row.createCell(3).setCellValue(valueOrEmpty(c.getTinhTrangSach()));
+                row.createCell(4).setCellValue(valueOrEmpty(c.getTrangThaiMuon()));
+                row.createCell(5).setCellValue(c.isDaHuy() ? "Có" : "Không");
+            }
+
+            for (int c = 0; c < headers.length; c++) {
+                sheet.autoSizeColumn(c);
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                wb.write(fos);
+            }
+        }
     }
 
 

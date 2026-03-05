@@ -78,7 +78,7 @@ public class DashboardPanel extends JPanel {
         lblTongDocGiaVal = createValueLabel();
         lblPhieuMuonVal = createValueLabel();
         lblDoanhThuVal = createValueLabel();
-        lblDoanhThuVal.setFont(new Font("Segoe UI", Font.BOLD, 28)); // Size nhỏ hơn chút vì chữ VNĐ hơi dài
+        
 
         // Thêm 4 thẻ với 4 màu khác nhau cho sinh động
         pnlCards.add(createCard("Tổng Đầu Sách", lblTongSachVal, FontAwesomeSolid.BOOK, new Color(41, 128, 185))); // Xanh dương
