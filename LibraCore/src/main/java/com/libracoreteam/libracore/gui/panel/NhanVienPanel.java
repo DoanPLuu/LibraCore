@@ -8,6 +8,13 @@ import java.awt.Color;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 import javax.swing.table.DefaultTableModel;
+import com.libracoreteam.libracore.bus.NhanVienBUS;
+import com.libracoreteam.libracore.model.NhanVien;
+import com.libracoreteam.libracore.gui.dialog.ThemNhanVienDialog;
+import com.libracoreteam.libracore.gui.dialog.SuaNhanVienDialog;
+import java.util.List;
+import java.time.format.DateTimeFormatter;
+
 
 /**
  *
@@ -16,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 public class NhanVienPanel extends javax.swing.JPanel {
 
     private DefaultTableModel tableModel;
+    private NhanVienBUS nhanVienBUS = new NhanVienBUS();
 
     /**
      * Creates new form NhanVienPanel
@@ -24,6 +32,8 @@ public class NhanVienPanel extends javax.swing.JPanel {
         initComponents();
         InnitButton();
         initTable();
+        loadDataToTable();
+        
     }
 
     /**
@@ -64,10 +74,10 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jPanelLeftTop = new javax.swing.JPanel();
         jPanelCongCu = new javax.swing.JPanel();
         jPanelTimKiem = new javax.swing.JPanel();
-        jComboBoxTimKiem = new javax.swing.JComboBox<>();
         jTextFieldTimKiem = new javax.swing.JTextField();
         jButtonTimKiem = new javax.swing.JButton();
         jButtonLamMoi = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jPanelNutDieuKhien = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
@@ -102,7 +112,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldMaNhanVien.setEditable(false);
         jTextFieldMaNhanVien.setBackground(new java.awt.Color(255, 255, 255));
-        jTextFieldMaNhanVien.setFocusable(false);
         jTextFieldMaNhanVien.addActionListener(this::jTextFieldMaNhanVienActionPerformed);
         jPanelMaNhanVien.add(jTextFieldMaNhanVien);
 
@@ -116,7 +125,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldTenNhanVien.setEditable(false);
         jTextFieldTenNhanVien.setBackground(new java.awt.Color(255, 255, 255));
-        jTextFieldTenNhanVien.setFocusable(false);
         jPanelTenNhanVien.add(jTextFieldTenNhanVien);
 
         jPanelFields.add(jPanelTenNhanVien);
@@ -129,7 +137,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldNgaySinh.setEditable(false);
         jTextFieldNgaySinh.setBackground(new java.awt.Color(255, 255, 255));
-        jTextFieldNgaySinh.setFocusable(false);
         jPanelNgaySinh.add(jTextFieldNgaySinh);
 
         jPanelFields.add(jPanelNgaySinh);
@@ -148,7 +155,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTextAreaDiaChi.setLineWrap(true);
         jTextAreaDiaChi.setRows(3);
         jTextAreaDiaChi.setWrapStyleWord(true);
-        jTextAreaDiaChi.setFocusable(false);
         jScrollPaneDiaChi.setViewportView(jTextAreaDiaChi);
 
         jPanelDiaChi.add(jScrollPaneDiaChi, java.awt.BorderLayout.CENTER);
@@ -163,7 +169,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldSDT.setEditable(false);
         jTextFieldSDT.setBackground(new java.awt.Color(255, 255, 255));
-        jTextFieldSDT.setFocusable(false);
         jPanelSDT.add(jTextFieldSDT);
 
         jPanelFields.add(jPanelSDT);
@@ -176,7 +181,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldEmail.setEditable(false);
         jTextFieldEmail.setBackground(new java.awt.Color(255, 255, 255));
-        jTextFieldEmail.setFocusable(false);
         jPanelEmail.add(jTextFieldEmail);
 
         jPanelFields.add(jPanelEmail);
@@ -197,12 +201,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jPanelCongCu.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 0, 20));
         jPanelCongCu.setLayout(new java.awt.BorderLayout());
 
-        jComboBoxTimKiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo ID", "Theo Tên", "Theo Ngày Sinh", "Theo Địa Chỉ", "Theo SDT", "Theo Email" }));
-        jComboBoxTimKiem.setToolTipText("");
-        jComboBoxTimKiem.setPreferredSize(new java.awt.Dimension(110, 40));
-        jComboBoxTimKiem.addActionListener(this::jComboBoxTimKiemActionPerformed);
-        jPanelTimKiem.add(jComboBoxTimKiem);
-
         jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
         jPanelTimKiem.add(jTextFieldTimKiem);
 
@@ -210,12 +208,18 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jPanelTimKiem.add(jButtonTimKiem);
 
         jButtonLamMoi.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonLamMoi.addActionListener(this::jButtonLamMoiActionPerformed);
         jPanelTimKiem.add(jButtonLamMoi);
+
+        jCheckBox1.setText("Hiện đã khóa");
+        jCheckBox1.setPreferredSize(new java.awt.Dimension(93, 40));
+        jPanelTimKiem.add(jCheckBox1);
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
         jButtonXuat.setText("Xuất");
         jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
         jPanelNutDieuKhien.add(jButtonXuat);
 
         jButtonThem.setText("Thêm");
@@ -251,12 +255,17 @@ public class NhanVienPanel extends javax.swing.JPanel {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Họ Và Tên", "Ngày Sinh", "Địa Chỉ", "SDT", "Email"
+                "Mã Nhân Viên", "Họ Và Tên", "Ngày Sinh", "Địa Chỉ", "SDT", "Email"
             }
         ));
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable1.setShowGrid(false);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jPanelBoard.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -276,12 +285,14 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
         jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
         jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm kiếm");
+        
+        
     }
 
     private void initTable() {
         tableModel = new DefaultTableModel(
             new Object [][] {},
-            new String [] {"ID", "Tên Nhân Viên", "Ngày Sinh", "SĐT", "Email"}
+            new String [] {"Mã Nhân Viên", "Tên Nhân Viên", "Ngày Sinh", "SĐT", "Email"}
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -293,12 +304,45 @@ public class NhanVienPanel extends javax.swing.JPanel {
     }  
     
 
-    private void jComboBoxTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTimKiemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxTimKiemActionPerformed
+    private void loadDataToTable() {   
+        tableModel.setRowCount(0);
+        //load dữ liệu từ BUS
+        java.util.List<com.libracoreteam.libracore.model.NhanVien> listNhanVien = nhanVienBUS.getActive();
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        for (com.libracoreteam.libracore.model.NhanVien nv : listNhanVien) {
+            String ngaySinhStr = (nv.getNgaySinh() != null) ? nv.getNgaySinh().format(formatter) : "";
+            
+            Object[] row = {
+                nv.getIdNhanVien(),
+                nv.getTenNhanVien(),
+                ngaySinhStr,
+                nv.getSdt(),
+                nv.getEmail()
+            };
+            tableModel.addRow(row);
+        }
+    }
 
+        
+         private void clearFields() {
+        jTextFieldMaNhanVien.setText("");
+        jTextFieldTenNhanVien.setText("");
+        jTextFieldNgaySinh.setText("");
+        jTextAreaDiaChi.setText("");
+        jTextFieldSDT.setText("");
+        jTextFieldEmail.setText("");
+        jTable1.clearSelection();
+    }
+         
+         
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
-        // TODO add your handling code here:
+        ThemNhanVienDialog dialog = new ThemNhanVienDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true);
+        dialog.setVisible(true);
+        
+        if (dialog.isSaved()) {
+            loadDataToTable();
+            clearFields();
+        }
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jTextFieldMaNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaNhanVienActionPerformed
@@ -306,13 +350,101 @@ public class NhanVienPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextFieldMaNhanVienActionPerformed
 
     private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuaActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần sửa!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Lấy ID nhân viên từ bảng
+        int idNhanVien = (int) tableModel.getValueAt(selectedRow, 0);
+        
+        // Lấy thông tin chi tiết từ BUS
+        NhanVien nv = nhanVienBUS.getById(idNhanVien);
+        
+        if (nv != null) {
+            SuaNhanVienDialog dialog = new SuaNhanVienDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true, nv);
+            dialog.setVisible(true);
+            
+            if (dialog.isSaved()) {
+                loadDataToTable();
+                clearFields();
+            }
+        }
     }//GEN-LAST:event_jButtonSuaActionPerformed
 
     private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXoaActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần xóa!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Lấy ID nhân viên từ bảng
+        int idNhanVien = (int) tableModel.getValueAt(selectedRow, 0);
+        
+        // Xác nhận trước khi xóa
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                this, 
+                "Bạn có chắc chắn muốn xóa nhân viên này?", 
+                "Xác nhận xóa", 
+                javax.swing.JOptionPane.YES_NO_OPTION
+        );
+        
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            if (nhanVienBUS.delete(idNhanVien)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!");
+                loadDataToTable();
+                clearFields();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi xóa nhân viên!", "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_jButtonXoaActionPerformed
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // Lấy vị trí dòng đang được chọn trên bảng
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow >= 0) {
+            // Lấy ID nhân viên ở cột đầu tiên (cột 0)
+            int idNhanVien = (int) tableModel.getValueAt(selectedRow, 0);
+            
+            // Gọi BUS để lấy thông tin chi tiết của nhân viên từ database
+            NhanVien nv = nhanVienBUS.getById(idNhanVien);
+            
+            if (nv != null) {
+                // Hiển thị dữ liệu lên các ô Text bên phải
+                jTextFieldMaNhanVien.setText(String.valueOf(nv.getIdNhanVien()));
+                jTextFieldTenNhanVien.setText(nv.getTenNhanVien() != null ? nv.getTenNhanVien() : "");
+                
+                // Chuyển đổi LocalDate sang String theo định dạng dd/MM/yyyy
+                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                jTextFieldNgaySinh.setText(nv.getNgaySinh() != null ? nv.getNgaySinh().format(formatter) : "");
+                
+                jTextAreaDiaChi.setText(nv.getDiaChi() != null ? nv.getDiaChi() : "");
+                jTextFieldSDT.setText(nv.getSdt() != null ? nv.getSdt() : "");
+                jTextFieldEmail.setText(nv.getEmail() != null ? nv.getEmail() : "");
+            }
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
+        
+    }//GEN-LAST:event_jButtonXuatActionPerformed
+
+    private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
+        loadDataToTable(); // Tải lại dữ liệu mới nhất
+        clearFields();     // Xóa trắng Text Field bên phải
+        
+        // Reset thanh tìm kiếm
+        jTextFieldTimKiem.setText(""); 
+        
+    }//GEN-LAST:event_jButtonLamMoiActionPerformed
+
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
@@ -322,7 +454,7 @@ public class NhanVienPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXoa;
     private javax.swing.JButton jButtonXuat;
-    private javax.swing.JComboBox<String> jComboBoxTimKiem;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabelDiaChi;
     private javax.swing.JLabel jLabelEmail;
     private javax.swing.JLabel jLabelMaNhanVien;
