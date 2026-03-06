@@ -1,96 +1,120 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.libracoreteam.libracore.gui.panel;
 
-/**
- *
- * @author Sang
- */
-
 import com.libracoreteam.libracore.bus.ThongKeTienPhatBUS;
-import java.awt.Color;
+import com.toedter.calendar.JDateChooser;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
-public class ThongKeTienPhatPanel extends javax.swing.JPanel {
+public class ThongKeTienPhatPanel extends JPanel {
 
+    private final JDateChooser dateFrom;
+    private final JDateChooser dateTo;
+    private final JButton btnThongKe;
+
+    private JFreeChart chart;
+    private ChartPanel chartPanel;
+    private DefaultCategoryDataset dataset;
+
+    private final DefaultTableModel tblModel;
+    private final JTable table;
     private final ThongKeTienPhatBUS bus = new ThongKeTienPhatBUS();
-    
-    // Biến cho Biểu đồ
-    private org.jfree.chart.JFreeChart chart;
-    private org.jfree.chart.ChartPanel chartPanel;
-    private org.jfree.data.category.DefaultCategoryDataset dataset;
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public ThongKeTienPhatPanel() {
-        initComponents();
-        setupUI(); 
-        runThongKe(); 
-    }
+        // Cài đặt Layout y hệt Mượn Trả
+        setLayout(new BorderLayout(0, 0));
+        setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
-    private void setupUI() {
-        // 1. Ẩn ComboBox loại thống kê đi theo yêu cầu
-        jLabel3.setVisible(false);
-        jComboBoxchucnang.setVisible(false);
+        // ── Toolbar (Thanh công cụ chứa Ngày và Nút) ─────────────────────────
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        toolbar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0xDDDDDD)));
 
-        // 2. Cài đặt Bảng (JTable)
-        jTableTienPhat.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
-            new String [] {"Mã phiếu phạt", "Ngày lập", "Lý do phạt", "Trạng thái", "Tổng tiền phạt"}
-        ) {
-            boolean[] canEdit = new boolean [] {false, false, false, false, false};
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jTableTienPhat.setRowHeight(30);
-
-        // 3. Cài đặt ngày mặc định (Từ 7 ngày trước đến hôm nay)
         LocalDate today = LocalDate.now();
         LocalDate weekAgo = today.minusDays(6);
-        jDateChooser1.setDate(java.sql.Date.valueOf(weekAgo));
-        jDateChooser2.setDate(java.sql.Date.valueOf(today));
-        jDateChooser1.setDateFormatString("dd/MM/yyyy");
-        jDateChooser2.setDateFormatString("dd/MM/yyyy");
 
-        // 4. Khởi tạo Biểu đồ (Sẽ tự động có chú thích Legend màu sắc)
-        dataset = new org.jfree.data.category.DefaultCategoryDataset();
-        chart = org.jfree.chart.ChartFactory.createBarChart(
-                "Biểu đồ thống kê tiền phạt", "Ngày", "Số tiền (VNĐ)", dataset,
-                org.jfree.chart.plot.PlotOrientation.VERTICAL, true, true, false);
+        dateFrom = new JDateChooser();
+        dateFrom.setDate(Date.valueOf(weekAgo));
+        dateFrom.setPreferredSize(new Dimension(120, 32));
+        dateFrom.setDateFormatString("dd/MM/yyyy");
 
-        chart.setBackgroundPaint(Color.WHITE);
-        org.jfree.chart.plot.CategoryPlot plot = chart.getCategoryPlot();
-        plot.setBackgroundPaint(Color.WHITE);
-        plot.setRangeGridlinePaint(new Color(200, 200, 200));
+        dateTo = new JDateChooser();
+        dateTo.setDate(Date.valueOf(today));
+        dateTo.setPreferredSize(new Dimension(120, 32));
+        dateTo.setDateFormatString("dd/MM/yyyy");
 
-        chartPanel = new org.jfree.chart.ChartPanel(chart);
+        // Nút Thống kê màu xanh dương đậm y hệt form Mượn Trả
+        btnThongKe = new JButton("Thống kê");
+        btnThongKe.setPreferredSize(new Dimension(100, 32));
+        btnThongKe.setBackground(new Color(0x1565C0));
+        btnThongKe.setForeground(Color.WHITE);
+        btnThongKe.setFocusPainted(false);
+        btnThongKe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        toolbar.add(new JLabel("Từ ngày:"));
+        toolbar.add(dateFrom);
+        toolbar.add(new JLabel("Đến ngày:"));
+        toolbar.add(dateTo);
+        toolbar.add(btnThongKe);
+
+        add(toolbar, BorderLayout.NORTH);
+
+        // ── Chart (Biểu đồ) ───────────────────────────────────────────────────
+        dataset = new DefaultCategoryDataset();
+        chart = ChartFactory.createBarChart(
+                "Biểu đồ Thống kê Tiền phạt", null, "Số tiền (VNĐ)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        
+        styleChart(chart);
+        chartPanel = new ChartPanel(chart);
         chartPanel.setMouseWheelEnabled(true);
 
-        jPanelCenter.setLayout(new java.awt.BorderLayout());
-        jPanelCenter.add(chartPanel, java.awt.BorderLayout.CENTER);
+        // ── Table (Bảng dữ liệu) ──────────────────────────────────────────────
+        tblModel = new DefaultTableModel(
+                new Object[]{"Mã Phiếu phạt", "Ngày lập", "Lý do phạt", "Trạng thái", "Tổng tiền phạt"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) { return false; }
+        };
+        table = new JTable(tblModel);
+        table.setRowHeight(28); // Chiều cao hàng chuẩn giống Mượn Trả
+        table.getTableHeader().setReorderingAllowed(false);
+        table.setFillsViewportHeight(true);
+
+        JScrollPane tableScroll = new JScrollPane(table);
+
+        // ── SplitPane (Thanh kéo chia đôi màn hình 60-40) ────────────────────
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, chartPanel, tableScroll);
+        splitPane.setResizeWeight(0.60);
+        splitPane.setDividerSize(6);
+        splitPane.setBorder(null);
+
+        add(splitPane, BorderLayout.CENTER);
+
+        // ── Events ───────────────────────────────────────────────────────────
+        btnThongKe.addActionListener(e -> runThongKe());
+        runThongKe(); // Chạy luôn lần đầu khi mở form
     }
 
-    // ================== LOGIC THỐNG KÊ ==================
-    
     private void runThongKe() {
-        java.util.Date d1 = jDateChooser1.getDate();
-        java.util.Date d2 = jDateChooser2.getDate();
-        
-        if (d1 == null || d2 == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn đủ Từ ngày và Đến ngày.");
-            return;
-        }
-        
-        LocalDate from = d1.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-        LocalDate to = d2.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+        java.util.Date dFrom = dateFrom.getDate();
+        java.util.Date dTo = dateTo.getDate();
+        if (dFrom == null || dTo == null) return;
+
+        LocalDate from = dFrom.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+        LocalDate to = dTo.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
         
         if (from.isAfter(to)) {
             JOptionPane.showMessageDialog(this, "Từ ngày không được sau Đến ngày.");
@@ -98,16 +122,11 @@ public class ThongKeTienPhatPanel extends javax.swing.JPanel {
         }
 
         try {
-            // Lấy toàn bộ phiếu phạt trong khoảng thời gian
             List<Object[]> rows = bus.getThongKeTienPhat(from, to);
-            
-            String title = String.format("Thống kê từ %s đến %s", 
-                    from.format(DateTimeFormatter.ofPattern("dd/MM")), 
-                    to.format(DateTimeFormatter.ofPattern("dd/MM")));
+            String title = String.format("Thống kê từ %s đến %s", from.format(FMT), to.format(FMT));
             
             updateChart(rows, title);
             updateTable(rows);
-            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Lỗi khi thống kê: " + ex.getMessage());
         }
@@ -116,176 +135,71 @@ public class ThongKeTienPhatPanel extends javax.swing.JPanel {
     private void updateChart(List<Object[]> rows, String title) {
         dataset.clear();
 
-        // Map để lưu trữ 3 thông số cho mỗi ngày
-        Map<String, Double> mapDaThu = new LinkedHashMap<>();
-        Map<String, Double> mapChuaThu = new LinkedHashMap<>();
-        Map<String, Double> mapTong = new LinkedHashMap<>();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        double tongDaThu = 0.0;
+        double tongChuaThu = 0.0;
 
-        // Lọc và cộng dồn dữ liệu
         for (Object[] row : rows) {
-            java.sql.Date sqlDate = (java.sql.Date) row[1];
-            String dateStr = sqlDate != null ? sqlDate.toLocalDate().format(fmt) : "N/A";
             String trangThai = (String) row[3];
-            double tien = (Double) row[4];
-
-            // Khởi tạo ngày trong map nếu chưa có
-            mapDaThu.putIfAbsent(dateStr, 0.0);
-            mapChuaThu.putIfAbsent(dateStr, 0.0);
-            mapTong.putIfAbsent(dateStr, 0.0);
-
-            // Cộng tiền dựa theo trạng thái
-            if ("DaThu".equals(trangThai)) {
-                mapDaThu.put(dateStr, mapDaThu.get(dateStr) + tien);
-                mapTong.put(dateStr, mapTong.get(dateStr) + tien);
-            } else if ("ChuaThu".equals(trangThai)) {
-                mapChuaThu.put(dateStr, mapChuaThu.get(dateStr) + tien);
-                mapTong.put(dateStr, mapTong.get(dateStr) + tien);
+            double tien = 0.0;
+            
+            if (row[4] != null) {
+                tien = Double.parseDouble(row[4].toString()); 
             }
-            // (Đã hủy thì bỏ qua không cộng vào biểu đồ)
+
+            if ("DaThu".equals(trangThai)) {
+                tongDaThu += tien;
+            } else if ("ChuaThu".equals(trangThai)) {
+                tongChuaThu += tien;
+            }
         }
 
-        // Đổ dữ liệu vào biểu đồ (Gộp 3 cột vào cùng 1 ngày)
-        for (String dateStr : mapTong.keySet()) {
-            dataset.addValue(mapDaThu.get(dateStr), "Đã thu", dateStr);
-            dataset.addValue(mapChuaThu.get(dateStr), "Chưa thu", dateStr);
-            dataset.addValue(mapTong.get(dateStr), "Tổng tiền phạt", dateStr);
-        }
+        String label = "Tổng cộng";
+        dataset.addValue(tongDaThu, "Đã thu", label);
+        dataset.addValue(tongChuaThu, "Chưa thu", label);
+        dataset.addValue(tongDaThu + tongChuaThu, "Tổng tiền phạt", label);
 
         chart.setTitle(title);
-        
-        // Cài đặt màu sắc cho 3 cột
-        org.jfree.chart.plot.CategoryPlot plot = chart.getCategoryPlot();
-        org.jfree.chart.renderer.category.BarRenderer renderer = (org.jfree.chart.renderer.category.BarRenderer) plot.getRenderer();
-        renderer.setMaximumBarWidth(0.04); 
-        renderer.setItemMargin(0.05);
-        
-        renderer.setSeriesPaint(0, new Color(0x4CAF50)); // Cột 1: Xanh lá (Đã thu)
-        renderer.setSeriesPaint(1, new Color(0xFF9800)); // Cột 2: Cam (Chưa thu)
-        renderer.setSeriesPaint(2, new Color(0x2196F3)); // Cột 3: Xanh dương (Tổng tiền)
-
         chartPanel.repaint();
     }
 
     private void updateTable(List<Object[]> rows) {
-        DefaultTableModel model = (DefaultTableModel) jTableTienPhat.getModel();
-        model.setRowCount(0);
-        
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        tblModel.setRowCount(0);
         java.text.DecimalFormat df = new java.text.DecimalFormat("#,###");
 
         for (Object[] row : rows) {
-            java.sql.Date sqlDate = (java.sql.Date) row[1];
-            String dateStr = sqlDate != null ? sqlDate.toLocalDate().format(fmt) : "";
-            String tienStr = df.format((Double) row[4]) + " đ";
+            String dateStr = row[1] != null ? ((java.sql.Date) row[1]).toLocalDate().format(FMT) : "";
+            
+            double tien = 0.0;
+            if (row[4] != null) {
+                tien = Double.parseDouble(row[4].toString());
+            }
+            String tienStr = df.format(tien) + " đ";
 
-            // Hiển thị trạng thái thân thiện hơn
             String ttStr = (String) row[3];
             if ("DaThu".equals(ttStr)) ttStr = "Đã thu";
             else if ("ChuaThu".equals(ttStr)) ttStr = "Chưa thu";
             else if ("DaHuy".equals(ttStr)) ttStr = "Đã hủy";
 
-            model.addRow(new Object[]{
-                row[0],      // Mã PP
-                dateStr,     // Ngày lập
-                row[2],      // Lý do
-                ttStr,       // Trạng thái
-                tienStr      // Tổng tiền
-            });
+            tblModel.addRow(new Object[]{ "PP" + row[0], dateStr, row[2], ttStr, tienStr });
         }
     }
 
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void styleChart(JFreeChart c) {
+        c.setBackgroundPaint(Color.WHITE);
+        CategoryPlot plot = c.getCategoryPlot();
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setRangeGridlinePaint(new Color(0xE0E0E0));
 
-        jPanelTop = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jLabel2 = new javax.swing.JLabel();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
-        jLabel3 = new javax.swing.JLabel();
-        jComboBoxchucnang = new javax.swing.JComboBox<>();
-        jButtonTK = new javax.swing.JButton();
-        jPanelBottom = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableTienPhat = new javax.swing.JTable();
-        jPanelCenter = new javax.swing.JPanel();
+        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        renderer.setMaximumBarWidth(0.20); 
+        renderer.setItemMargin(0.05); 
+        
+        renderer.setSeriesPaint(0, new Color(0x4CAF50));
+        renderer.setSeriesPaint(1, new Color(0xFF9800)); 
+        renderer.setSeriesPaint(2, new Color(0x2196F3)); 
 
-        setLayout(new java.awt.BorderLayout());
-
-        jPanelTop.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-
-        jLabel1.setText("Từ ngày:");
-        jPanelTop.add(jLabel1);
-        jPanelTop.add(jDateChooser1);
-
-        jLabel2.setText("Đến ngày:");
-        jPanelTop.add(jLabel2);
-        jPanelTop.add(jDateChooser2);
-
-        jLabel3.setText("Loại thống kê:");
-        jPanelTop.add(jLabel3);
-
-        jComboBoxchucnang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBoxchucnang.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxchucnangActionPerformed(evt);
-            }
-        });
-        jPanelTop.add(jComboBoxchucnang);
-
-        jButtonTK.setText("Thống kê");
-        jButtonTK.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonTKActionPerformed(evt);
-            }
-        });
-        jPanelTop.add(jButtonTK);
-
-        add(jPanelTop, java.awt.BorderLayout.PAGE_START);
-
-        jPanelBottom.setLayout(new java.awt.BorderLayout());
-
-        jTableTienPhat.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTableTienPhat);
-
-        jPanelBottom.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        add(jPanelBottom, java.awt.BorderLayout.PAGE_END);
-
-        jPanelCenter.setLayout(new java.awt.BorderLayout());
-        add(jPanelCenter, java.awt.BorderLayout.CENTER);
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jComboBoxchucnangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxchucnangActionPerformed
+        CategoryAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setTickLabelsVisible(true);
+        domainAxis.setTickLabelFont(new Font("Segoe UI", Font.BOLD, 14));
     }
-
-    private void jButtonTKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTKActionPerformed
-        runThongKe();
-    }
-
-
-    private javax.swing.JButton jButtonTK;
-    private javax.swing.JComboBox<String> jComboBoxchucnang;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanelBottom;
-    private javax.swing.JPanel jPanelCenter;
-    private javax.swing.JPanel jPanelTop;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTableTienPhat;
 }

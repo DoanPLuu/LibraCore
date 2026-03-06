@@ -1,6 +1,8 @@
 package com.libracoreteam.libracore.gui.dialog;
 
 import com.libracoreteam.libracore.model.NhanVien;
+import com.libracoreteam.libracore.model.VaiTro;
+import com.libracoreteam.libracore.bus.VaiTroBUS;
 import com.libracoreteam.libracore.bus.NhanVienBUS;
 import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -17,7 +19,8 @@ public class ThemTaiKhoanDialog extends JDialog {
     private JTextField txtTenDangNhap;
     private JPasswordField txtMatKhau;
     private JPasswordField txtMatKhauLai;
-    private JComboBox<String> cmbVaiTro;
+    private JComboBox<VaiTro> cmbVaiTro;
+    private List<VaiTro> dsVaiTro;
     
     private JButton btnLuu;
     private JButton btnHuy;
@@ -28,6 +31,7 @@ public class ThemTaiKhoanDialog extends JDialog {
         super(parent, "Thêm tài khoản", modal);
         initComponents();
         loadNhanVienChuaCoTaiKhoan();
+        loadVaiTro();
     }
 
     private void initComponents() {
@@ -60,7 +64,7 @@ public class ThemTaiKhoanDialog extends JDialog {
         formPanel.add(txtMatKhauLai);
 
         // ===== Vai trò =====
-        cmbVaiTro = new JComboBox<>(new String[]{"Admin", "Nhân Viên", "Quản Lý"});
+        cmbVaiTro = new JComboBox<>();
         formPanel.add(new JLabel("Vai Trò:"));
         formPanel.add(cmbVaiTro);
 
@@ -102,7 +106,12 @@ public class ThemTaiKhoanDialog extends JDialog {
         String tenDangNhap = txtTenDangNhap.getText().trim();
         String matKhau = new String(txtMatKhau.getPassword());
         String matKhauLai = new String(txtMatKhauLai.getPassword());
-        int vaiTro = cmbVaiTro.getSelectedIndex() + 1; // ID vai trò (1, 2, 3...)
+        VaiTro selectedRole = (VaiTro) cmbVaiTro.getSelectedItem();
+        if (selectedRole == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn vai trò!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int vaiTro = selectedRole.getIdVaiTro(); // ID vai trò thực tế
 
         // 1. Validate dữ liệu
         if (tenDangNhap.isEmpty()) {
@@ -180,6 +189,20 @@ public class ThemTaiKhoanDialog extends JDialog {
         // Thêm vào ComboBox bằng wrapper
         for (NhanVien nv : result) {
             cmbNhanVien.addItem(new NhanVienWrapper(nv));
+        }
+    }
+    
+    private void loadVaiTro() {
+        VaiTroBUS vaiTroBUS = new VaiTroBUS();
+        dsVaiTro = vaiTroBUS.getAll();
+        cmbVaiTro.removeAllItems();
+        if (dsVaiTro == null) {
+            return;
+        }
+        for (VaiTro vt : dsVaiTro) {
+            if (vt != null) {
+                cmbVaiTro.addItem(vt);
+            }
         }
     }
     
