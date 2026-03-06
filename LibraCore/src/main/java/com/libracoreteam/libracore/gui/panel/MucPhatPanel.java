@@ -41,7 +41,7 @@ public class MucPhatPanel extends JPanel {
   };
 
   private final JComboBox<String> cbFilter = new JComboBox<>(new String[] { "Tất cả", "Cố định", "Theo ngày" });
-  private final JCheckBox cbHienAn = new JCheckBox("Hiện đã ẩn");
+  private final JCheckBox cbHienAn = new JCheckBox("Hiện mức phạt ẩn");
   private final JButton btnAnHien = new JButton("Ẩn");
   private final JTable table = new JTable(tableModel);
   private List<MucPhat> currentData;
@@ -112,8 +112,8 @@ public class MucPhatPanel extends JPanel {
 
     JPanel leftBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 10));
     leftBar.add(cbFilter);
-    leftBar.add(cbHienAn);
     leftBar.add(btnLamMoi);
+    leftBar.add(cbHienAn);
 
     JPanel rightBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 10));
     rightBar.add(btnThem);
@@ -137,7 +137,7 @@ public class MucPhatPanel extends JPanel {
 
     if (showAn) {
       currentData = bus.getFilteredInactive(filterLoai);
-      btnAnHien.setText("Hiện lại");
+      btnAnHien.setText("Hiện");
     } else {
       currentData = bus.getFiltered(filterLoai);
       btnAnHien.setText("Ẩn");

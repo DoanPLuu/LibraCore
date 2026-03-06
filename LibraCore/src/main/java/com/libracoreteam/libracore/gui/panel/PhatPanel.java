@@ -47,7 +47,7 @@ public class PhatPanel extends JPanel {
   private final JTable table = new JTable(tableModel);
   private final JTextField tfSearch = new JTextField(18);
   private final JComboBox<String> cbFilter = new JComboBox<>(new String[] { "Tất cả", "Chưa thu", "Đã thu", "Đã hủy" });
-  private final JCheckBox cbHienHuy = new JCheckBox("Hiện đã hủy");
+  private final JCheckBox cbHienHuy = new JCheckBox("Hiện phiếu hủy");
   private List<PhieuPhat> currentData;
 
   public PhatPanel() {
@@ -97,8 +97,8 @@ public class PhatPanel extends JPanel {
     leftPanel.add(tfSearch);
     leftPanel.add(btnTim);
     leftPanel.add(cbFilter);
-    leftPanel.add(cbHienHuy);
     leftPanel.add(btnLamMoi);
+    leftPanel.add(cbHienHuy);
 
     JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 10));
     rightPanel.add(btnChiTiet);

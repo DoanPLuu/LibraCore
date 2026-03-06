@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -47,7 +48,7 @@ public class MuonTraSachPanel extends JPanel {
 
   private final JTable table = new JTable(tableModel);
   private final JTextField tfSearch = new JTextField(18);
-  private final JCheckBox cbHienHuy = new JCheckBox("Hiện đã hủy");
+  private final JCheckBox cbHienHuy = new JCheckBox("Hiện phiếu hủy");
   private List<PhieuMuon> currentData;
 
   public MuonTraSachPanel() {
@@ -218,8 +219,8 @@ public class MuonTraSachPanel extends JPanel {
 
   private class TraButtonRenderer implements javax.swing.table.TableCellRenderer {
     private final JButton btnTra = buildSmallBtn("Trả sách", new Color(21, 110, 71));
-    private final JLabel lblXong = new JLabel("✓ Đã xong");
-    private final JLabel lblHuy = new JLabel("Đã hủy");
+    private final JLabel lblXong = new JLabel("✓ Đã xong", SwingConstants.CENTER);
+    private final JLabel lblHuy = new JLabel("Đã hủy", SwingConstants.CENTER);
 
     @Override
     public Component getTableCellRendererComponent(JTable t, Object v, boolean sel, boolean focus, int r, int c) {
@@ -248,7 +249,7 @@ public class MuonTraSachPanel extends JPanel {
       this.currentValue = value;
       if (!"DangMuon".equals(value)) {
         fireEditingStopped();
-        return new JLabel("DaHuy".equals(value) ? "Đã hủy" : "✓ Đã xong");
+        return new JLabel("DaHuy".equals(value) ? "Đã hủy" : "✓ Đã xong", SwingConstants.CENTER);
       }
       JButton btn = buildSmallBtn("Trả sách", new Color(21, 110, 71));
       btn.addActionListener(e -> {

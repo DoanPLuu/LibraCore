@@ -20,17 +20,15 @@ import java.util.List;
 public class ThemPhieuMuonDialog extends JDialog {
 
   private final PhieuMuonBUS phieuMuonBUS = new PhieuMuonBUS();
-  // Dùng TheThanhVienBUS để check thẻ chuẩn kiến trúc
   private final TheThanhVienBUS theThanhVienBUS = new TheThanhVienBUS();
 
   private final JSpinner spNgayMuon = new JSpinner(new SpinnerDateModel());
   private final JSpinner spNgayHenTra = new JSpinner(new SpinnerDateModel());
 
-  // --- UI MỚI: Dùng ComboBox thay cho TextField ---
   private JComboBox<CardItem> cbxIdThe;
   private JTextField txtTenDocGia;
   private int validIdThe = -1;
-  private List<CardItem> allCardItems = new ArrayList<>(); // Chứa toàn bộ thẻ để lọc
+  private List<CardItem> allCardItems = new ArrayList<>();
 
   private final DefaultTableModel tableModel = new DefaultTableModel(
       new String[] { "Chọn", "Mã cuốn", "Tên sách" }, 0) {
@@ -57,7 +55,6 @@ public class ThemPhieuMuonDialog extends JDialog {
     setLocationRelativeTo(parent);
   }
 
-  // Class nội bộ đại diện cho 1 dòng trong Dropdown
   private class CardItem {
     int idThe;
     String tenDG;
@@ -69,14 +66,12 @@ public class ThemPhieuMuonDialog extends JDialog {
       this.trangThai = trangThai;
     }
 
-    // Cực kỳ quan trọng: Override toString để khi chọn, ô Text chỉ hiện Số ID
     @Override
     public String toString() {
       return String.valueOf(idThe);
     }
   }
 
-  // Tải toàn bộ thẻ từ Database lên để làm tính năng Lọc
   private void loadAllCardsToMemory() {
     List<TheThanhVien> list = theThanhVienBUS.getAll();
     for (TheThanhVien t : list) {
@@ -102,21 +97,16 @@ public class ThemPhieuMuonDialog extends JDialog {
 
     addRow(topPanel, gbc, 0, "Nhân viên:", new JLabel(UserSession.getInstance().getTenNhanVien()));
 
-    // ==========================================================
-    // KHU VỰC CHECK THẺ SIÊU CẤP VIP PRO (COMBOBOX AUTO-COMPLETE)
-    // ==========================================================
     gbc.gridx = 0;
     gbc.gridy = 1;
     topPanel.add(new JLabel("Mã Thẻ TV:"), gbc);
 
     JPanel pnlCheckThe = new JPanel(new BorderLayout(5, 0));
 
-    // Tạo ComboBox có thể gõ chữ
     cbxIdThe = new JComboBox<>();
     cbxIdThe.setEditable(true);
     cbxIdThe.setPreferredSize(new Dimension(150, 25));
 
-    // Bộ Render màu sắc Xanh/Đỏ cho Dropdown
     cbxIdThe.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -133,7 +123,7 @@ public class ThemPhieuMuonDialog extends JDialog {
             c.setForeground(Color.ORANGE);
             setText(textToDisplay + " (Hết hạn)");
           } else {
-            c.setForeground(new Color(0, 153, 76)); // Màu xanh lá
+            c.setForeground(new Color(0, 190, 0));
             setText(textToDisplay + " (Hoạt động)");
           }
         }
@@ -141,7 +131,6 @@ public class ThemPhieuMuonDialog extends JDialog {
       }
     });
 
-    // Bắt sự kiện gõ phím để Lọc dữ liệu (Không tự động show Popup)
     JTextField editor = (JTextField) cbxIdThe.getEditor().getEditorComponent();
     editor.setBackground(new Color(230, 245, 255));
     editor.setForeground(new Color(0, 80, 160));
@@ -149,7 +138,6 @@ public class ThemPhieuMuonDialog extends JDialog {
       @Override
       public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
-        // Bỏ qua các phím điều hướng để tránh lỗi
         if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT
             || code == KeyEvent.VK_ENTER) {
           return;
@@ -162,14 +150,13 @@ public class ThemPhieuMuonDialog extends JDialog {
             cbxIdThe.addItem(item);
           }
         }
-        editor.setText(input); // Trả lại text vừa gõ
+        editor.setText(input);
       }
     });
 
-    // Nạp toàn bộ dữ liệu lần đầu
     for (CardItem item : allCardItems)
       cbxIdThe.addItem(item);
-    editor.setText(""); // Xóa text mặc định
+    editor.setText("");
 
     JButton btnCheck = new JButton("Kiểm tra");
     btnCheck.addActionListener(e -> checkTheThanhVien());
@@ -180,12 +167,10 @@ public class ThemPhieuMuonDialog extends JDialog {
     gbc.gridx = 1;
     topPanel.add(pnlCheckThe, gbc);
 
-    // Ô Tên độc giả bị xám
     txtTenDocGia = new JTextField(18);
     txtTenDocGia.setEditable(false);
     txtTenDocGia.setBackground(new Color(240, 240, 240));
     addRow(topPanel, gbc, 2, "Tên đọc giả:", txtTenDocGia);
-    // ==========================================================
 
     addRow(topPanel, gbc, 3, "Ngày mượn:", spNgayMuon);
     addRow(topPanel, gbc, 4, "Ngày hẹn trả:", spNgayHenTra);
@@ -232,7 +217,7 @@ public class ThemPhieuMuonDialog extends JDialog {
         String tenDG = theThanhVienBUS.getTenDocGiaByThe(idThe);
         txtTenDocGia.setText(tenDG);
         txtTenDocGia.setForeground(new Color(0, 102, 51));
-        validIdThe = idThe; // Ghi nhận thẻ hợp lệ
+        validIdThe = idThe;
       }
     } catch (NumberFormatException e) {
       JOptionPane.showMessageDialog(this, "Mã thẻ phải là số nguyên!");
@@ -282,7 +267,7 @@ public class ThemPhieuMuonDialog extends JDialog {
       LocalDate ngayHenTra = ((Date) spNgayHenTra.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
       phieuMuonBUS.addPhieuMuon(
           UserSession.getInstance().getIdTaiKhoan(),
-          validIdThe, // DÙNG ID THẺ THẬT THAY VÌ GIẢ LẬP
+          validIdThe,
           ngayMuon, ngayHenTra, selectedIds);
 
       JOptionPane.showMessageDialog(this, "Tạo phiếu mượn thành công!");

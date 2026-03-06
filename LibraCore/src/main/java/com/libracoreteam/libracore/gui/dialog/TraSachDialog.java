@@ -60,7 +60,7 @@ public class TraSachDialog extends JDialog {
 
     JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 4));
     infoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin phiếu mượn"));
-    infoPanel.add(new JLabel("Đọc giả:"));
+    infoPanel.add(new JLabel("Độc giả:"));
     infoPanel.add(tfDocGia);
     infoPanel.add(new JLabel("Ngày mượn:"));
     infoPanel.add(tfNgayMuon);
@@ -263,6 +263,13 @@ public class TraSachDialog extends JDialog {
 
     if (items.isEmpty()) {
       JOptionPane.showMessageDialog(this, "Chưa chọn sách để trả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    int confirm = JOptionPane.showConfirmDialog(this,
+        "Kiểm tra kỹ tình trạng sách trước khi xác nhận trả.\nBạn có chắc chắn muốn xác nhận?",
+        "Xác nhận trả sách", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    if (confirm != JOptionPane.YES_OPTION) {
       return;
     }
 
