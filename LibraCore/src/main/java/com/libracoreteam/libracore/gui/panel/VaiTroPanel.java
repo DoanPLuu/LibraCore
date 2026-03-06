@@ -39,32 +39,13 @@ public class VaiTroPanel extends javax.swing.JPanel {
         jButtonTimKiem = new javax.swing.JButton();
         jButtonLamMoi = new javax.swing.JButton();
         jPanelNutDieuKhien = new javax.swing.JPanel();
+        jButtonChiTiet = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jButtonSua = new javax.swing.JButton();
         jButtonXoa = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jPanelRight = new javax.swing.JPanel();
-        jPanelTop = new javax.swing.JPanel();
-        jLabelTitle = new javax.swing.JLabel();
-        jPanelBottom = new javax.swing.JPanel();
-        jPanelFields = new javax.swing.JPanel();
-        jPanelMaVaiTro = new javax.swing.JPanel();
-        jLabelMaVaiTro = new javax.swing.JLabel();
-        jTextFieldMaVaiTro = new javax.swing.JTextField();
-        jPanelVaiTro = new javax.swing.JPanel();
-        jLabelVaiTro = new javax.swing.JLabel();
-        jTextFieldVaiTro = new javax.swing.JTextField();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler9 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
 
         setLayout(new java.awt.BorderLayout());
 
@@ -88,6 +69,11 @@ public class VaiTroPanel extends javax.swing.JPanel {
         jPanelTimKiem.add(jButtonLamMoi);
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
+
+        jButtonChiTiet.setText("Chi tiết");
+        jButtonChiTiet.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonChiTiet.addActionListener(this::jButtonChiTietActionPerformed);
+        jPanelNutDieuKhien.add(jButtonChiTiet);
 
         jButtonThem.setText("Thêm");
         jButtonThem.setPreferredSize(new java.awt.Dimension(90, 40));
@@ -132,54 +118,6 @@ public class VaiTroPanel extends javax.swing.JPanel {
         jPanelLeft.add(jPanelBoard, java.awt.BorderLayout.CENTER);
 
         add(jPanelLeft, java.awt.BorderLayout.CENTER);
-
-        jPanelRight.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 50, 20));
-        jPanelRight.setMinimumSize(new java.awt.Dimension(300, 306));
-        jPanelRight.setPreferredSize(new java.awt.Dimension(306, 306));
-        jPanelRight.setLayout(new java.awt.BorderLayout());
-
-        jLabelTitle.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        jLabelTitle.setText("THÔNG TIN SÁCH");
-        jPanelTop.add(jLabelTitle);
-
-        jPanelRight.add(jPanelTop, java.awt.BorderLayout.PAGE_START);
-
-        jPanelBottom.setLayout(new javax.swing.BoxLayout(jPanelBottom, javax.swing.BoxLayout.Y_AXIS));
-
-        jPanelFields.setLayout(new javax.swing.BoxLayout(jPanelFields, javax.swing.BoxLayout.Y_AXIS));
-
-        jPanelMaVaiTro.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelMaVaiTro.setText("Mã Vai Trò");
-        jPanelMaVaiTro.add(jLabelMaVaiTro);
-        jPanelMaVaiTro.add(jTextFieldMaVaiTro);
-
-        jPanelFields.add(jPanelMaVaiTro);
-
-        jPanelVaiTro.setLayout(new java.awt.GridLayout(0, 1));
-
-        jLabelVaiTro.setText("Vai Trò");
-        jPanelVaiTro.add(jLabelVaiTro);
-
-        jTextFieldVaiTro.addActionListener(this::jTextFieldVaiTroActionPerformed);
-        jPanelVaiTro.add(jTextFieldVaiTro);
-
-        jPanelFields.add(jPanelVaiTro);
-        jPanelFields.add(filler1);
-        jPanelFields.add(filler2);
-        jPanelFields.add(filler3);
-        jPanelFields.add(filler4);
-        jPanelFields.add(filler5);
-        jPanelFields.add(filler6);
-        jPanelFields.add(filler7);
-        jPanelFields.add(filler8);
-        jPanelFields.add(filler9);
-
-        jPanelBottom.add(jPanelFields);
-
-        jPanelRight.add(jPanelBottom, java.awt.BorderLayout.CENTER);
-
-        add(jPanelRight, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
 
     private void InnitButton() {
@@ -205,49 +143,30 @@ public class VaiTroPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonXoaActionPerformed
 
-    private void jTextFieldVaiTroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldVaiTroActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldVaiTroActionPerformed
-
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
+    private void jButtonChiTietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChiTietActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonChiTietActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.Box.Filler filler3;
-    private javax.swing.Box.Filler filler4;
-    private javax.swing.Box.Filler filler5;
-    private javax.swing.Box.Filler filler6;
-    private javax.swing.Box.Filler filler7;
-    private javax.swing.Box.Filler filler8;
-    private javax.swing.Box.Filler filler9;
+    private javax.swing.JButton jButtonChiTiet;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonSua;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXoa;
-    private javax.swing.JLabel jLabelMaVaiTro;
-    private javax.swing.JLabel jLabelTitle;
-    private javax.swing.JLabel jLabelVaiTro;
     private javax.swing.JPanel jPanelBoard;
-    private javax.swing.JPanel jPanelBottom;
     private javax.swing.JPanel jPanelCongCu;
-    private javax.swing.JPanel jPanelFields;
     private javax.swing.JPanel jPanelLeft;
     private javax.swing.JPanel jPanelLeftTop;
-    private javax.swing.JPanel jPanelMaVaiTro;
     private javax.swing.JPanel jPanelNutDieuKhien;
-    private javax.swing.JPanel jPanelRight;
     private javax.swing.JPanel jPanelTimKiem;
-    private javax.swing.JPanel jPanelTop;
-    private javax.swing.JPanel jPanelVaiTro;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextFieldMaVaiTro;
     private javax.swing.JTextField jTextFieldTimKiem;
-    private javax.swing.JTextField jTextFieldVaiTro;
     // End of variables declaration//GEN-END:variables
 }
