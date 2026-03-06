@@ -58,9 +58,12 @@ public class PhieuMuonBUS {
   public void addPhieuMuon(int idNhanVien, int idTheThanhVien, LocalDate ngayMuon, LocalDate ngayHenTra,
       List<Integer> idCuonSachList) {
     if (idCuonSachList == null || idCuonSachList.isEmpty())
-      throw new IllegalArgumentException("Phải chọn ít nhất 1 cuốn sách");
+      throw new IllegalArgumentException("Ph\u1ea3i ch\u1ecdn \u00edt nh\u1ea5t 1 cu\u1ed1n s\u00e1ch");
+    if (idCuonSachList.size() > 7)
+      throw new IllegalArgumentException(
+          "Ch\u1ec9 \u0111\u01b0\u1ee3c m\u01b0\u1ee3n t\u1ed1i \u0111a 7 cu\u1ed1n s\u00e1ch m\u1ed7i l\u1ea7n");
     if (idNhanVien <= 0)
-      throw new IllegalArgumentException("Nhân viên không hợp lệ");
+      throw new IllegalArgumentException("Nh\u00e2n vi\u00ean kh\u00f4ng h\u1ee3p l\u1ec7");
 
     PhieuMuon pm = new PhieuMuon();
     pm.setIdNhanVien(idNhanVien);
@@ -75,27 +78,28 @@ public class PhieuMuonBUS {
         conn.commit();
       } catch (Exception e) {
         conn.rollback();
-        throw new RuntimeException("Lỗi khi thêm phiếu mượn: " + e.getMessage(), e);
+        throw new RuntimeException("L\u1ed7i khi th\u00eam phi\u1ebfu m\u01b0\u1ee3n: " + e.getMessage(), e);
       }
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
-      throw new RuntimeException("Lỗi kết nối khi thêm phiếu mượn", e);
+      throw new RuntimeException("L\u1ed7i k\u1ebft n\u1ed1i khi th\u00eam phi\u1ebfu m\u01b0\u1ee3n", e);
     }
   }
 
   public void traSachBulk(int idPhieuMuon, List<TraSachItem> items, int idNhanVien) {
     if (items == null || items.isEmpty())
-      throw new IllegalArgumentException("Phải chọn ít nhất 1 sách để trả");
+      throw new IllegalArgumentException("Ph\u1ea3i ch\u1ecdn \u00edt nh\u1ea5t 1 s\u00e1ch \u0111\u1ec3 tr\u1ea3");
 
     for (TraSachItem item : items) {
       if (!"Tot".equals(item.tinhTrangTra) && item.idMucPhatFixed == null)
-        throw new IllegalArgumentException("Sách hư hỏng/mất phải chọn mức phạt");
+        throw new IllegalArgumentException(
+            "S\u00e1ch h\u01b0 h\u1ecfng/m\u1ea5t ph\u1ea3i ch\u1ecdn m\u1ee9c ph\u1ea1t");
     }
 
     PhieuMuon pm = phieuMuonDAO.getById(idPhieuMuon);
     if (pm == null)
-      throw new RuntimeException("Phiếu mượn không tồn tại");
+      throw new RuntimeException("Phi\u1ebfu m\u01b0\u1ee3n kh\u00f4ng t\u1ed3n t\u1ea1i");
 
     MucPhat mucPhatPerDay = mucPhatDAO.getPerDayActive();
     LocalDate ngayHenTra = pm.getNgayHenTra();
@@ -131,15 +135,15 @@ public class PhieuMuonBUS {
           }
 
           if (item.idMucPhatFixed != null) {
-            MucPhat fixedList = mucPhatDAO.getAllFixedActive().stream()
+            MucPhat fixedMp = mucPhatDAO.getAllFixedActive().stream()
                 .filter(mp -> mp.getIdMucPhat() == item.idMucPhatFixed)
                 .findFirst().orElse(null);
-            if (fixedList != null) {
+            if (fixedMp != null) {
               ChiTietPhieuPhat ctpp = new ChiTietPhieuPhat();
               ctpp.setIdChiTietPhieuMuon(item.idChiTietPhieuMuon);
               ctpp.setIdMucPhat(item.idMucPhatFixed);
               ctpp.setSoNgayTreHan(0);
-              ctpp.setTienPhatTra(fixedList.getSoTienPhat());
+              ctpp.setTienPhatTra(fixedMp.getSoTienPhat());
               dsChiTietPhat.add(ctpp);
             }
           }
@@ -149,7 +153,7 @@ public class PhieuMuonBUS {
           BigDecimal tongTien = dsChiTietPhat.stream()
               .map(ChiTietPhieuPhat::getTienPhatTra)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
-          PhieuPhat pp = new PhieuPhat(ngayTra, tongTien, "Trả sách - PM#" + idPhieuMuon, idNhanVien);
+          PhieuPhat pp = new PhieuPhat(ngayTra, tongTien, "Tr\u1ea3 s\u00e1ch - PM#" + idPhieuMuon, idNhanVien);
           phieuPhatDAO.insertWithDetails(pp, dsChiTietPhat, conn);
         }
 
@@ -158,28 +162,31 @@ public class PhieuMuonBUS {
             .allMatch(
                 ct -> !"ChuaTra".equals(ct.getTinhTrangTra()) || returningIds.contains(ct.getIdChiTietPhieuMuon()));
         if (truaHet) {
-          phieuMuonDAO.updateTrangThaiPhieuMuon(idPhieuMuon, "DaTra", conn);
+          boolean conPhatChuaThu = phieuPhatDAO.hasPendingFineForPhieu(idPhieuMuon, conn);
+          if (!conPhatChuaThu) {
+            phieuMuonDAO.updateTrangThaiPhieuMuon(idPhieuMuon, "DaTra", conn);
+          }
         }
 
         conn.commit();
       } catch (Exception e) {
         conn.rollback();
-        throw new RuntimeException("Lỗi khi trả sách: " + e.getMessage(), e);
+        throw new RuntimeException("L\u1ed7i khi tr\u1ea3 s\u00e1ch: " + e.getMessage(), e);
       }
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
-      throw new RuntimeException("Lỗi kết nối khi trả sách", e);
+      throw new RuntimeException("L\u1ed7i k\u1ebft n\u1ed1i khi tr\u1ea3 s\u00e1ch", e);
     }
   }
 
-  public void huyPhieuMuon(int idPhieuMuon) {
+  public void huyPhieuMuon(int idPhieuMuon, String lyDoHuy) {
     PhieuMuon pm = phieuMuonDAO.getById(idPhieuMuon);
     if (pm == null)
-      throw new RuntimeException("Phiếu mượn không tồn tại");
+      throw new RuntimeException("Phi\u1ebfu m\u01b0\u1ee3n kh\u00f4ng t\u1ed3n t\u1ea1i");
     if (!"DangMuon".equals(pm.getTrangThai()))
-      throw new RuntimeException("Chỉ có thể hủy phiếu đang mượn");
-    phieuMuonDAO.huyPhieuMuon(idPhieuMuon);
+      throw new RuntimeException("Ch\u1ec9 c\u00f3 th\u1ec3 h\u1ee7y phi\u1ebfu \u0111ang m\u01b0\u1ee3n");
+    phieuMuonDAO.huyPhieuMuon(idPhieuMuon, lyDoHuy);
   }
 
   private String mapTinhTrangTraForDB(String tinhTrangTra, boolean treLan) {

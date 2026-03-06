@@ -9,21 +9,49 @@ import java.util.List;
 
 public class PhieuPhatDAO {
 
+  private static final String BASE_SELECT = "SELECT pp.id_PhieuPhat, pp.NgayLap, pp.TienPhatPhaiNop, pp.LyDoPhat, pp.TrangThai, pp.id_NhanVien, "
+      +
+      "MAX(d.TenDocGia) AS TenDocGia " +
+      "FROM phieuphat pp " +
+      "LEFT JOIN chitietphieuphat ctpp ON ctpp.id_PhieuPhat = pp.id_PhieuPhat " +
+      "LEFT JOIN chitietphieumuon ctpm ON ctpm.id_ChiTietPhieuMuon = ctpp.id_ChiTietPhieuMuon " +
+      "LEFT JOIN phieumuon pm ON pm.id_PhieuMuon = ctpm.id_PhieuMuon " +
+      "LEFT JOIN thethanhvien t ON t.id_TheThanhVien = pm.id_TheThanhVien " +
+      "LEFT JOIN docgia d ON d.id_DocGia = t.id_DocGia ";
+
   public List<PhieuPhat> getAll() {
-    String sql = "SELECT pp.id_PhieuPhat, pp.NgayLap, pp.TienPhatPhaiNop, pp.LyDoPhat, pp.TrangThai, pp.id_NhanVien " +
-        "FROM phieuphat pp ORDER BY pp.id_PhieuPhat DESC";
-    return queryList(sql, null);
+    String sql = BASE_SELECT + "GROUP BY pp.id_PhieuPhat ORDER BY pp.id_PhieuPhat DESC";
+    return queryList(sql, null, null);
+  }
+
+  public List<PhieuPhat> searchByStatus(String trangThai) {
+    String sql = BASE_SELECT + "WHERE pp.TrangThai = ? GROUP BY pp.id_PhieuPhat ORDER BY pp.id_PhieuPhat DESC";
+    List<PhieuPhat> list = new ArrayList<>();
+    try (Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setString(1, trangThai);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next())
+          list.add(mapRow(rs));
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("PhieuPhatDAO.searchByStatus failed", e);
+    }
+    return list;
   }
 
   public List<PhieuPhat> search(String keyword, String trangThai) {
-    String where = "WHERE ";
+    StringBuilder where = new StringBuilder("WHERE ");
     if (trangThai != null && !trangThai.isEmpty()) {
-      where += "pp.TrangThai = '" + trangThai + "' AND ";
+      where.append("pp.TrangThai = '").append(trangThai).append("' AND ");
     }
-    where += "CAST(pp.id_PhieuPhat AS CHAR) LIKE ?";
-    String sql = "SELECT pp.id_PhieuPhat, pp.NgayLap, pp.TienPhatPhaiNop, pp.LyDoPhat, pp.TrangThai, pp.id_NhanVien " +
-        "FROM phieuphat pp " + where + " ORDER BY pp.id_PhieuPhat DESC";
-    return queryList(sql, "%" + keyword.trim() + "%");
+    where.append("(CAST(pp.id_PhieuPhat AS CHAR) LIKE ? OR COALESCE(MAX(d.TenDocGia),'') LIKE ?)");
+    String sql = BASE_SELECT + "GROUP BY pp.id_PhieuPhat HAVING " +
+        "(CAST(pp.id_PhieuPhat AS CHAR) LIKE ? OR COALESCE(MAX(d.TenDocGia),'') LIKE ?)" +
+        (trangThai != null && !trangThai.isEmpty() ? " AND pp.TrangThai = '" + trangThai + "'" : "") +
+        " ORDER BY pp.id_PhieuPhat DESC";
+    String k = "%" + (keyword != null ? keyword.trim() : "") + "%";
+    return queryList(sql, k, k);
   }
 
   public List<ChiTietPhieuPhat> getChiTiet(int idPhieuPhat) {
@@ -115,12 +143,49 @@ public class PhieuPhatDAO {
     }
   }
 
-  private List<PhieuPhat> queryList(String sql, String keyword) {
+  public boolean hasPendingFineForPhieu(int idPhieuMuon, Connection conn) throws SQLException {
+    String sql = "SELECT COUNT(*) FROM phieuphat pp " +
+        "JOIN chitietphieuphat ctpp ON ctpp.id_PhieuPhat = pp.id_PhieuPhat " +
+        "JOIN chitietphieumuon ctpm ON ctpm.id_ChiTietPhieuMuon = ctpp.id_ChiTietPhieuMuon " +
+        "WHERE ctpm.id_PhieuMuon = ? AND pp.TrangThai = 'ChuaThu'";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, idPhieuMuon);
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next() && rs.getInt(1) > 0;
+      }
+    }
+  }
+
+  public boolean updateTrangThaiWithConn(int id, String trangThai, Connection conn) throws SQLException {
+    String sql = "UPDATE phieuphat SET TrangThai=? WHERE id_PhieuPhat=? AND TrangThai='ChuaThu'";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setString(1, trangThai);
+      ps.setInt(2, id);
+      return ps.executeUpdate() > 0;
+    }
+  }
+
+  public Integer findPhieuMuonByPhieuPhat(int idPhieuPhat, Connection conn) throws SQLException {
+    String sql = "SELECT DISTINCT ctpm.id_PhieuMuon " +
+        "FROM chitietphieuphat ctpp " +
+        "JOIN chitietphieumuon ctpm ON ctpm.id_ChiTietPhieuMuon = ctpp.id_ChiTietPhieuMuon " +
+        "WHERE ctpp.id_PhieuPhat = ? LIMIT 1";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, idPhieuPhat);
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next() ? rs.getInt("id_PhieuMuon") : null;
+      }
+    }
+  }
+
+  private List<PhieuPhat> queryList(String sql, String keyword1, String keyword2) {
     List<PhieuPhat> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
-      if (keyword != null)
-        ps.setString(1, keyword);
+      if (keyword1 != null) {
+        ps.setString(1, keyword1);
+        ps.setString(2, keyword2);
+      }
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next())
           list.add(mapRow(rs));
@@ -139,6 +204,7 @@ public class PhieuPhatDAO {
     pp.setLyDoPhat(rs.getString("LyDoPhat"));
     pp.setTrangThai(rs.getString("TrangThai"));
     pp.setIdNhanVien(rs.getInt("id_NhanVien"));
+    pp.setTenDocGia(rs.getString("TenDocGia"));
     return pp;
   }
 }

@@ -329,6 +329,7 @@ CREATE TABLE IF NOT EXISTS `phieumuon` (
   `NgayHenTra` date DEFAULT NULL,
   `TrangThai` enum('DangMuon','DaTra','QuaHen','DaHuy') DEFAULT 'DangMuon',
   `TongSoSachMuon` int NOT NULL,
+  `LyDoHuy` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_PhieuMuon`),
   KEY `idx_phieumuon_the` (`id_TheThanhVien`),
   KEY `id_NhanVien` (`id_NhanVien`),
@@ -337,9 +338,10 @@ CREATE TABLE IF NOT EXISTS `phieumuon` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table libracore.phieumuon: ~2 rows (approximately)
-REPLACE INTO `phieumuon` (`id_PhieuMuon`, `id_NhanVien`, `id_TheThanhVien`, `NgayMuon`, `NgayHenTra`, `TrangThai`, `TongSoSachMuon`) VALUES
-	(1, 1, NULL, '2026-02-27', '2026-03-13', 'DaTra', 3),
-	(2, 1, 1, '2026-03-03', '2026-03-17', 'DangMuon', 2);
+REPLACE INTO `phieumuon` (`id_PhieuMuon`, `id_NhanVien`, `id_TheThanhVien`, `NgayMuon`, `NgayHenTra`, `TrangThai`, `TongSoSachMuon`, `LyDoHuy`) VALUES
+	(1, 1, NULL, '2026-02-27', '2026-03-13', 'DaTra', 3, NULL),
+	(2, 1, 1, '2026-03-03', '2026-03-17', 'DangMuon', 2, NULL);
+
 
 -- Dumping structure for table libracore.phieunhap
 CREATE TABLE IF NOT EXISTS `phieunhap` (
