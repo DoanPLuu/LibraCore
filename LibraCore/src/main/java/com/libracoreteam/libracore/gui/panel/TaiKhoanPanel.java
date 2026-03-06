@@ -224,8 +224,9 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jLabelMaTaiKhoan.setText("Mã Tài Khoản");
         jPanelMaTaiKhoan.add(jLabelMaTaiKhoan);
 
-        jTextFieldMaTaiKhoan.setEditable(false);
         jTextFieldMaTaiKhoan.setBackground(new java.awt.Color(255, 255, 255));
+        jTextFieldMaTaiKhoan.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextFieldMaTaiKhoan.setEnabled(false);
         jPanelMaTaiKhoan.add(jTextFieldMaTaiKhoan);
 
         jPanelFields.add(jPanelMaTaiKhoan);
@@ -235,8 +236,9 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jLabelTenDangNhap.setText("Tên Đăng Nhập");
         jPanelTenDangNhap.add(jLabelTenDangNhap);
 
-        jTextFieldTenDangNhap.setEditable(false);
         jTextFieldTenDangNhap.setBackground(new java.awt.Color(255, 255, 255));
+        jTextFieldTenDangNhap.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextFieldTenDangNhap.setEnabled(false);
         jTextFieldTenDangNhap.addActionListener(this::jTextFieldTenDangNhapActionPerformed);
         jPanelTenDangNhap.add(jTextFieldTenDangNhap);
 
@@ -246,6 +248,8 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
 
         jLabelMatKhau.setText("Mật Khẩu");
         jPanelMatKhau.add(jLabelMatKhau);
+
+        jPasswordField1.setEditable(false);
         jPanelMatKhau.add(jPasswordField1);
 
         jPanelFields.add(jPanelMatKhau);
