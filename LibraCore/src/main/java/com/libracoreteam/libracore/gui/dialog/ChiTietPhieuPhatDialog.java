@@ -35,7 +35,7 @@ public class ChiTietPhieuPhatDialog extends JDialog {
     infoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin phiếu phạt"));
     infoPanel.add(new JLabel("Ngày lập:"));
     infoPanel.add(tfNgay);
-    infoPanel.add(new JLabel("Đọc giả:"));
+    infoPanel.add(new JLabel("Độc giả:"));
     infoPanel.add(tfDocGia);
     infoPanel.add(new JLabel("Tổng tiền phạt:"));
     infoPanel.add(tfTong);

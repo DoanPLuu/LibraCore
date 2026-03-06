@@ -37,7 +37,7 @@ public class PhatPanel extends JPanel {
   private final int iconSize = 16;
 
   private final DefaultTableModel tableModel = new DefaultTableModel(
-      new String[] { "Mã PP", "Đọc giả", "Ngày lập", "Tổng tiền phạt", "Lý do", "Trạng thái", "Thanh toán" }, 0) {
+      new String[] { "Mã PP", "Độc giả", "Ngày lập", "Tổng tiền phạt", "Lý do", "Trạng thái", "Thanh toán" }, 0) {
     @Override
     public boolean isCellEditable(int r, int c) {
       return c == 6;
@@ -47,7 +47,6 @@ public class PhatPanel extends JPanel {
   private final JTable table = new JTable(tableModel);
   private final JTextField tfSearch = new JTextField(18);
   private final JComboBox<String> cbFilter = new JComboBox<>(new String[] { "Tất cả", "Chưa thu", "Đã thu", "Đã hủy" });
-  private final JCheckBox cbHienHuy = new JCheckBox("Hiện phiếu hủy");
   private List<PhieuPhat> currentData;
 
   public PhatPanel() {
@@ -75,7 +74,6 @@ public class PhatPanel extends JPanel {
     btnLamMoi.addActionListener(e -> {
       tfSearch.setText("");
       cbFilter.setSelectedIndex(0);
-      cbHienHuy.setSelected(false);
       loadData();
     });
 
@@ -87,8 +85,6 @@ public class PhatPanel extends JPanel {
     cbFilter.setPreferredSize(new Dimension(130, 40));
     cbFilter.addActionListener(e -> loadData());
 
-    cbHienHuy.addActionListener(e -> loadData());
-
     tfSearch.setPreferredSize(new Dimension(150, 40));
     tfSearch.putClientProperty("JTextField.placeholderText", "Tìm kiếm");
     tfSearch.addActionListener(e -> loadData());
@@ -98,7 +94,6 @@ public class PhatPanel extends JPanel {
     leftPanel.add(btnTim);
     leftPanel.add(cbFilter);
     leftPanel.add(btnLamMoi);
-    leftPanel.add(cbHienHuy);
 
     JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 10));
     rightPanel.add(btnChiTiet);
@@ -146,11 +141,10 @@ public class PhatPanel extends JPanel {
     String kw = tfSearch.getText().trim();
     String filterItem = (String) cbFilter.getSelectedItem();
     String trangThai = mapFilterToStatus(filterItem);
-    boolean showHuy = cbHienHuy.isSelected();
 
     currentData = bus.searchWithFilter(kw.isEmpty() ? null : kw, trangThai);
 
-    if (!showHuy) {
+    if ("Tất cả".equals(filterItem)) {
       currentData = currentData.stream()
           .filter(pp -> !"DaHuy".equals(pp.getTrangThai()))
           .toList();
@@ -224,7 +218,7 @@ public class PhatPanel extends JPanel {
   }
 
   private class ThanhToanRenderer implements javax.swing.table.TableCellRenderer {
-    private final JButton btn = new JButton("Thanh toán");
+    private final JButton btn = new JButton("Thu phạt");
     private final JLabel lblXong = new JLabel("✓ Đã thu", SwingConstants.CENTER);
     private final JLabel lblHuy = new JLabel("Đã hủy", SwingConstants.CENTER);
 
@@ -257,7 +251,7 @@ public class PhatPanel extends JPanel {
         fireEditingStopped();
         return new JLabel("DaHuy".equals(value) ? "Đã hủy" : "✓ Đã thu", SwingConstants.CENTER);
       }
-      JButton btn = new JButton("Thanh toán");
+      JButton btn = new JButton("Thu phạt");
       btn.addActionListener(e -> {
         fireEditingStopped();
         panel.onThanhToan(editRow);

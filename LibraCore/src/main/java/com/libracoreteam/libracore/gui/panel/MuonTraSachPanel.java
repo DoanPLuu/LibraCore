@@ -39,7 +39,7 @@ public class MuonTraSachPanel extends JPanel {
   private final int iconSize = 16;
 
   private final DefaultTableModel tableModel = new DefaultTableModel(
-      new String[] { "Mã PM", "Đọc giả", "Ngày mượn", "Hạn trả", "Trạng thái", "Số sách", "Thao tác" }, 0) {
+      new String[] { "Mã PM", "Độc giả", "Ngày mượn", "Hạn trả", "Trạng thái", "Số sách", "Thao tác" }, 0) {
     @Override
     public boolean isCellEditable(int r, int c) {
       return c == 6;

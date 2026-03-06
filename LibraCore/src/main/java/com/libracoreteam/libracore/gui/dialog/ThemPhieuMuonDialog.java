@@ -170,7 +170,7 @@ public class ThemPhieuMuonDialog extends JDialog {
     txtTenDocGia = new JTextField(18);
     txtTenDocGia.setEditable(false);
     txtTenDocGia.setBackground(new Color(240, 240, 240));
-    addRow(topPanel, gbc, 2, "Tên đọc giả:", txtTenDocGia);
+    addRow(topPanel, gbc, 2, "Tên độc giả:", txtTenDocGia);
 
     addRow(topPanel, gbc, 3, "Ngày mượn:", spNgayMuon);
     addRow(topPanel, gbc, 4, "Ngày hẹn trả:", spNgayHenTra);

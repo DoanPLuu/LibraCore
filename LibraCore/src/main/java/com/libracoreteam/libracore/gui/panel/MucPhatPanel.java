@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.util.List;
@@ -180,26 +179,48 @@ public class MucPhatPanel extends JPanel {
   }
 
   private void showForm(MucPhat existing) {
-    JTextField tfTen = new JTextField(existing != null ? existing.getTenMucPhat() : "", 20);
+    JTextField tfTen = new JTextField(existing != null ? existing.getTenMucPhat() : "", 15);
     JComboBox<String> cbLoai = new JComboBox<>(new String[] { "Theo ngày", "Cố định" });
     if (existing != null)
       cbLoai.setSelectedItem(toViLoai(existing.getLoaiPhat()));
-    JTextField tfSoTien = new JTextField(existing != null ? existing.getSoTienPhat().toPlainString() : "0", 12);
-    JTextField tfMoTa = new JTextField(existing != null ? existing.getMoTa() : "", 20);
+    JTextField tfSoTien = new JTextField(existing != null ? existing.getSoTienPhat().toPlainString() : "0", 15);
+    JTextField tfMoTa = new JTextField(existing != null ? existing.getMoTa() : "", 15);
 
-    JPanel panel = new JPanel(new GridLayout(4, 2, 6, 6));
-    panel.add(new JLabel("Tên mức phạt:"));
-    panel.add(tfTen);
-    panel.add(new JLabel("Loại:"));
-    panel.add(cbLoai);
-    panel.add(new JLabel("Số tiền (VNĐ):"));
-    panel.add(tfSoTien);
-    panel.add(new JLabel("Mô tả:"));
-    panel.add(tfMoTa);
+    JPanel panel = new JPanel(new java.awt.GridBagLayout());
+    panel.setBorder(BorderFactory.createTitledBorder("Thông tin mức phạt"));
+    java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+    gbc.insets = new java.awt.Insets(6, 10, 6, 10);
+    gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gbc.anchor = java.awt.GridBagConstraints.WEST;
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    panel.add(new JLabel("Tên:"), gbc);
+    gbc.gridx = 1;
+    panel.add(tfTen, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    panel.add(new JLabel("Loại:"), gbc);
+    gbc.gridx = 1;
+    panel.add(cbLoai, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    panel.add(new JLabel("Số tiền (đ):"), gbc);
+    gbc.gridx = 1;
+    panel.add(tfSoTien, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 3;
+    panel.add(new JLabel("Mô tả:"), gbc);
+    gbc.gridx = 1;
+    panel.add(tfMoTa, gbc);
 
     String title = existing != null ? "Sửa mức phạt" : "Thêm mức phạt";
     while (true) {
-      int result = JOptionPane.showConfirmDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION);
+      int result = JOptionPane.showConfirmDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION,
+          JOptionPane.PLAIN_MESSAGE);
       if (result != JOptionPane.OK_OPTION)
         return;
       try {
@@ -207,8 +228,8 @@ public class MucPhatPanel extends JPanel {
         if (ten.isEmpty())
           throw new RuntimeException("Tên mức phạt không được trống");
         BigDecimal soTien = new BigDecimal(tfSoTien.getText().trim());
-        if (soTien.compareTo(BigDecimal.ZERO) < 0)
-          throw new RuntimeException("Số tiền phải >= 0");
+        if (soTien.compareTo(BigDecimal.ZERO) <= 0)
+          throw new RuntimeException("Số tiền phải > 0");
         MucPhat mp = existing != null ? existing : new MucPhat();
         mp.setTenMucPhat(ten);
         mp.setLoaiPhat(fromViLoai((String) cbLoai.getSelectedItem()));

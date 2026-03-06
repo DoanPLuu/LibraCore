@@ -38,7 +38,7 @@ public class ChiTietPhieuMuonDialog extends JDialog {
     int rows = "DaHuy".equals(pm.getTrangThai()) ? 6 : 5;
     JPanel infoPanel = new JPanel(new GridLayout(rows, 2, 6, 4));
     infoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin"));
-    infoPanel.add(new JLabel("Đọc giả:"));
+    infoPanel.add(new JLabel("Độc giả:"));
     infoPanel.add(tfDocGia);
     infoPanel.add(new JLabel("Nhân viên lập:"));
     infoPanel.add(tfNhanVien);
@@ -86,7 +86,7 @@ public class ChiTietPhieuMuonDialog extends JDialog {
     btnXuatPDF.setFocusPainted(false);
     btnXuatPDF.addActionListener(e -> {
       String title = "Chứng Nhận Trả Sách - Phiếu #" + pm.getIdPhieuMuon();
-      String subtitle = "Đọc giả: " + tenDocGia
+      String subtitle = "Độc giả: " + tenDocGia
           + "  |  Nhân viên: " + tenNV
           + "  |  Ngày mượn: " + pm.getNgayMuon()
           + "  |  Hạn trả: " + pm.getNgayHenTra()
