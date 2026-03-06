@@ -38,16 +38,13 @@ public class TraSachDialog extends JDialog {
     super(parent, "Trả sách - Phiếu #" + phieuMuon.getIdPhieuMuon(), true);
     this.phieuMuon = phieuMuon;
     this.phieuMuonBUS = new PhieuMuonBUS();
-    
-    // ĐÃ SỬA THÀNH BUS
     MucPhatBUS mucPhatBUS = new MucPhatBUS();
     this.dsMucPhatFixed = mucPhatBUS.getAllFixedActive();
     this.mucPhatPerDay = mucPhatBUS.getPerDayActive();
-    
     this.dsChiTiet = phieuMuonBUS.getChiTiet(phieuMuon.getIdPhieuMuon());
     initUI();
     pack();
-    setMinimumSize(new Dimension(750, 420));
+    setMinimumSize(new Dimension(780, 450));
     setLocationRelativeTo(parent);
   }
 
@@ -76,7 +73,7 @@ public class TraSachDialog extends JDialog {
     loadDuLieu();
 
     JScrollPane scrollPane = new JScrollPane(table);
-    scrollPane.setPreferredSize(new Dimension(700, 250));
+    scrollPane.setPreferredSize(new Dimension(740, 250));
 
     JButton btnXacNhan = new JButton("Xác nhận trả");
     JButton btnDong = new JButton("Đóng");
@@ -106,10 +103,13 @@ public class TraSachDialog extends JDialog {
 
       @Override
       public boolean isCellEditable(int row, int col) {
-        if (col == COL_MUC_PHAT) {
-          String tt = (String) getValueAt(row, COL_TINH_TRANG);
-          return !"Tot".equals(tt);
-        }
+        String ttTra = (String) getValueAt(row, COL_TINH_TRANG);
+        boolean daTra = !"ChuaTra".equals(dsChiTiet.get(row).getTinhTrangTra()) && !"Tot".equals(ttTra)
+            || (dsChiTiet.get(row).getNgayTra() != null);
+        if (daTra)
+          return false;
+        if (col == COL_MUC_PHAT)
+          return !"Tot".equals(ttTra);
         return col == COL_CHON || col == COL_TINH_TRANG;
       }
 
@@ -121,9 +121,8 @@ public class TraSachDialog extends JDialog {
             super.setValueAt(null, row, COL_MUC_PHAT);
           recalculate(row);
         }
-        if (col == COL_MUC_PHAT) {
+        if (col == COL_MUC_PHAT)
           recalculate(row);
-        }
         fireTableRowsUpdated(row, row);
       }
     };
@@ -140,7 +139,7 @@ public class TraSachDialog extends JDialog {
 
     table.getColumnModel().getColumn(COL_CHON).setMaxWidth(50);
     table.getColumnModel().getColumn(COL_MA).setMaxWidth(100);
-    table.getRowHeight(24);
+    table.setRowHeight(26);
   }
 
   private String[] buildMucPhatItems() {
@@ -158,22 +157,48 @@ public class TraSachDialog extends JDialog {
     LocalDate ngayHenTra = phieuMuon.getNgayHenTra();
     LocalDate homNay = LocalDate.now();
     for (ChiTietPhieuMuon ct : dsChiTiet) {
-      if (!"ChuaTra".equals(ct.getTinhTrangTra()))
-        continue;
+      boolean daTra = ct.getNgayTra() != null;
       long soNgayTre = ngayHenTra != null ? Math.max(0, ChronoUnit.DAYS.between(ngayHenTra, homNay)) : 0;
       BigDecimal phatTre = soNgayTre > 0 && mucPhatPerDay != null
           ? mucPhatPerDay.getSoTienPhat().multiply(BigDecimal.valueOf(soNgayTre))
           : BigDecimal.ZERO;
+      String tinhTrang = daTra ? toViTinhTrang(ct.getTinhTrangTra()) : "Tot";
       tableModel.addRow(new Object[] {
-          false,
+          daTra,
           ct.getCuonSach() != null ? ct.getCuonSach().getMaCuonSach() : "",
           ct.getCuonSach() != null && ct.getCuonSach().getSach() != null ? ct.getCuonSach().getSach().getTenSach() : "",
-          "Tot",
+          tinhTrang,
           null,
           phatTre.toPlainString(),
           phatTre.toPlainString()
       });
     }
+    renderDisabledRows();
+  }
+
+  private void renderDisabledRows() {
+    table.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+      @Override
+      public Component getTableCellRendererComponent(JTable t, Object val, boolean sel, boolean foc, int r, int c) {
+        Component comp = super.getTableCellRendererComponent(t, val, sel, foc, r, c);
+        boolean daTra = dsChiTiet.get(r).getNgayTra() != null;
+        comp.setBackground(daTra ? new Color(220, 220, 220) : (sel ? t.getSelectionBackground() : t.getBackground()));
+        comp.setForeground(daTra ? Color.GRAY : (sel ? t.getSelectionForeground() : t.getForeground()));
+        return comp;
+      }
+    });
+  }
+
+  private String toViTinhTrang(String tt) {
+    if (tt == null)
+      return "Chưa trả";
+    return switch (tt) {
+      case "DaTra" -> "Đã trả";
+      case "TreHan" -> "Trễ hẹn";
+      case "Hong" -> "Hư/Mất";
+      case "ChuaTra" -> "Chưa trả";
+      default -> tt;
+    };
   }
 
   private void recalculate(int row) {
@@ -198,8 +223,7 @@ public class TraSachDialog extends JDialog {
 
   private int findMucPhatIndex(String displayStr) {
     for (int i = 0; i < dsMucPhatFixed.size(); i++) {
-      MucPhat mp = dsMucPhatFixed.get(i);
-      if (displayStr.startsWith(mp.getTenMucPhat()))
+      if (displayStr.startsWith(dsMucPhatFixed.get(i).getTenMucPhat()))
         return i;
     }
     return -1;
@@ -213,10 +237,13 @@ public class TraSachDialog extends JDialog {
     List<ChiTietPhieuMuon> chuaTra = dsChiTiet.stream()
         .filter(ct -> "ChuaTra".equals(ct.getTinhTrangTra())).toList();
 
+    int chuaTraIdx = 0;
     for (int i = 0; i < tableModel.getRowCount(); i++) {
+      if (dsChiTiet.get(i).getNgayTra() != null)
+        continue;
+      ChiTietPhieuMuon ct = chuaTra.get(chuaTraIdx++);
       if (!Boolean.TRUE.equals(tableModel.getValueAt(i, COL_CHON)))
         continue;
-      ChiTietPhieuMuon ct = chuaTra.get(i);
       String tinhTrang = (String) tableModel.getValueAt(i, COL_TINH_TRANG);
       Integer idMucPhatFixed = null;
       if (!"Tot".equals(tinhTrang)) {

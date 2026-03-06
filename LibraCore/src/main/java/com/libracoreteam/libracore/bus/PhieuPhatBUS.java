@@ -20,6 +20,15 @@ public class PhieuPhatBUS {
     return phieuPhatDAO.search(keyword, trangThai);
   }
 
+  public List<PhieuPhat> searchWithFilter(String keyword, String trangThai) {
+    if (keyword == null || keyword.trim().isEmpty()) {
+      if (trangThai == null || trangThai.isEmpty())
+        return phieuPhatDAO.getAll();
+      return phieuPhatDAO.searchByStatus(trangThai);
+    }
+    return phieuPhatDAO.search(keyword, trangThai);
+  }
+
   public List<ChiTietPhieuPhat> getChiTiet(int idPhieuPhat) {
     return phieuPhatDAO.getChiTiet(idPhieuPhat);
   }

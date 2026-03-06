@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MucPhatDAO{
+public class MucPhatDAO {
 
   public MucPhat getPerDayActive() {
     String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat WHERE LoaiPhat = 'PerDay' AND HoatDong = 1 LIMIT 1";
@@ -37,7 +37,7 @@ public class MucPhatDAO{
   }
 
   public List<MucPhat> getAll() {
-    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat ORDER BY LoaiPhat, id_MucPhat";
+    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat WHERE HoatDong = 1 ORDER BY LoaiPhat, id_MucPhat";
     List<MucPhat> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -49,6 +49,44 @@ public class MucPhatDAO{
     }
     return list;
   }
+
+  public List<MucPhat> getFiltered(String loaiPhat) {
+    if (loaiPhat == null || loaiPhat.isEmpty())
+      return getAll();
+    String sql = "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat WHERE HoatDong = 1 AND LoaiPhat = ? ORDER BY id_MucPhat";
+    List<MucPhat> list = new ArrayList<>();
+    try (Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setString(1, loaiPhat);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next())
+          list.add(map(rs));
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("MucPhatDAO.getFiltered failed", e);
+    }
+    return list;
+  }
+
+  public List<MucPhat> getFilteredInactive(String loaiPhat) {
+    String sql = loaiPhat != null && !loaiPhat.isEmpty()
+        ? "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat WHERE HoatDong = 0 AND LoaiPhat = ? ORDER BY id_MucPhat"
+        : "SELECT id_MucPhat, TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong FROM mucphat WHERE HoatDong = 0 ORDER BY id_MucPhat";
+    List<MucPhat> list = new ArrayList<>();
+    try (Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+      if (loaiPhat != null && !loaiPhat.isEmpty())
+        ps.setString(1, loaiPhat);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next())
+          list.add(map(rs));
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("MucPhatDAO.getFilteredInactive failed", e);
+    }
+    return list;
+  }
+
   public boolean insert(MucPhat mp) {
     String sql = "INSERT INTO mucphat (TenMucPhat, LoaiPhat, SoTienPhat, MoTa, HoatDong) VALUES (?,?,?,?,1)";
     try (Connection conn = DBConnection.getConnection();

@@ -5,32 +5,52 @@ import com.libracoreteam.libracore.model.MucPhat;
 import java.util.List;
 
 public class MucPhatBUS {
-    private final MucPhatDAO dao = new MucPhatDAO();
+  private final MucPhatDAO dao = new MucPhatDAO();
 
-    public List<MucPhat> getAll() {
-        return dao.getAll();
-    }
-    
-    public MucPhat getPerDayActive() {
-        return dao.getPerDayActive();
-    }
+  public List<MucPhat> getAll() {
+    return dao.getAll();
+  }
 
-    public List<MucPhat> getAllFixedActive() {
-        return dao.getAllFixedActive();
-    }
+  public List<MucPhat> getFiltered(String loaiPhat) {
+    return dao.getFiltered(loaiPhat);
+  }
 
-    public void insert(MucPhat mp) {
-        // Có thể thêm logic kiểm tra dữ liệu ở đây (ví dụ tiền phạt phải > 0)
-        boolean ok = dao.insert(mp);
-        if (!ok) {
-            throw new RuntimeException("Lỗi khi thêm mức phạt mới!");
-        }
-    }
+  public MucPhat getPerDayActive() {
+    return dao.getPerDayActive();
+  }
 
-    public void update(MucPhat mp) {
-        boolean ok = dao.update(mp);
-        if (!ok) {
-            throw new RuntimeException("Lỗi khi cập nhật mức phạt!");
-        }
+  public List<MucPhat> getAllFixedActive() {
+    return dao.getAllFixedActive();
+  }
+
+  public void insert(MucPhat mp) {
+    // Có thể thêm logic kiểm tra dữ liệu ở đây (ví dụ tiền phạt phải > 0)
+    boolean ok = dao.insert(mp);
+    if (!ok) {
+      throw new RuntimeException("Lỗi khi thêm mức phạt mới!");
     }
+  }
+
+  public void update(MucPhat mp) {
+    boolean ok = dao.update(mp);
+    if (!ok) {
+      throw new RuntimeException("Lỗi khi cập nhật mức phạt!");
+    }
+  }
+
+  public void xoa(int id) {
+    boolean ok = dao.setHoatDong(id, false);
+    if (!ok)
+      throw new RuntimeException("Lỗi khi ẩn mức phạt!");
+  }
+
+  public void setHoatDong(int id, boolean hoatDong) {
+    boolean ok = dao.setHoatDong(id, hoatDong);
+    if (!ok)
+      throw new RuntimeException("Lỗi khi cập nhật mức phạt!");
+  }
+
+  public List<MucPhat> getFilteredInactive(String loaiPhat) {
+    return dao.getFilteredInactive(loaiPhat);
+  }
 }

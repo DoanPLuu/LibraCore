@@ -10,11 +10,12 @@ import java.util.List;
 public class PhieuMuonDAO {
 
   public List<PhieuMuon> getAll() {
-    String sql = "SELECT pm.id_PhieuMuon, pm.id_NhanVien, pm.id_TheThanhVien, pm.NgayMuon, pm.NgayHenTra, pm.TrangThai, pm.TongSoSachMuon, "
-        + "d.TenDocGia, d.SDT "
+    String sql = "SELECT pm.id_PhieuMuon, pm.id_NhanVien, pm.id_TheThanhVien, pm.NgayMuon, pm.NgayHenTra, pm.TrangThai, pm.TongSoSachMuon, pm.LyDoHuy, "
+        + "d.TenDocGia, d.SDT, nv.TenNhanVien "
         + "FROM phieumuon pm "
         + "LEFT JOIN thethanhvien t ON t.id_TheThanhVien = pm.id_TheThanhVien "
         + "LEFT JOIN docgia d ON d.id_DocGia = t.id_DocGia "
+        + "LEFT JOIN nhanvien nv ON nv.id_NhanVien = pm.id_NhanVien "
         + "ORDER BY pm.id_PhieuMuon DESC";
     return queryList(sql);
   }
@@ -25,11 +26,12 @@ public class PhieuMuonDAO {
       where += "pm.TrangThai = '" + trangThai + "' AND ";
     }
     where += "(COALESCE(d.TenDocGia,'') LIKE ? OR CAST(pm.id_PhieuMuon AS CHAR) LIKE ?)";
-    String sql = "SELECT pm.id_PhieuMuon, pm.id_NhanVien, pm.id_TheThanhVien, pm.NgayMuon, pm.NgayHenTra, pm.TrangThai, pm.TongSoSachMuon, "
-        + "d.TenDocGia, d.SDT "
+    String sql = "SELECT pm.id_PhieuMuon, pm.id_NhanVien, pm.id_TheThanhVien, pm.NgayMuon, pm.NgayHenTra, pm.TrangThai, pm.TongSoSachMuon, pm.LyDoHuy, "
+        + "d.TenDocGia, d.SDT, nv.TenNhanVien "
         + "FROM phieumuon pm "
         + "LEFT JOIN thethanhvien t ON t.id_TheThanhVien = pm.id_TheThanhVien "
         + "LEFT JOIN docgia d ON d.id_DocGia = t.id_DocGia "
+        + "LEFT JOIN nhanvien nv ON nv.id_NhanVien = pm.id_NhanVien "
         + where + " ORDER BY pm.id_PhieuMuon DESC";
     String k = "%" + keyword.trim() + "%";
     List<PhieuMuon> list = new ArrayList<>();
@@ -48,11 +50,12 @@ public class PhieuMuonDAO {
   }
 
   public PhieuMuon getById(int id) {
-    String sql = "SELECT pm.id_PhieuMuon, pm.id_NhanVien, pm.id_TheThanhVien, pm.NgayMuon, pm.NgayHenTra, pm.TrangThai, pm.TongSoSachMuon, "
-        + "d.TenDocGia, d.SDT "
+    String sql = "SELECT pm.id_PhieuMuon, pm.id_NhanVien, pm.id_TheThanhVien, pm.NgayMuon, pm.NgayHenTra, pm.TrangThai, pm.TongSoSachMuon, pm.LyDoHuy, "
+        + "d.TenDocGia, d.SDT, nv.TenNhanVien "
         + "FROM phieumuon pm "
         + "LEFT JOIN thethanhvien t ON t.id_TheThanhVien = pm.id_TheThanhVien "
         + "LEFT JOIN docgia d ON d.id_DocGia = t.id_DocGia "
+        + "LEFT JOIN nhanvien nv ON nv.id_NhanVien = pm.id_NhanVien "
         + "WHERE pm.id_PhieuMuon = ?";
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -188,16 +191,16 @@ public class PhieuMuonDAO {
 
   public void updateTrangThaiPhieuMuon(int idPhieuMuon, String trangThai, Connection conn) throws SQLException {
     String sql = "UPDATE phieumuon SET TrangThai=? WHERE id_PhieuMuon=?";
-    try (PreparedStatement ps =conn.prepareStatement(sql)) { 
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, trangThai);
       ps.setInt(2, idPhieuMuon);
       ps.executeUpdate();
     }
   }
 
-  public void huyPhieuMuon(int idPhieuMuon) {
+  public void huyPhieuMuon(int idPhieuMuon, String lyDoHuy) {
     String sqlCheck = "SELECT id_CuonSach, TinhTrangTra FROM chitietphieumuon WHERE id_PhieuMuon = ?";
-    String sqlUpdatePM = "UPDATE phieumuon SET TrangThai='DaHuy' WHERE id_PhieuMuon=? AND TrangThai='DangMuon'";
+    String sqlUpdatePM = "UPDATE phieumuon SET TrangThai='DaHuy', LyDoHuy=? WHERE id_PhieuMuon=? AND TrangThai='DangMuon'";
     String sqlRestoreCS = "UPDATE cuonsach SET TrangThaiMuon='Ranh' WHERE id_CuonSach=? AND TrangThaiMuon='DangMuon'";
     try (Connection conn = DBConnection.getConnection()) {
       conn.setAutoCommit(false);
@@ -216,7 +219,8 @@ public class PhieuMuonDAO {
         }
       }
       try (PreparedStatement ps = conn.prepareStatement(sqlUpdatePM)) {
-        ps.setInt(1, idPhieuMuon);
+        ps.setString(1, lyDoHuy);
+        ps.setInt(2, idPhieuMuon);
         int rows = ps.executeUpdate();
         if (rows == 0) {
           conn.rollback();
@@ -260,12 +264,16 @@ public class PhieuMuonDAO {
     pm.setNgayHenTra(rs.getDate("NgayHenTra") != null ? rs.getDate("NgayHenTra").toLocalDate() : null);
     pm.setTrangThai(rs.getString("TrangThai"));
     pm.setTongSoSachMuon(rs.getInt("TongSoSachMuon"));
+    pm.setLyDoHuy(rs.getString("LyDoHuy"));
     TheThanhVien ttv = new TheThanhVien();
     DocGia dg = new DocGia();
     dg.setTenDocGia(rs.getString("TenDocGia"));
     dg.setSdt(rs.getString("SDT"));
     ttv.setDocGia(dg);
     pm.setTheThanhVien(ttv);
+    NhanVien nv = new NhanVien();
+    nv.setTenNhanVien(rs.getString("TenNhanVien"));
+    pm.setNhanVien(nv);
     return pm;
   }
 }
