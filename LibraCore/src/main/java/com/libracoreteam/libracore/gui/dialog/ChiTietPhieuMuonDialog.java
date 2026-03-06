@@ -3,18 +3,20 @@ package com.libracoreteam.libracore.gui.dialog;
 import com.libracoreteam.libracore.bus.PhieuMuonBUS;
 import com.libracoreteam.libracore.model.ChiTietPhieuMuon;
 import com.libracoreteam.libracore.model.PhieuMuon;
+import com.libracoreteam.libracore.util.PdfExportUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.*;
 import java.util.List;
 
 public class ChiTietPhieuMuonDialog extends JDialog {
 
+  private Frame parentFrame;
+
   public ChiTietPhieuMuonDialog(Frame parent, PhieuMuon phieuMuon) {
     super(parent, "Chi tiết phiếu mượn #" + phieuMuon.getIdPhieuMuon(), true);
+    this.parentFrame = parent;
     initUI(phieuMuon);
     pack();
     setMinimumSize(new Dimension(640, 420));
@@ -33,7 +35,8 @@ public class ChiTietPhieuMuonDialog extends JDialog {
     JTextField tfHenTra = makeField(pm.getNgayHenTra() != null ? pm.getNgayHenTra().toString() : "");
     JTextField tfTrangThai = makeField(toViTrangThai(pm.getTrangThai()));
 
-    JPanel infoPanel = new JPanel(new GridLayout(5, 2, 6, 4));
+    int rows = "DaHuy".equals(pm.getTrangThai()) ? 6 : 5;
+    JPanel infoPanel = new JPanel(new GridLayout(rows, 2, 6, 4));
     infoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin"));
     infoPanel.add(new JLabel("Đọc giả:"));
     infoPanel.add(tfDocGia);
@@ -47,10 +50,8 @@ public class ChiTietPhieuMuonDialog extends JDialog {
     infoPanel.add(tfTrangThai);
 
     if ("DaHuy".equals(pm.getTrangThai())) {
-      JTextField tfLyDo = makeField(pm.getLyDoHuy() != null ? pm.getLyDoHuy() : "");
-      infoPanel.setLayout(new GridLayout(6, 2, 6, 4));
       infoPanel.add(new JLabel("Lý do hủy:"));
-      infoPanel.add(tfLyDo);
+      infoPanel.add(makeField(pm.getLyDoHuy() != null ? pm.getLyDoHuy() : ""));
     }
 
     DefaultTableModel tableModel = new DefaultTableModel(
@@ -61,8 +62,7 @@ public class ChiTietPhieuMuonDialog extends JDialog {
       }
     };
 
-    PhieuMuonBUS bus = new PhieuMuonBUS();
-    List<ChiTietPhieuMuon> chiTiet = bus.getChiTiet(pm.getIdPhieuMuon());
+    List<ChiTietPhieuMuon> chiTiet = new PhieuMuonBUS().getChiTiet(pm.getIdPhieuMuon());
     for (ChiTietPhieuMuon ct : chiTiet) {
       tableModel.addRow(new Object[] {
           ct.getCuonSach() != null ? ct.getCuonSach().getMaCuonSach() : "",
@@ -72,14 +72,36 @@ public class ChiTietPhieuMuonDialog extends JDialog {
       });
     }
 
+    JTable table = new JTable(tableModel);
+    table.getColumnModel().getColumn(0).setPreferredWidth(80);
+    table.getColumnModel().getColumn(1).setPreferredWidth(250);
+    table.getColumnModel().getColumn(2).setPreferredWidth(100);
+    table.getColumnModel().getColumn(3).setPreferredWidth(100);
+    table.setDefaultEditor(Object.class, null);
+    table.setRowHeight(25);
+
     JButton btnXuatPDF = new JButton("Xuất PDF");
-    btnXuatPDF.addActionListener((ActionEvent e) -> xuatPDF(pm, chiTiet));
+    btnXuatPDF.setBackground(new Color(0xC6, 0x28, 0x28));
+    btnXuatPDF.setForeground(Color.WHITE);
+    btnXuatPDF.setFocusPainted(false);
+    btnXuatPDF.addActionListener(e -> {
+      String title = "Chứng Nhận Trả Sách - Phiếu #" + pm.getIdPhieuMuon();
+      String subtitle = "Đọc giả: " + tenDocGia
+          + "  |  Nhân viên: " + tenNV
+          + "  |  Ngày mượn: " + pm.getNgayMuon()
+          + "  |  Hạn trả: " + pm.getNgayHenTra()
+          + "  |  Trạng thái: " + toViTrangThai(pm.getTrangThai());
+      String[] cols = { "Mã cuốn", "Tên sách", "Tình trạng", "Ngày trả" };
+      PdfExportUtil.export(parentFrame, title, subtitle, cols,
+          PdfExportUtil.fromTableModel(tableModel), "PhieuMuon_" + pm.getIdPhieuMuon() + ".pdf");
+    });
+
     JButton btnDong = new JButton("Đóng");
     btnDong.addActionListener(e -> dispose());
 
     setLayout(new BorderLayout(6, 6));
     add(infoPanel, BorderLayout.NORTH);
-    add(new JScrollPane(new JTable(tableModel)), BorderLayout.CENTER);
+    add(new JScrollPane(table), BorderLayout.CENTER);
     JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     btnPanel.add(btnXuatPDF);
     btnPanel.add(btnDong);
@@ -88,7 +110,7 @@ public class ChiTietPhieuMuonDialog extends JDialog {
   }
 
   private JTextField makeField(String text) {
-    JTextField tf = new JTextField(text);
+    JTextField tf = new JTextField(text, 25);
     tf.setEditable(false);
     tf.setBackground(new Color(245, 245, 245));
     return tf;
@@ -116,37 +138,5 @@ public class ChiTietPhieuMuonDialog extends JDialog {
       case "ChuaTra" -> "Chưa trả";
       default -> tt;
     };
-  }
-
-  private void xuatPDF(PhieuMuon pm, List<ChiTietPhieuMuon> chiTiet) {
-    JFileChooser fc = new JFileChooser();
-    fc.setSelectedFile(new File("PhieuMuon_" + pm.getIdPhieuMuon() + ".txt"));
-    if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
-      return;
-    try (PrintWriter pw = new PrintWriter(new FileWriter(fc.getSelectedFile()))) {
-      pw.println("=== CHỨNG NHẬN TRẢ SÁCH ===");
-      pw.println("Mã phiếu: #" + pm.getIdPhieuMuon());
-      pw.println("Đọc giả: " + (pm.getTheThanhVien() != null && pm.getTheThanhVien().getDocGia() != null
-          ? pm.getTheThanhVien().getDocGia().getTenDocGia()
-          : ""));
-      pw.println("Nhân viên lập: " + (pm.getNhanVien() != null ? pm.getNhanVien().getTenNhanVien() : ""));
-      pw.println("Ngày mượn: " + pm.getNgayMuon());
-      pw.println("Hạn trả: " + pm.getNgayHenTra());
-      pw.println("Trạng thái: " + toViTrangThai(pm.getTrangThai()));
-      pw.println("----------------------------");
-      pw.println("Danh sách sách:");
-      for (ChiTietPhieuMuon ct : chiTiet) {
-        pw.printf("  - %s | %s | %s | Ngày trả: %s%n",
-            ct.getCuonSach() != null ? ct.getCuonSach().getMaCuonSach() : "",
-            ct.getCuonSach() != null && ct.getCuonSach().getSach() != null ? ct.getCuonSach().getSach().getTenSach()
-                : "",
-            toViTinhTrang(ct.getTinhTrangTra()),
-            ct.getNgayTra() != null ? ct.getNgayTra().toString() : "Chưa trả");
-      }
-      pw.println("=== HẾT ===");
-      JOptionPane.showMessageDialog(this, "Xuất thành công: " + fc.getSelectedFile().getAbsolutePath());
-    } catch (IOException ex) {
-      JOptionPane.showMessageDialog(this, "Lỗi xuất file: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
   }
 }

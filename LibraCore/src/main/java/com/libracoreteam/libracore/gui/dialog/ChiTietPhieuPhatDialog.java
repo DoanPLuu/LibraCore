@@ -3,21 +3,20 @@ package com.libracoreteam.libracore.gui.dialog;
 import com.libracoreteam.libracore.bus.PhieuPhatBUS;
 import com.libracoreteam.libracore.model.ChiTietPhieuPhat;
 import com.libracoreteam.libracore.model.PhieuPhat;
+import com.libracoreteam.libracore.util.PdfExportUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 public class ChiTietPhieuPhatDialog extends JDialog {
 
+  private Frame parentFrame;
+
   public ChiTietPhieuPhatDialog(Frame parent, PhieuPhat phieuPhat) {
     super(parent, "Chi tiết phiếu phạt #" + phieuPhat.getIdPhieuPhat(), true);
+    this.parentFrame = parent;
     initUI(phieuPhat);
     pack();
     setMinimumSize(new Dimension(680, 420));
@@ -53,8 +52,7 @@ public class ChiTietPhieuPhatDialog extends JDialog {
       }
     };
 
-    PhieuPhatBUS bus = new PhieuPhatBUS();
-    List<ChiTietPhieuPhat> chiTiet = bus.getChiTiet(pp.getIdPhieuPhat());
+    List<ChiTietPhieuPhat> chiTiet = new PhieuPhatBUS().getChiTiet(pp.getIdPhieuPhat());
     for (ChiTietPhieuPhat ct : chiTiet) {
       String tenSach = ct.getChiTietPhieuMuon() != null && ct.getChiTietPhieuMuon().getCuonSach() != null
           && ct.getChiTietPhieuMuon().getCuonSach().getSach() != null
@@ -72,14 +70,37 @@ public class ChiTietPhieuPhatDialog extends JDialog {
       });
     }
 
+    JTable table = new JTable(tableModel);
+    table.getColumnModel().getColumn(0).setPreferredWidth(180);
+    table.getColumnModel().getColumn(1).setPreferredWidth(100);
+    table.getColumnModel().getColumn(2).setPreferredWidth(120);
+    table.getColumnModel().getColumn(3).setPreferredWidth(100);
+    table.getColumnModel().getColumn(4).setPreferredWidth(100);
+    table.getColumnModel().getColumn(5).setPreferredWidth(120);
+    table.setDefaultEditor(Object.class, null);
+    table.setRowHeight(25);
+
     JButton btnXuatPDF = new JButton("Xuất PDF");
-    btnXuatPDF.addActionListener((ActionEvent e) -> xuatPDF(pp, chiTiet));
+    btnXuatPDF.setBackground(new Color(0xC6, 0x28, 0x28));
+    btnXuatPDF.setForeground(Color.WHITE);
+    btnXuatPDF.setFocusPainted(false);
+    btnXuatPDF.addActionListener(e -> {
+      String title = "Phiếu Phạt #" + pp.getIdPhieuPhat();
+      String subtitle = "Đọc giả: " + (pp.getTenDocGia() != null ? pp.getTenDocGia() : "")
+          + "  |  Ngày: " + pp.getNgayLap()
+          + "  |  Tổng: " + (pp.getTienPhatPhaiNop() != null ? pp.getTienPhatPhaiNop().toPlainString() : "0") + " đ"
+          + "  |  Trạng thái: " + toViTrangThai(pp.getTrangThai());
+      String[] cols = { "Tên sách", "Mã cuốn", "Mức phạt", "Loại", "Số ngày trễ", "Tiền phạt (đ)" };
+      PdfExportUtil.export(parentFrame, title, subtitle, cols,
+          PdfExportUtil.fromTableModel(tableModel), "PhieuPhat_" + pp.getIdPhieuPhat() + ".pdf");
+    });
+
     JButton btnDong = new JButton("Đóng");
     btnDong.addActionListener(e -> dispose());
 
     setLayout(new BorderLayout(6, 6));
     add(infoPanel, BorderLayout.NORTH);
-    add(new JScrollPane(new JTable(tableModel)), BorderLayout.CENTER);
+    add(new JScrollPane(table), BorderLayout.CENTER);
     JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     btnPanel.add(btnXuatPDF);
     btnPanel.add(btnDong);
@@ -88,7 +109,7 @@ public class ChiTietPhieuPhatDialog extends JDialog {
   }
 
   private JTextField makeField(String text) {
-    JTextField tf = new JTextField(text);
+    JTextField tf = new JTextField(text, 25);
     tf.setEditable(false);
     tf.setBackground(new Color(245, 245, 245));
     return tf;
@@ -113,40 +134,5 @@ public class ChiTietPhieuPhatDialog extends JDialog {
       case "Fixed" -> "Cố định";
       default -> loai;
     };
-  }
-
-  private void xuatPDF(PhieuPhat pp, List<ChiTietPhieuPhat> chiTiet) {
-    JFileChooser fc = new JFileChooser();
-    fc.setSelectedFile(new File("PhieuPhat_" + pp.getIdPhieuPhat() + ".txt"));
-    if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
-      return;
-    try (PrintWriter pw = new PrintWriter(new FileWriter(fc.getSelectedFile()))) {
-      pw.println("=== CHỨNG NHẬN THANH TOÁN PHẠT ===");
-      pw.println("Mã phiếu phạt: #" + pp.getIdPhieuPhat());
-      pw.println("Đọc giả: " + (pp.getTenDocGia() != null ? pp.getTenDocGia() : ""));
-      pw.println("Ngày lập: " + pp.getNgayLap());
-      pw.println(
-          "Tổng tiền: " + (pp.getTienPhatPhaiNop() != null ? pp.getTienPhatPhaiNop().toPlainString() + " đ" : "0 đ"));
-      pw.println("Lý do: " + pp.getLyDoPhat());
-      pw.println("Trạng thái: " + toViTrangThai(pp.getTrangThai()));
-      pw.println("-----------------------------------");
-      pw.println("Chi tiết phạt:");
-      for (ChiTietPhieuPhat ct : chiTiet) {
-        String tenSach = ct.getChiTietPhieuMuon() != null && ct.getChiTietPhieuMuon().getCuonSach() != null
-            && ct.getChiTietPhieuMuon().getCuonSach().getSach() != null
-                ? ct.getChiTietPhieuMuon().getCuonSach().getSach().getTenSach()
-                : "";
-        pw.printf("  - %s | Mức: %s | Loại: %s | Ngày trễ: %d | Tiền: %s đ%n",
-            tenSach,
-            ct.getMucPhat() != null ? ct.getMucPhat().getTenMucPhat() : "",
-            ct.getMucPhat() != null ? toViLoaiPhat(ct.getMucPhat().getLoaiPhat()) : "",
-            ct.getSoNgayTreHan() != null ? ct.getSoNgayTreHan() : 0,
-            ct.getTienPhatTra() != null ? ct.getTienPhatTra().toPlainString() : "0");
-      }
-      pw.println("=== HẾT ===");
-      JOptionPane.showMessageDialog(this, "Xuất thành công: " + fc.getSelectedFile().getAbsolutePath());
-    } catch (IOException ex) {
-      JOptionPane.showMessageDialog(this, "Lỗi xuất file: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
   }
 }
