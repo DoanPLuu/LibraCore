@@ -31,7 +31,6 @@ public class ThongKeTienPhatPanel extends JPanel {
 
     private final DefaultTableModel tblModel;
     private final JTable table;
-
     private final ThongKeTienPhatBUS bus = new ThongKeTienPhatBUS();
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -195,9 +194,9 @@ public class ThongKeTienPhatPanel extends JPanel {
         renderer.setMaximumBarWidth(0.20); 
         renderer.setItemMargin(0.05); 
         
-        renderer.setSeriesPaint(0, new Color(0x4CAF50)); // Xanh lá - Đã thu
-        renderer.setSeriesPaint(1, new Color(0xFF9800)); // Cam - Chưa thu
-        renderer.setSeriesPaint(2, new Color(0x2196F3)); // Xanh dương - Tổng tiền
+        renderer.setSeriesPaint(0, new Color(0x4CAF50));
+        renderer.setSeriesPaint(1, new Color(0xFF9800)); 
+        renderer.setSeriesPaint(2, new Color(0x2196F3)); 
 
         CategoryAxis domainAxis = plot.getDomainAxis();
         domainAxis.setTickLabelsVisible(true);
