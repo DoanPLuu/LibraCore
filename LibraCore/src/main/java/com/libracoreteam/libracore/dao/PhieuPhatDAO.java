@@ -156,6 +156,28 @@ public class PhieuPhatDAO {
     }
   }
 
+  public boolean updateTrangThaiWithConn(int id, String trangThai, Connection conn) throws SQLException {
+    String sql = "UPDATE phieuphat SET TrangThai=? WHERE id_PhieuPhat=? AND TrangThai='ChuaThu'";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setString(1, trangThai);
+      ps.setInt(2, id);
+      return ps.executeUpdate() > 0;
+    }
+  }
+
+  public Integer findPhieuMuonByPhieuPhat(int idPhieuPhat, Connection conn) throws SQLException {
+    String sql = "SELECT DISTINCT ctpm.id_PhieuMuon " +
+        "FROM chitietphieuphat ctpp " +
+        "JOIN chitietphieumuon ctpm ON ctpm.id_ChiTietPhieuMuon = ctpp.id_ChiTietPhieuMuon " +
+        "WHERE ctpp.id_PhieuPhat = ? LIMIT 1";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, idPhieuPhat);
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next() ? rs.getInt("id_PhieuMuon") : null;
+      }
+    }
+  }
+
   private List<PhieuPhat> queryList(String sql, String keyword1, String keyword2) {
     List<PhieuPhat> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
