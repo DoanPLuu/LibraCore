@@ -1,11 +1,14 @@
 package com.libracoreteam.libracore.gui.dialog;
 
+import com.libracoreteam.libracore.bus.VaiTroBUS;
+import com.libracoreteam.libracore.model.VaiTro;
 import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class SuaTaiKhoanDialog extends JDialog {
     // ===== Fields =====
@@ -13,18 +16,21 @@ public class SuaTaiKhoanDialog extends JDialog {
     private JTextField txtTenDangNhap;
     private JPasswordField txtMatKhau;
     private JPasswordField txtMatKhauLai;
-    private JComboBox<String> cmbVaiTro;
+    private JComboBox<VaiTro> cmbVaiTro;
     
     private JButton btnLuu;
     private JButton btnHuy;
     
     private boolean saved = false;
     private com.libracoreteam.libracore.model.TaiKhoan taiKhoan;
+    private List<VaiTro> dsVaiTro;
+    
 
     public SuaTaiKhoanDialog(Frame parent, boolean modal, com.libracoreteam.libracore.model.TaiKhoan taiKhoan) {
         super(parent, "Sửa thông tin tài khoản", modal);
         this.taiKhoan = taiKhoan;
         initComponents();
+        loadVaiTro();
         loadData();
     }
 
@@ -59,7 +65,7 @@ public class SuaTaiKhoanDialog extends JDialog {
         formPanel.add(txtMatKhauLai);
 
         // ===== Vai trò =====
-        cmbVaiTro = new JComboBox<>(new String[]{"Admin", "Nhân Viên", "Quản Lý"});
+        cmbVaiTro = new JComboBox<>();
         formPanel.add(new JLabel("Vai Trò:"));
         formPanel.add(cmbVaiTro);
 
@@ -95,7 +101,17 @@ public class SuaTaiKhoanDialog extends JDialog {
             txtTenDangNhap.setText(taiKhoan.getTaiKhoan() != null ? taiKhoan.getTaiKhoan() : "");
             txtMatKhau.setText(taiKhoan.getMatKhau() != null ? taiKhoan.getMatKhau() : "");
             txtMatKhauLai.setText(taiKhoan.getMatKhau() != null ? taiKhoan.getMatKhau() : "");
-            cmbVaiTro.setSelectedIndex(taiKhoan.getIdVaiTro() - 1);
+            
+            int currentRoleId = taiKhoan.getIdVaiTro();
+            if (dsVaiTro != null) {
+                for (int i = 0; i < cmbVaiTro.getItemCount(); i++) {
+                    VaiTro vt = cmbVaiTro.getItemAt(i);
+                    if (vt != null && vt.getIdVaiTro() == currentRoleId) {
+                        cmbVaiTro.setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -103,7 +119,12 @@ public class SuaTaiKhoanDialog extends JDialog {
         String tenDangNhap = txtTenDangNhap.getText().trim();
         String matKhau = new String(txtMatKhau.getPassword());
         String matKhauLai = new String(txtMatKhauLai.getPassword());
-        int vaiTro = cmbVaiTro.getSelectedIndex() + 1;
+        VaiTro selectedRole = (VaiTro) cmbVaiTro.getSelectedItem();
+        if (selectedRole == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn vai trò!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int vaiTro = selectedRole.getIdVaiTro();
 
         // 1. Validate dữ liệu
         if (tenDangNhap.isEmpty()) {
@@ -149,5 +170,19 @@ public class SuaTaiKhoanDialog extends JDialog {
 
     public boolean isSaved() {
         return saved;
+    }
+    
+    private void loadVaiTro() {
+        VaiTroBUS vaiTroBUS = new VaiTroBUS();
+        dsVaiTro = vaiTroBUS.getAll();
+        cmbVaiTro.removeAllItems();
+        if (dsVaiTro == null) {
+            return;
+        }
+        for (VaiTro vt : dsVaiTro) {
+            if (vt != null) {
+                cmbVaiTro.addItem(vt);
+            }
+        }
     }
 }
