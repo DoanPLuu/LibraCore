@@ -111,6 +111,8 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldMaNhanVien.setEditable(false);
         jTextFieldMaNhanVien.setBackground(new java.awt.Color(255, 255, 255));
+        jTextFieldMaNhanVien.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextFieldMaNhanVien.setEnabled(false);
         jTextFieldMaNhanVien.addActionListener(this::jTextFieldMaNhanVienActionPerformed);
         jPanelMaNhanVien.add(jTextFieldMaNhanVien);
 
@@ -124,6 +126,8 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldTenNhanVien.setEditable(false);
         jTextFieldTenNhanVien.setBackground(new java.awt.Color(255, 255, 255));
+        jTextFieldTenNhanVien.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextFieldTenNhanVien.setEnabled(false);
         jPanelTenNhanVien.add(jTextFieldTenNhanVien);
 
         jPanelFields.add(jPanelTenNhanVien);
@@ -136,6 +140,8 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldNgaySinh.setEditable(false);
         jTextFieldNgaySinh.setBackground(new java.awt.Color(255, 255, 255));
+        jTextFieldNgaySinh.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextFieldNgaySinh.setEnabled(false);
         jPanelNgaySinh.add(jTextFieldNgaySinh);
 
         jPanelFields.add(jPanelNgaySinh);
@@ -154,6 +160,8 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTextAreaDiaChi.setLineWrap(true);
         jTextAreaDiaChi.setRows(3);
         jTextAreaDiaChi.setWrapStyleWord(true);
+        jTextAreaDiaChi.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextAreaDiaChi.setEnabled(false);
         jScrollPaneDiaChi.setViewportView(jTextAreaDiaChi);
 
         jPanelDiaChi.add(jScrollPaneDiaChi, java.awt.BorderLayout.CENTER);
@@ -168,6 +176,8 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldSDT.setEditable(false);
         jTextFieldSDT.setBackground(new java.awt.Color(255, 255, 255));
+        jTextFieldSDT.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextFieldSDT.setEnabled(false);
         jPanelSDT.add(jTextFieldSDT);
 
         jPanelFields.add(jPanelSDT);
@@ -180,6 +190,8 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
         jTextFieldEmail.setEditable(false);
         jTextFieldEmail.setBackground(new java.awt.Color(255, 255, 255));
+        jTextFieldEmail.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextFieldEmail.setEnabled(false);
         jPanelEmail.add(jTextFieldEmail);
 
         jPanelFields.add(jPanelEmail);

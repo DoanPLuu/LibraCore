@@ -7,13 +7,17 @@ package com.libracoreteam.libracore.gui.panel;
 import com.libracoreteam.libracore.gui.MainFrame;
 import com.libracoreteam.libracore.gui.LoginFrame;
 import com.libracoreteam.libracore.util.UserSession;
+import com.libracoreteam.libracore.bus.VaiTroBUS;
+import com.libracoreteam.libracore.model.VaiTro;
 import net.miginfocom.swing.MigLayout;
 import org.kordamp.ikonli.swing.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 /**
  *
  * @author luuis
@@ -21,11 +25,16 @@ import java.util.Map;
 public class MenuPanel extends JPanel {
     private MainFrame mainFrame;
     private MigLayout layout;
-    private boolean isCollapsed = false;
+    private boolean isCollapsed = false; // hiện tại chưa dùng đến, giữ cho tương lai
     private MenuItem selectedMenuItem = null;
     
     // Map để track menu đang mở: key = menu index, value = {menuItem, subMenuPanel}
     private Map<Integer, MenuSubMenuInfo> openSubMenus = new HashMap<>();
+    
+    // Quyền hiển thị menu theo vai trò
+    private boolean[] allowedMenus;
+    // Cờ admin tạm thời không dùng trực tiếp nhưng giữ để mở rộng
+    private boolean isAdminRole = false;
     
     /**
      * Inner class để lưu thông tin menu đang mở
@@ -62,6 +71,7 @@ public class MenuPanel extends JPanel {
     
     public MenuPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
+        initPermissions();
         initComponents();
     }
     
@@ -150,8 +160,11 @@ public class MenuPanel extends JPanel {
         // Thêm padding cho toàn bộ panel
         setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
-        // Tạo menu items
+        // Tạo menu items theo quyền
         for (int i = 0; i < menuItems.length; i++) {
+            if (!shouldShowMenu(i)) {
+                continue;
+            }
             addMenu(menuItems[i][0], i);
 
             // Thêm spacing nhỏ sau mỗi menu item (trừ item cuối)
@@ -163,6 +176,96 @@ public class MenuPanel extends JPanel {
         spacer.setOpaque(false);
         add(spacer, "grow, push");
         add(createBottomPanel(), "h pref!");
+    }
+    
+    private void initPermissions() {
+        int menuCount = menuItems.length;
+        allowedMenus = new boolean[menuCount];
+        for (int i = 0; i < menuCount; i++) {
+            allowedMenus[i] = false;
+        }
+
+        // Dashboard luôn hiển thị
+        allowedMenus[0] = true;
+
+        UserSession session = UserSession.getInstance();
+        String tenVaiTro = session.getVaiTro();
+        if (tenVaiTro == null || tenVaiTro.trim().isEmpty()) {
+            // Nếu chưa đăng nhập rõ ràng, cho phép tất cả để tránh khóa UI
+            for (int i = 0; i < menuCount; i++) {
+                allowedMenus[i] = true;
+            }
+            isAdminRole = true;
+            return;
+        }
+
+        if ("Admin".equalsIgnoreCase(tenVaiTro.trim())) {
+            for (int i = 0; i < menuCount; i++) {
+                allowedMenus[i] = true;
+            }
+            isAdminRole = true;
+            return;
+        }
+
+        VaiTroBUS vaiTroBUS = new VaiTroBUS();
+        java.util.List<VaiTro> dsVaiTro = vaiTroBUS.getAll();
+        int idVaiTro = -1;
+        if (dsVaiTro != null) {
+            for (VaiTro vt : dsVaiTro) {
+                if (vt != null && tenVaiTro.equalsIgnoreCase(vt.getTenVaiTro())) {
+                    idVaiTro = vt.getIdVaiTro();
+                    break;
+                }
+            }
+        }
+
+        if (idVaiTro <= 0) {
+            // Không tìm thấy vai trò -> fallback cho phép tất cả
+            for (int i = 0; i < menuCount; i++) {
+                allowedMenus[i] = true;
+            }
+            isAdminRole = true;
+            return;
+        }
+
+        java.util.List<Integer> quyenIds = vaiTroBUS.getQuyenIdsByVaiTro(idVaiTro);
+        Set<Integer> quyenSet = new HashSet<Integer>(quyenIds);
+
+        // Map id_Quyen -> index menu chính (sau khi bỏ QL_CUONSACH và dồn ID)
+        // 1: QL_SACH           -> menu 1 (Quản lý sách)
+        // 2: QL_NHAPSACH       -> menu 5 (Quản lý nhập sách)
+        // 3: QL_DOCGIA_THE     -> menu 2 (Quản lý thành viên)
+        // 4: QL_MUON_TRA       -> menu 3 (Quản lý mượn - trả)
+        // 5: QL_PHIEU_PHAT     -> menu 4 (Quản lý phạt)
+        // 6: QL_NHANVIEN       -> menu 6 (Quản lý người dùng)
+
+        if (quyenSet.contains(1)) {
+            allowedMenus[1] = true;
+        }
+        if (quyenSet.contains(3)) {
+            allowedMenus[2] = true;
+        }
+        if (quyenSet.contains(4)) {
+            allowedMenus[3] = true;
+        }
+        if (quyenSet.contains(5)) {
+            allowedMenus[4] = true;
+        }
+        if (quyenSet.contains(2)) {
+            allowedMenus[5] = true;
+        }
+        if (quyenSet.contains(6)) {
+            allowedMenus[6] = true;
+        }
+
+        // Thống kê báo cáo (menu 7) mặc định chỉ cho Admin, nên để false khi không phải admin
+    }
+
+    private boolean shouldShowMenu(int index) {
+        if (allowedMenus == null || index < 0 || index >= allowedMenus.length) {
+            return true;
+        }
+        return allowedMenus[index];
     }
     
     private FontIcon getIcon(int index) {
