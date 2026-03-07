@@ -295,14 +295,15 @@ CREATE TABLE IF NOT EXISTS `nhanvien` (
   `SDT` varchar(20) DEFAULT NULL,
   `Email` varchar(255) DEFAULT NULL,
   `HoatDong` tinyint(1) NOT NULL,
+  `AnhNhanVien` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_NhanVien`),
   KEY `id_TaiKhoan` (`id_TaiKhoan`),
   CONSTRAINT `nhanvien_ibfk_1` FOREIGN KEY (`id_TaiKhoan`) REFERENCES `taikhoan` (`id_TaiKhoan`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table libracore.nhanvien: ~0 rows (approximately)
-REPLACE INTO `nhanvien` (`id_NhanVien`, `id_TaiKhoan`, `TenNhanVien`, `NgaySinh`, `DiaChi`, `SDT`, `Email`, `HoatDong`) VALUES
-	(1, 1, 'Nguyễn Văn A', '1990-01-01', 'Hà Nội', '0123456789', 'admin@example.com', 1);
+REPLACE INTO `nhanvien` (`id_NhanVien`, `id_TaiKhoan`, `TenNhanVien`, `NgaySinh`, `DiaChi`, `SDT`, `Email`, `HoatDong`, `AnhNhanVien`) VALUES
+	(1, 1, 'Nguyễn Văn A', '1990-01-01', 'Hà Nội', '0123456789', 'admin@example.com', 1, NULL);
 
 -- Dumping structure for table libracore.nxb
 CREATE TABLE IF NOT EXISTS `nxb` (
