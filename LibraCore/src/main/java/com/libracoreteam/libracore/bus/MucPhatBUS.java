@@ -24,7 +24,14 @@ public class MucPhatBUS {
   }
 
   public void insert(MucPhat mp) {
-    // Có thể thêm logic kiểm tra dữ liệu ở đây (ví dụ tiền phạt phải > 0)
+    if ("PerDay".equals(mp.getLoaiPhat())) {
+      MucPhat existing = dao.getPerDayActive();
+      if (existing != null) {
+        throw new RuntimeException(
+            "Đã tồn tại mức phạt theo ngày đang hoạt động: \"" + existing.getTenMucPhat() + "\".\n"
+                + "Vui lòng vô hiệu hóa mức phạt cũ trước khi thêm mới.");
+      }
+    }
     boolean ok = dao.insert(mp);
     if (!ok) {
       throw new RuntimeException("Lỗi khi thêm mức phạt mới!");
@@ -32,6 +39,14 @@ public class MucPhatBUS {
   }
 
   public void update(MucPhat mp) {
+    if ("PerDay".equals(mp.getLoaiPhat())) {
+      MucPhat existing = dao.getPerDayActive();
+      if (existing != null && existing.getIdMucPhat() != mp.getIdMucPhat()) {
+        throw new RuntimeException(
+            "Đã tồn tại mức phạt theo ngày đang hoạt động: \"" + existing.getTenMucPhat() + "\".\n"
+                + "Vui lòng vô hiệu hóa mức phạt cũ trước khi cập nhật loại này.");
+      }
+    }
     boolean ok = dao.update(mp);
     if (!ok) {
       throw new RuntimeException("Lỗi khi cập nhật mức phạt!");
