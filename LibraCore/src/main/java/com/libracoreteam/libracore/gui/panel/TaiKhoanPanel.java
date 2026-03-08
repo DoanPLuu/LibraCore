@@ -14,8 +14,9 @@ import com.libracoreteam.libracore.bus.TaiKhoanBUS;
 import com.libracoreteam.libracore.bus.VaiTroBUS;
 import com.libracoreteam.libracore.model.TaiKhoan;
 import com.libracoreteam.libracore.model.VaiTro;
-import com.libracoreteam.libracore.gui.dialog.ThemTaiKhoanDialog;
 import com.libracoreteam.libracore.gui.dialog.SuaTaiKhoanDialog;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +28,13 @@ import java.util.Map;
 public class TaiKhoanPanel extends javax.swing.JPanel {
     
     private DefaultTableModel tableModel;
-    private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
+    private final TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
     private Map<Integer, String> cacheVaiTroNames;
+    
+    // Cache trên RAM để tìm kiếm và lấy dữ liệu siêu tốc
+    private List<TaiKhoan> fullListCache = new ArrayList<>();
+    private List<TaiKhoan> currentList = new ArrayList<>();
+
     /**
      * Creates new form TaiKhoanPanel
      */
@@ -36,6 +42,7 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         initComponents();
         customComponets();
         initTable();
+        bindEvents();
         loadDataToTable();
         
     }
@@ -58,18 +65,28 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Khóa không cho người dùng sửa trực tiếp trên bảng
+                return false;
             }
         };
         jTable1.setModel(tableModel);
         jTable1.setRowHeight(30);   
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.getTableHeader().setReorderingAllowed(false);
     }
     
-    private void loadDataToTable() {
-        tableModel.setRowCount(0);
-        List<TaiKhoan> listTaiKhoan = taiKhoanBUS.getAll();
+    private void bindEvents() {
         
-        for (TaiKhoan tk : listTaiKhoan) {
+        jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
+        });
+    }
+   
+    // =================================== LOGIC DỮ LIỆU ===================================
+    private void renderTable(List<TaiKhoan> list) {
+        tableModel.setRowCount(0);
+        for (TaiKhoan tk : list) {
             Object[] row = {
                 tk.getIdTaiKhoan(),
                 tk.getTaiKhoan(),
@@ -79,6 +96,46 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         }
     }
 
+    private void loadDataToTable() {
+        fullListCache = taiKhoanBUS.getAll();
+        currentList = new ArrayList<>(fullListCache);
+        renderTable(currentList);
+        clearFields();
+    }
+
+    private void performSearch() {
+        String keyword = jTextFieldTimKiem.getText().trim().toLowerCase();
+        
+        if (keyword.isEmpty() || "tìm kiếm...".equals(keyword)) {
+            currentList = new ArrayList<>(fullListCache);
+        } else {
+            currentList = new ArrayList<>();
+            List<TaiKhoan> danhSachUuTien = new ArrayList<>();
+            List<TaiKhoan> danhSachLienQuan = new ArrayList<>();
+            
+            for (TaiKhoan tk : fullListCache) {
+                // Kiểm tra điều kiện
+                boolean matchIdExact = String.valueOf(tk.getIdTaiKhoan()).equals(keyword);
+                boolean matchIdPartial = String.valueOf(tk.getIdTaiKhoan()).contains(keyword);
+                boolean matchTen = tk.getTaiKhoan() != null && tk.getTaiKhoan().toLowerCase().contains(keyword);
+                String tenVaiTro = getVaiTroName(tk.getIdVaiTro()).toLowerCase();
+                boolean matchVaiTro = tenVaiTro.contains(keyword);
+                
+                // Phân loại nhóm hiển thị
+                if (matchIdExact) {
+                    danhSachUuTien.add(tk);
+                } else if (matchIdPartial || matchTen || matchVaiTro) {
+                    danhSachLienQuan.add(tk);
+                }
+            }
+            // Gộp danh sách, ưu tiên ID lên đầu
+            currentList.addAll(danhSachUuTien);
+            currentList.addAll(danhSachLienQuan);
+        }
+        renderTable(currentList);
+        clearFields();
+    }
+
     private String getVaiTroName(int idVaiTro) {
         if (cacheVaiTroNames == null) {
             cacheVaiTroNames = new HashMap<>();
@@ -86,9 +143,7 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
             List<VaiTro> dsVaiTro = vaiTroBUS.getAll();
             if (dsVaiTro != null) {
                 for (VaiTro vt : dsVaiTro) {
-                    if (vt != null) {
-                        cacheVaiTroNames.put(vt.getIdVaiTro(), vt.getTenVaiTro());
-                    }
+                    if (vt != null) cacheVaiTroNames.put(vt.getIdVaiTro(), vt.getTenVaiTro());
                 }
             }
         }
@@ -102,7 +157,6 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jPasswordField1.setText("");
         jTable1.clearSelection();
     }
-    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -161,7 +215,6 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jPanelCongCu.setLayout(new java.awt.BorderLayout());
 
         jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
-        jTextFieldTimKiem.addActionListener(this::jTextFieldTimKiemActionPerformed);
         jPanelTimKiem.add(jTextFieldTimKiem);
 
         jButtonTimKiem.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -257,7 +310,6 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jTextFieldTenDangNhap.setEditable(false);
         jTextFieldTenDangNhap.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldTenDangNhap.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextFieldTenDangNhap.addActionListener(this::jTextFieldTenDangNhapActionPerformed);
         jPanelTenDangNhap.add(jTextFieldTenDangNhap);
 
         jPanelFields.add(jPanelTenDangNhap);
@@ -378,45 +430,34 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonXoaActionPerformed
 
-    private void jTextFieldTenDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTenDangNhapActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTenDangNhapActionPerformed
-
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+                                     
+        // 1. Xác định dòng người dùng vừa click
         int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow >= 0) {
-            try {
-                // Lấy ID Tài Khoản từ cột 0 của dòng được chọn
-                int idTaiKhoan = Integer.parseInt(tableModel.getValueAt(selectedRow, 0).toString());
+
+        // 2. Kiểm tra tính hợp lệ của dòng (tránh lỗi click vào khoảng trống)
+        if (selectedRow >= 0 && selectedRow < currentList.size()) {
+        
+            // 3. Lấy đối tượng TaiKhoan tương ứng từ danh sách RAM (currentList)
+            TaiKhoan tk = currentList.get(selectedRow);
+
+            if (tk != null) {
+                // 4. Đổ dữ liệu vào các ô nhập liệu bên phải
+                jTextFieldMaTaiKhoan.setText(String.valueOf(tk.getIdTaiKhoan()));
+                jTextFieldTenDangNhap.setText(tk.getTaiKhoan() != null ? tk.getTaiKhoan() : "");
+            
                 
-                // Gọi BUS lấy thông tin chi tiết
-                TaiKhoan tk = taiKhoanBUS.getById(idTaiKhoan);
-                
-                if (tk != null) {
-                    // Đẩy dữ liệu lên các ô TextField
-                    jTextFieldMaTaiKhoan.setText(String.valueOf(tk.getIdTaiKhoan()));
-                    jTextFieldTenDangNhap.setText(tk.getTaiKhoan() != null ? tk.getTaiKhoan() : "");
-                    jPasswordField1.setText(tk.getMatKhau() != null ? tk.getMatKhau() : "");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu từ bảng!");
+                // Lấy trực tiếp từ thuộc tính MatKhau của đối tượng tk
+                String matKhauThat = (tk.getMatKhau() != null) ? tk.getMatKhau() : "";
+                jPasswordField1.setText(matKhauThat);
             }
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
-        loadDataToTable(); // 1. Tải lại dữ liệu mới nhất từ Database
-        clearFields();     // 2. Xóa trắng các ô nhập liệu bên phải
-        
-        // 3. Reset luôn cả khu vực tìm kiếm (nếu có)
-        jTextFieldTimKiem.setText(""); 
-        
+        loadDataToTable(); // Tải lại dữ liệu mới nhất
+        jTextFieldTimKiem.setText(""); //Reset thanh tìm kiếm
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
-
-    private void jTextFieldTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTimKiemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

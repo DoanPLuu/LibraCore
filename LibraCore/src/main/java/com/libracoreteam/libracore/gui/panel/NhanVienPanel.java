@@ -4,7 +4,6 @@
  */
 package com.libracoreteam.libracore.gui.panel;
 
-import com.formdev.flatlaf.FlatClientProperties;
 import com.libracoreteam.libracore.bus.NhanVienBUS;
 import com.libracoreteam.libracore.gui.dialog.SuaNhanVienDialog;
 import com.libracoreteam.libracore.gui.dialog.ThemNhanVienDialog;
@@ -25,26 +24,26 @@ import java.util.List;
  * @author ASUS
  */
 public class NhanVienPanel extends javax.swing.JPanel {
-
+ 
   private DefaultTableModel tableModel;
-  
   private javax.swing.JLabel jLabelAnh;
-
+  
+  private final NhanVienBUS nhanVienBUS = new NhanVienBUS();
+  
   private List<NhanVien> fullListCache = new ArrayList<>();
-  private List<NhanVien> currentList = new ArrayList<>();
   
   private final java.time.format.DateTimeFormatter dateFormatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
-  private final NhanVienBUS nhanVienBUS = new NhanVienBUS();
+  
   /**
    * Creates new form NhanVienPanel
    */
   public NhanVienPanel() {
     initComponents();
     initAnhPanel();
-    InnitButton();
+    customComponents();
     initTable();
-    bindEvents();
     loadDataToTable();
+    setupRealTimeSearch();
   }
   
   private void initAnhPanel() {
@@ -69,24 +68,14 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jPanelFields.revalidate();
     }
 
-    private void InnitButton() {
+    private void customComponents() {
         int iconSize = 16;
         jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
         jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
         jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
         jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
         jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-
         jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm kiếm...");
-
-        // Sửa lỗi nền xám của FlatLaf khi setEditable(false)
-        String whiteBg = "inactiveBackground: #FFFFFF";
-        jTextFieldMaNhanVien.putClientProperty(FlatClientProperties.STYLE, whiteBg);
-        jTextFieldTenNhanVien.putClientProperty(FlatClientProperties.STYLE, whiteBg);
-        jTextFieldNgaySinh.putClientProperty(FlatClientProperties.STYLE, whiteBg);
-        jTextFieldSDT.putClientProperty(FlatClientProperties.STYLE, whiteBg);
-        jTextFieldEmail.putClientProperty(FlatClientProperties.STYLE, whiteBg);
-        jTextAreaDiaChi.putClientProperty(FlatClientProperties.STYLE, whiteBg);
     }
 
     private void initTable() {
@@ -105,93 +94,70 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTable1.getTableHeader().setReorderingAllowed(false);
     }
 
-    private void bindEvents() {
-        // Sự kiện click bảng
-        jTable1.getSelectionModel().addListSelectionListener(e -> {
-            if (e.getValueIsAdjusting()) return;
-            int selectedRow = jTable1.getSelectedRow();
-            if (selectedRow < 0 || selectedRow >= currentList.size()) return;
-
-            NhanVien nv = currentList.get(selectedRow);
-
-            jTextFieldMaNhanVien.setText(String.valueOf(nv.getIdNhanVien()));
-            jTextFieldTenNhanVien.setText(nv.getTenNhanVien() != null ? nv.getTenNhanVien() : "");
-            jTextFieldNgaySinh.setText(nv.getNgaySinh() != null ? nv.getNgaySinh().format(dateFormatter) : "");
-            jTextAreaDiaChi.setText(nv.getDiaChi() != null ? nv.getDiaChi() : "");
-            jTextFieldSDT.setText(nv.getSdt() != null ? nv.getSdt() : "");
-            jTextFieldEmail.setText(nv.getEmail() != null ? nv.getEmail() : "");
-
-            // Xử lý ảnh
-            ImageIcon icon = ImageHelper.loadImage(nv.getAnhNhanVien(), 150, 180);
-            if (icon != null) {
-                jLabelAnh.setIcon(icon);
-                jLabelAnh.setText("");
-            } else {
-                jLabelAnh.setIcon(null);
-                jLabelAnh.setText("Ảnh");
-            }
-        });
-
-        // Sự kiện gõ phím tìm kiếm (In-memory siêu tốc)
-        jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
-            @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
-            @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
-        });
-    }
-
-    // =================================== LOGIC DỮ LIỆU ===================================
-    private void renderTable(List<NhanVien> list) {
-        tableModel.setRowCount(0);
-        for (NhanVien nv : list) {
-            String ngaySinhStr = (nv.getNgaySinh() != null) ? nv.getNgaySinh().format(dateFormatter) : "";
-            tableModel.addRow(new Object[]{
-                    nv.getIdNhanVien(), nv.getTenNhanVien(), ngaySinhStr, nv.getSdt(), nv.getEmail()
-            });
-        }
-    }
-
     private void loadDataToTable() {
-        fullListCache = nhanVienBUS.getActive(); 
-        currentList = new ArrayList<>(fullListCache); 
-        renderTable(currentList);
-        clearFields();
+        fullListCache = nhanVienBUS.getActive(); // Nạp đầy kho RAM
+        jTextFieldTimKiem.setText("");
+        performSearch(); // Tự động hiển thị toàn bộ do ô tìm kiếm đang trống
     }
 
     private void performSearch() {
         String keyword = jTextFieldTimKiem.getText().trim().toLowerCase();
+        tableModel.setRowCount(0); // Xóa sạch bảng cũ
         
-        // Nếu ô tìm kiếm trống, hiển thị lại toàn bộ danh sách
         if (keyword.isEmpty() || "tìm kiếm...".equals(keyword)) {
-            currentList = new ArrayList<>(fullListCache);
-        } else {
-            currentList = new ArrayList<>();
-            
-            // Quét qua toàn bộ dữ liệu trên RAM
+            // Nếu không gõ gì -> In toàn bộ kho ra bảng
             for (NhanVien nv : fullListCache) {
-                // 1. Kiểm tra Mã nhân viên (ID)
-                boolean matchId = String.valueOf(nv.getIdNhanVien()).contains(keyword);
-                
-                // 2. Kiểm tra Tên
+                addRowToTable(nv);
+            }
+        } else {
+            // Biến cục bộ chỉ tồn tại tạm thời lúc đang tìm kiếm
+            List<NhanVien> danhSachUuTien = new ArrayList<>();
+            List<NhanVien> danhSachLienQuan = new ArrayList<>();
+            
+            for (NhanVien nv : fullListCache) {
+                boolean matchIdExact = String.valueOf(nv.getIdNhanVien()).equals(keyword);
+                boolean matchIdPartial = String.valueOf(nv.getIdNhanVien()).contains(keyword);
                 boolean matchTen = nv.getTenNhanVien() != null && nv.getTenNhanVien().toLowerCase().contains(keyword);
-                
-                // 3. Kiểm tra Số điện thoại
                 boolean matchSdt = nv.getSdt() != null && nv.getSdt().contains(keyword);
-                
-                // 4. Kiểm tra Email
                 boolean matchEmail = nv.getEmail() != null && nv.getEmail().toLowerCase().contains(keyword);
                 
-                // Nếu từ khóa khớp với BẤT KỲ trường nào ở trên -> Thêm vào kết quả
-                if (matchId || matchTen || matchSdt || matchEmail) {
-                    currentList.add(nv);
+                String ngaySinhStr = (nv.getNgaySinh() != null) ? nv.getNgaySinh().format(dateFormatter) : "";
+                boolean matchNgaySinh = ngaySinhStr.contains(keyword);
+                
+                if (matchIdExact) {
+                    danhSachUuTien.add(nv); // Gõ đúng ID -> Lên top 1
+                } else if (matchIdPartial || matchTen || matchSdt || matchEmail || matchNgaySinh) {
+                    danhSachLienQuan.add(nv); // Chỉ chứa từ khóa -> Xếp sau
                 }
             }
+            
+            // Đổ thẳng 2 danh sách vừa lọc lên bảng
+            for (NhanVien nv : danhSachUuTien) addRowToTable(nv);
+            for (NhanVien nv : danhSachLienQuan) addRowToTable(nv);
         }
-        
-        renderTable(currentList);
         clearFields();
     }
-
+    
+    private void setupRealTimeSearch() {
+        jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+        @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
+        @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
+        @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { performSearch(); }
+        });
+    }
+    
+    private void addRowToTable(NhanVien nv) {
+        String ngaySinhStr = (nv.getNgaySinh() != null) ? nv.getNgaySinh().format(dateFormatter) : "";
+        tableModel.addRow(new Object[]{
+            nv.getIdNhanVien(),
+            nv.getTenNhanVien(),
+            ngaySinhStr, 
+            nv.getSdt(),
+            nv.getEmail()
+        });
+    }
+    
+    
     private void clearFields() {
         jTextFieldMaNhanVien.setText("");
         jTextFieldTenNhanVien.setText("");
@@ -282,7 +248,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTextFieldMaNhanVien.setEditable(false);
         jTextFieldMaNhanVien.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldMaNhanVien.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextFieldMaNhanVien.setEnabled(false);
         jPanelMaNhanVien.add(jTextFieldMaNhanVien);
 
         jPanelFields.add(jPanelMaNhanVien);
@@ -296,7 +261,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTextFieldTenNhanVien.setEditable(false);
         jTextFieldTenNhanVien.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldTenNhanVien.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextFieldTenNhanVien.setEnabled(false);
         jPanelTenNhanVien.add(jTextFieldTenNhanVien);
 
         jPanelFields.add(jPanelTenNhanVien);
@@ -310,7 +274,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTextFieldNgaySinh.setEditable(false);
         jTextFieldNgaySinh.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldNgaySinh.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextFieldNgaySinh.setEnabled(false);
         jPanelNgaySinh.add(jTextFieldNgaySinh);
 
         jPanelFields.add(jPanelNgaySinh);
@@ -330,7 +293,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTextAreaDiaChi.setRows(3);
         jTextAreaDiaChi.setWrapStyleWord(true);
         jTextAreaDiaChi.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextAreaDiaChi.setEnabled(false);
         jScrollPaneDiaChi.setViewportView(jTextAreaDiaChi);
 
         jPanelDiaChi.add(jScrollPaneDiaChi, java.awt.BorderLayout.CENTER);
@@ -346,7 +308,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTextFieldSDT.setEditable(false);
         jTextFieldSDT.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldSDT.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextFieldSDT.setEnabled(false);
         jPanelSDT.add(jTextFieldSDT);
 
         jPanelFields.add(jPanelSDT);
@@ -360,7 +321,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jTextFieldEmail.setEditable(false);
         jTextFieldEmail.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldEmail.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextFieldEmail.setEnabled(false);
         jPanelEmail.add(jTextFieldEmail);
 
         jPanelFields.add(jPanelEmail);
@@ -385,6 +345,7 @@ public class NhanVienPanel extends javax.swing.JPanel {
         jPanelTimKiem.add(jTextFieldTimKiem);
 
         jButtonTimKiem.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonTimKiem.addActionListener(this::jButtonTimKiemActionPerformed);
         jPanelTimKiem.add(jButtonTimKiem);
 
         jButtonLamMoi.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -525,45 +486,64 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
         loadDataToTable(); // Tải lại dữ liệu mới nhất
-        clearFields(); // Xóa trắng Text Field bên phải
-        //Reset thanh tìm kiếm
-        jTextFieldTimKiem.setText("");
-
+        jTextFieldTimKiem.setText(""); //Reset thanh tìm kiếm
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // Lấy vị trí dòng đang được chọn trên bảng
         int selectedRow = jTable1.getSelectedRow();
 
+        // Kiểm tra xem dòng được click có hợp lệ không
         if (selectedRow >= 0) {
-            // Lấy ID nhân viên ở cột đầu tiên (cột 0)
-            int idNhanVien = (int) tableModel.getValueAt(selectedRow, 0);
+            
+            // 1. Lấy ID nhân viên từ cột đầu tiên (cột 0) của bảng
+            int idNhanVien = (int) jTable1.getValueAt(selectedRow, 0);
 
-            // Gọi BUS để lấy thông tin chi tiết của nhân viên từ database
-            NhanVien nv = nhanVienBUS.getById(idNhanVien);
+            // 2. Tìm nhân viên có mã ID này trong kho RAM (fullListCache)
+            NhanVien nv = null;
+            for (NhanVien item : fullListCache) {
+                if (item.getIdNhanVien() == idNhanVien) {
+                    nv = item;
+                    break; // Tìm thấy rồi thì dừng vòng lặp cho nhẹ máy
+                }
+            }
 
+            // 3. Đẩy dữ liệu lên form nếu tìm thấy
             if (nv != null) {
+                // --- Đẩy dữ liệu VĂN BẢN ---
                 jTextFieldMaNhanVien.setText(String.valueOf(nv.getIdNhanVien()));
                 jTextFieldTenNhanVien.setText(nv.getTenNhanVien() != null ? nv.getTenNhanVien() : "");
-
-                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                jTextFieldNgaySinh.setText(nv.getNgaySinh() != null ? nv.getNgaySinh().format(formatter) : "");
-
+                jTextFieldNgaySinh.setText(nv.getNgaySinh() != null ? nv.getNgaySinh().format(dateFormatter) : "");
                 jTextAreaDiaChi.setText(nv.getDiaChi() != null ? nv.getDiaChi() : "");
                 jTextFieldSDT.setText(nv.getSdt() != null ? nv.getSdt() : "");
                 jTextFieldEmail.setText(nv.getEmail() != null ? nv.getEmail() : "");
 
-                javax.swing.ImageIcon icon = ImageHelper.loadImage(nv.getAnhNhanVien(), 150, 180);
-                if (icon != null) {
-                    jLabelAnh.setIcon(icon);
-                    jLabelAnh.setText("");
-                } else {
+                // --- Đẩy dữ liệu HÌNH ẢNH (1 luồng cơ bản) ---
+                String anhPath = nv.getAnhNhanVien();
+        
+                if (anhPath == null || anhPath.trim().isEmpty()) {
+                     // Nếu Database không lưu đường dẫn ảnh -> Xóa trắng khung ảnh
                     jLabelAnh.setIcon(null);
                     jLabelAnh.setText("Ảnh");
+                } else {
+                    // Tạm dừng một chút để đọc và cắt ảnh từ ổ cứng
+                    javax.swing.ImageIcon icon = ImageHelper.loadImage(anhPath, 150, 180);
+            
+                    // Đọc xong thì dán ảnh lên giao diện
+                    if (icon != null) {
+                        jLabelAnh.setIcon(icon);
+                        jLabelAnh.setText("");
+                    } else {
+                        jLabelAnh.setIcon(null);
+                        jLabelAnh.setText("Lỗi ảnh"); // File ảnh trên máy tính bị xóa mất
+                    }
                 }
             }
         }
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButtonTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTimKiemActionPerformed
+        performSearch();
+    }//GEN-LAST:event_jButtonTimKiemActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;

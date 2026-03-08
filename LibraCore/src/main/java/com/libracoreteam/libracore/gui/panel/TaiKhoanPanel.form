@@ -75,9 +75,6 @@
                           <Dimension value="[150, 40]"/>
                         </Property>
                       </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTimKiemActionPerformed"/>
-                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="jButtonTimKiem">
                       <Properties>
@@ -315,9 +312,6 @@
                           <Color blue="0" green="0" red="0" type="rgb"/>
                         </Property>
                       </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTenDangNhapActionPerformed"/>
-                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
