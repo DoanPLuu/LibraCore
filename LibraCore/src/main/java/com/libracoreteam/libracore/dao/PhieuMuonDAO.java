@@ -17,7 +17,16 @@ public class PhieuMuonDAO {
         + "LEFT JOIN docgia d ON d.id_DocGia = t.id_DocGia "
         + "LEFT JOIN nhanvien nv ON nv.id_NhanVien = pm.id_NhanVien "
         + "ORDER BY pm.id_PhieuMuon DESC";
-    return queryList(sql);
+    List<PhieuMuon> list = new ArrayList<>();
+    try (Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
+      while (rs.next())
+        list.add(mapRow(rs));
+    } catch (SQLException e) {
+      throw new RuntimeException("PhieuMuonDAO.getAll failed", e);
+    }
+    return list;
   }
 
   public List<PhieuMuon> search(String keyword, String trangThai) {
@@ -238,19 +247,6 @@ public class PhieuMuonDAO {
     } catch (SQLException e) {
       throw new RuntimeException("PhieuMuonDAO.huyPhieuMuon failed", e);
     }
-  }
-
-  private List<PhieuMuon> queryList(String sql) {
-    List<PhieuMuon> list = new ArrayList<>();
-    try (Connection conn = DBConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery()) {
-      while (rs.next())
-        list.add(mapRow(rs));
-    } catch (SQLException e) {
-      throw new RuntimeException("PhieuMuonDAO.queryList failed", e);
-    }
-    return list;
   }
 
   private PhieuMuon mapRow(ResultSet rs) throws SQLException {
