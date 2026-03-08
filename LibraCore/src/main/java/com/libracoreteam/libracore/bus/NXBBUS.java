@@ -103,9 +103,9 @@ public class NXBBUS {
         }
 
         if (sdt != null && !sdt.isEmpty()) {
-            // Check cơ bản: chỉ cho số, 9–15 ký tự
-            if (!sdt.matches("\\d{9,15}")) {
-                throw new IllegalArgumentException("Số điện thoại không hợp lệ");
+            // Yêu cầu: Bắt đầu bằng số 0 (số 0 đầu tiên) + theo sau là đúng 9 chữ số nữa (tổng 10 số)
+            if (!sdt.matches("0\\d{9}")) {
+                throw new IllegalArgumentException("Số điện thoại bắt buộc phải bắt đầu bằng số 0 và có đúng 10 chữ số!");
             }
         }
 

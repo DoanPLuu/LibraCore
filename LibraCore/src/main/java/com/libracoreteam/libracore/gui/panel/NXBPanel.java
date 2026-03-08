@@ -127,6 +127,14 @@ public class NXBPanel extends javax.swing.JPanel {
 
         jTextFieldTimKiem.setText("Tìm kiếm...");
         jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
+        jTextFieldTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldTimKiemFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldTimKiemFocusLost(evt);
+            }
+        });
         jPanelTimKiem.add(jTextFieldTimKiem);
 
         jButtonTimKiem.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -265,7 +273,9 @@ public class NXBPanel extends javax.swing.JPanel {
 
         jPanelFields.add(jPanelSDT);
 
-        // Panel trạng thái đã được lược bỏ khỏi UI (chỉ hiển thị các NXB đang hoạt động)
+        jPanelTrangThai.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        jPanelTrangThai.setLayout(new java.awt.GridLayout(0, 1));
+        jPanelFields.add(jPanelTrangThai);
 
         jPanelButton.setMinimumSize(new java.awt.Dimension(250, 60));
         jPanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
@@ -648,8 +658,9 @@ public class NXBPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonXacNhanActionPerformed
 
-    private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {
-        int row = jTableSach.getSelectedRow();
+    private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuaActionPerformed
+        // TODO add your handling code here:
+                int row = jTableSach.getSelectedRow();
         if (row < 0 || row >= currentList.size()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một NXB để sửa.");
             return;
@@ -667,16 +678,35 @@ public class NXBPanel extends javax.swing.JPanel {
             loadActiveToTable();
             selectRowById(id);
         }
-    }
+    }//GEN-LAST:event_jButtonSuaActionPerformed
 
-    private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {
-        int row = jTableSach.getSelectedRow();
+    private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXoaActionPerformed
+        // TODO add your handling code here:
+               int row = jTableSach.getSelectedRow();
         if (row < 0 || row >= currentList.size()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một NXB để xoá.");
             return;
         }
         deleteByRow(row);
+    }//GEN-LAST:event_jButtonXoaActionPerformed
+
+    private void jTextFieldTimKiemFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemFocusGained
+        // TODO add your handling code here:
+                if (jTextFieldTimKiem.getText().equals("Tìm kiếm...")) { // Chữ "Tìm kiếm..." phải khớp y hệt chữ bạn đang để trên giao diện
+        jTextFieldTimKiem.setText("");
+        jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); // Đổi màu chữ thành đen đậm khi người dùng bắt đầu gõ
     }
+    }//GEN-LAST:event_jTextFieldTimKiemFocusGained
+
+    private void jTextFieldTimKiemFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemFocusLost
+        // TODO add your handling code here:
+                if (jTextFieldTimKiem.getText().trim().isEmpty()) {
+        jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); // Đổi màu chữ thành xám mờ
+        jTextFieldTimKiem.setText("Tìm kiếm..."); // Hiện lại chữ mặc định
+    }
+    }//GEN-LAST:event_jTextFieldTimKiemFocusLost
+                                              
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
