@@ -224,6 +224,14 @@ public class NCCPanel extends javax.swing.JPanel {
 
         jTextFieldTimKiem.setText("Tìm kiếm...");
         jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
+        jTextFieldTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldTimKiemFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldTimKiemFocusLost(evt);
+            }
+        });
         jTextFieldTimKiem.addActionListener(this::jTextFieldTimKiemActionPerformed);
         jPanelTimKiem.add(jTextFieldTimKiem);
 
@@ -455,6 +463,22 @@ public class NCCPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         thucHienTimKiem();
     }//GEN-LAST:event_jTextFieldTimKiemActionPerformed
+
+    private void jTextFieldTimKiemFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemFocusGained
+        // TODO add your handling code here:
+        if (jTextFieldTimKiem.getText().equals("Tìm kiếm...")) { // Chữ "Tìm kiếm..." phải khớp y hệt chữ bạn đang để trên giao diện
+        jTextFieldTimKiem.setText("");
+        jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); // Đổi màu chữ thành đen đậm khi người dùng bắt đầu gõ
+    }
+    }//GEN-LAST:event_jTextFieldTimKiemFocusGained
+
+    private void jTextFieldTimKiemFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemFocusLost
+        // TODO add your handling code here:
+        if (jTextFieldTimKiem.getText().trim().isEmpty()) {
+        jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); // Đổi màu chữ thành xám mờ
+        jTextFieldTimKiem.setText("Tìm kiếm..."); // Hiện lại chữ mặc định
+    }
+    }//GEN-LAST:event_jTextFieldTimKiemFocusLost
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

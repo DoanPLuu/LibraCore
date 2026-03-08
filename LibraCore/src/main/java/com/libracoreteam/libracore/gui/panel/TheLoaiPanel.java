@@ -74,6 +74,22 @@ public class TheLoaiPanel extends javax.swing.JPanel {
                 jTextFieldTenTheLoai.setText(currentSelected.getTenTheLoai());
             }
         });
+        jTextFieldTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (jTextFieldTimKiem.getText().equals("Tìm kiếm...")) {
+                    jTextFieldTimKiem.setText("");
+                    jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); // Chữ đen khi gõ
+                }
+            }
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (jTextFieldTimKiem.getText().trim().isEmpty()) {
+                    jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); // Trả lại chữ xám
+                    jTextFieldTimKiem.setText("Tìm kiếm...");
+                }
+            }
+        });
     }
 
     private void initComponents() {
