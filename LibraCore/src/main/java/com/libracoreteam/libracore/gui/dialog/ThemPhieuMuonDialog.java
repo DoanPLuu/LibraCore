@@ -177,9 +177,54 @@ public class ThemPhieuMuonDialog extends JDialog {
 
     JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.setPreferredSize(new Dimension(450, 200));
+
+    javax.swing.table.TableRowSorter<DefaultTableModel> rowSorter = new javax.swing.table.TableRowSorter<>(tableModel);
+    table.setRowSorter(rowSorter);
+
+    JTextField tfSearchSach = new JTextField(20);
+    JButton btnRefreshSach = new JButton("Refresh");
+
+    tfSearchSach.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+      @Override
+      public void insertUpdate(javax.swing.event.DocumentEvent e) {
+        filter();
+      }
+
+      @Override
+      public void removeUpdate(javax.swing.event.DocumentEvent e) {
+        filter();
+      }
+
+      @Override
+      public void changedUpdate(javax.swing.event.DocumentEvent e) {
+        filter();
+      }
+
+      private void filter() {
+        String text = tfSearchSach.getText();
+        if (text.trim().isEmpty()) {
+          rowSorter.setRowFilter(null);
+        } else {
+          rowSorter.setRowFilter(javax.swing.RowFilter.regexFilter("(?i)" + text.trim(), 1, 2));
+        }
+      }
+    });
+
+    btnRefreshSach.addActionListener(e -> {
+      tfSearchSach.setText("");
+      loadCuonSach();
+    });
+
+    JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+    searchPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+    searchPanel.add(new JLabel("Tìm kiếm (mã/tên sách): "));
+    searchPanel.add(tfSearchSach);
+    searchPanel.add(btnRefreshSach);
+
     JPanel sachPanel = new JPanel(new BorderLayout());
     sachPanel.setBorder(BorderFactory.createTitledBorder("Chọn cuốn sách (sẵn sàng, tình trạng tốt)"));
     sachPanel.add(scrollPane, BorderLayout.CENTER);
+    sachPanel.add(searchPanel, BorderLayout.SOUTH);
 
     JButton btnThem = new JButton("Thêm phiếu mượn");
     JButton btnHuy = new JButton("Hủy");
@@ -265,6 +310,13 @@ public class ThemPhieuMuonDialog extends JDialog {
     try {
       LocalDate ngayMuon = ((Date) spNgayMuon.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
       LocalDate ngayHenTra = ((Date) spNgayHenTra.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+      if (ngayHenTra.isBefore(ngayMuon)) {
+        JOptionPane.showMessageDialog(this, "Ngày hẹn trả không được nhỏ hơn ngày mượn!", "Lỗi",
+            JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+
       phieuMuonBUS.addPhieuMuon(
           UserSession.getInstance().getIdTaiKhoan(),
           validIdThe,

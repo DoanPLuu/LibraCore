@@ -82,6 +82,16 @@ public class MucPhatPanel extends JPanel {
       }
       MucPhat mp = currentData.get(row);
       boolean dangHoatDong = mp.isHoatDong();
+      if (!dangHoatDong && "PerDay".equals(mp.getLoaiPhat())) {
+        MucPhat existing = bus.getPerDayActive();
+        if (existing != null) {
+          JOptionPane.showMessageDialog(this,
+              "Đã tồn tại mức phạt theo ngày đang hoạt động: \"" + existing.getTenMucPhat() + "\".\n"
+                  + "Vui lòng ẩn mức phạt đó trước khi kích hoạt lại mức phạt này.",
+              "Không thể thực hiện", JOptionPane.WARNING_MESSAGE);
+          return;
+        }
+      }
       String msg = dangHoatDong ? "Ẩn mức phạt \"" + mp.getTenMucPhat() + "\"?"
           : "Hiện lại mức phạt \"" + mp.getTenMucPhat() + "\"?";
       int confirm = JOptionPane.showConfirmDialog(this, msg, "Xác nhận", JOptionPane.YES_NO_OPTION);

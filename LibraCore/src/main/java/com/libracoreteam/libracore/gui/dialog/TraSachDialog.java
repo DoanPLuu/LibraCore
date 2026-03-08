@@ -44,19 +44,34 @@ public class TraSachDialog extends JDialog {
     this.dsChiTiet = phieuMuonBUS.getChiTiet(phieuMuon.getIdPhieuMuon());
     initUI();
     pack();
-    setMinimumSize(new Dimension(780, 450));
+    setMinimumSize(new Dimension(920, 450));
     setLocationRelativeTo(parent);
   }
 
   private void initUI() {
+    long soNgayTre = phieuMuon.getNgayHenTra() != null
+        ? Math.max(0, ChronoUnit.DAYS.between(phieuMuon.getNgayHenTra(), LocalDate.now()))
+        : 0;
+    String trangThaiStr = "Đang mượn";
+    if (soNgayTre > 0) {
+      trangThaiStr = "Đang mượn/Quá hạn";
+    }
+
     JTextField tfDocGia = new JTextField(phieuMuon.getTheThanhVien() != null
         ? phieuMuon.getTheThanhVien().getDocGia().getTenDocGia()
-        : "");
-    JTextField tfNgayMuon = new JTextField(phieuMuon.getNgayMuon() != null ? phieuMuon.getNgayMuon().toString() : "");
-    JTextField tfHenTra = new JTextField(phieuMuon.getNgayHenTra() != null ? phieuMuon.getNgayHenTra().toString() : "");
+        : "", 14);
+    JTextField tfNgayMuon = new JTextField(phieuMuon.getNgayMuon() != null ? phieuMuon.getNgayMuon().toString() : "",
+        8);
+    JTextField tfHenTra = new JTextField(phieuMuon.getNgayHenTra() != null ? phieuMuon.getNgayHenTra().toString() : "",
+        8);
+    JTextField tfNgayTre = new JTextField(String.valueOf(soNgayTre), 3);
+    JTextField tfTrangThai = new JTextField(trangThaiStr, 12);
+
     tfDocGia.setEditable(false);
     tfNgayMuon.setEditable(false);
     tfHenTra.setEditable(false);
+    tfNgayTre.setEditable(false);
+    tfTrangThai.setEditable(false);
 
     JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 4));
     infoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin phiếu mượn"));
@@ -66,6 +81,10 @@ public class TraSachDialog extends JDialog {
     infoPanel.add(tfNgayMuon);
     infoPanel.add(new JLabel("Hạn trả:"));
     infoPanel.add(tfHenTra);
+    infoPanel.add(new JLabel("Ngày trễ:"));
+    infoPanel.add(tfNgayTre);
+    infoPanel.add(new JLabel("Trạng thái:"));
+    infoPanel.add(tfTrangThai);
 
     tableModel = buildTableModel();
     table = new JTable(tableModel);
@@ -73,7 +92,7 @@ public class TraSachDialog extends JDialog {
     loadDuLieu();
 
     JScrollPane scrollPane = new JScrollPane(table);
-    scrollPane.setPreferredSize(new Dimension(740, 250));
+    scrollPane.setPreferredSize(new Dimension(820, 250));
 
     JButton btnXacNhan = new JButton("Xác nhận trả");
     JButton btnDong = new JButton("Đóng");
@@ -118,7 +137,7 @@ public class TraSachDialog extends JDialog {
         super.setValueAt(value, row, col);
         if (col == COL_TINH_TRANG) {
           if ("Tot".equals(value))
-            super.setValueAt(null, row, COL_MUC_PHAT);
+            super.setValueAt("0", row, COL_MUC_PHAT);
           recalculate(row);
         }
         if (col == COL_MUC_PHAT)
@@ -128,14 +147,46 @@ public class TraSachDialog extends JDialog {
     };
   }
 
+  private class ComboBoxRenderer extends JComboBox<String> implements javax.swing.table.TableCellRenderer {
+    public ComboBoxRenderer(String[] items) {
+      super(items);
+      setOpaque(true);
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected, boolean hasFocus,
+        int row, int column) {
+      setSelectedItem(value);
+      boolean enabled = t.isCellEditable(row, column);
+      setEnabled(enabled);
+
+      boolean daTra = dsChiTiet.get(row).getNgayTra() != null;
+      if (daTra) {
+        setBackground(new Color(220, 220, 220));
+        setForeground(Color.GRAY);
+      } else {
+        if (isSelected) {
+          setBackground(t.getSelectionBackground());
+          setForeground(t.getSelectionForeground());
+        } else {
+          setBackground(t.getBackground());
+          setForeground(t.getForeground());
+        }
+      }
+      return this;
+    }
+  }
+
   private void setupTableColumns() {
     String[] tinhTrangOptions = { "Tot", "Hong", "Mat" };
     JComboBox<String> cbTinhTrang = new JComboBox<>(tinhTrangOptions);
     table.getColumnModel().getColumn(COL_TINH_TRANG).setCellEditor(new DefaultCellEditor(cbTinhTrang));
+    table.getColumnModel().getColumn(COL_TINH_TRANG).setCellRenderer(new ComboBoxRenderer(tinhTrangOptions));
 
     String[] mucPhatItems = buildMucPhatItems();
     JComboBox<String> cbMucPhat = new JComboBox<>(mucPhatItems);
     table.getColumnModel().getColumn(COL_MUC_PHAT).setCellEditor(new DefaultCellEditor(cbMucPhat));
+    table.getColumnModel().getColumn(COL_MUC_PHAT).setCellRenderer(new ComboBoxRenderer(mucPhatItems));
 
     table.getColumnModel().getColumn(COL_CHON).setMaxWidth(50);
     table.getColumnModel().getColumn(COL_MA).setMaxWidth(100);
@@ -144,7 +195,7 @@ public class TraSachDialog extends JDialog {
 
   private String[] buildMucPhatItems() {
     String[] items = new String[dsMucPhatFixed.size() + 1];
-    items[0] = "";
+    items[0] = "0";
     for (int i = 0; i < dsMucPhatFixed.size(); i++) {
       MucPhat mp = dsMucPhatFixed.get(i);
       items[i + 1] = mp.getTenMucPhat() + " (" + mp.getSoTienPhat().toPlainString() + " đ)";
@@ -168,7 +219,7 @@ public class TraSachDialog extends JDialog {
           ct.getCuonSach() != null ? ct.getCuonSach().getMaCuonSach() : "",
           ct.getCuonSach() != null && ct.getCuonSach().getSach() != null ? ct.getCuonSach().getSach().getTenSach() : "",
           tinhTrang,
-          null,
+          "0",
           phatTre.toPlainString(),
           phatTre.toPlainString()
       });
@@ -212,7 +263,7 @@ public class TraSachDialog extends JDialog {
     BigDecimal phatFixed = BigDecimal.ZERO;
     if (!"Tot".equals(tt)) {
       String mucPhatStr = (String) tableModel.getValueAt(row, COL_MUC_PHAT);
-      if (mucPhatStr != null && !mucPhatStr.isEmpty()) {
+      if (mucPhatStr != null && !mucPhatStr.isEmpty() && !"0".equals(mucPhatStr)) {
         int idx = findMucPhatIndex(mucPhatStr);
         if (idx >= 0)
           phatFixed = dsMucPhatFixed.get(idx).getSoTienPhat();
@@ -248,7 +299,7 @@ public class TraSachDialog extends JDialog {
       Integer idMucPhatFixed = null;
       if (!"Tot".equals(tinhTrang)) {
         String mucPhatStr = (String) tableModel.getValueAt(i, COL_MUC_PHAT);
-        if (mucPhatStr == null || mucPhatStr.isEmpty()) {
+        if (mucPhatStr == null || mucPhatStr.isEmpty() || "0".equals(mucPhatStr)) {
           JOptionPane.showMessageDialog(this, "Sách hư/mất phải chọn mức phạt cố định!", "Lỗi",
               JOptionPane.ERROR_MESSAGE);
           return;

@@ -10,14 +10,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class SuaNhanVienDialog extends JDialog {
 
   private JTextField txtIdNhanVien;
   private JTextField txtTenNhanVien;
-  private JTextField txtNgaySinh;
+  private JSpinner spnNgaySinh;
   private JTextArea txtDiaChi;
   private JTextField txtSDT;
   private JTextField txtEmail;
@@ -52,9 +52,13 @@ public class SuaNhanVienDialog extends JDialog {
     formPanel.add(new JLabel("Họ và Tên:"));
     formPanel.add(txtTenNhanVien);
 
-    txtNgaySinh = new JTextField(25);
-    formPanel.add(new JLabel("Ngày Sinh (dd/MM/yyyy):"));
-    formPanel.add(txtNgaySinh);
+    SpinnerDateModel dateModel = new SpinnerDateModel();
+    spnNgaySinh = new JSpinner(dateModel);
+    JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
+    spnNgaySinh.setEditor(dateEditor);
+    spnNgaySinh.setValue(new Date());
+    formPanel.add(new JLabel("Ngày Sinh:"));
+    formPanel.add(spnNgaySinh);
 
     txtDiaChi = new JTextArea(4, 25);
     txtDiaChi.setLineWrap(true);
@@ -140,8 +144,8 @@ public class SuaNhanVienDialog extends JDialog {
       txtTenNhanVien.setText(nhanVien.getTenNhanVien() != null ? nhanVien.getTenNhanVien() : "");
 
       if (nhanVien.getNgaySinh() != null) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        txtNgaySinh.setText(nhanVien.getNgaySinh().format(formatter));
+        Date date = Date.from(nhanVien.getNgaySinh().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        spnNgaySinh.setValue(date);
       }
 
       txtDiaChi.setText(nhanVien.getDiaChi() != null ? nhanVien.getDiaChi() : "");
@@ -158,7 +162,6 @@ public class SuaNhanVienDialog extends JDialog {
 
   private void onSave() {
     String tenNhanVien = txtTenNhanVien.getText().trim();
-    String ngaySinhStr = txtNgaySinh.getText().trim();
     String diaChi = txtDiaChi.getText().trim();
     String sdt = txtSDT.getText().trim();
     String email = txtEmail.getText().trim();
@@ -168,21 +171,12 @@ public class SuaNhanVienDialog extends JDialog {
       return;
     }
 
-    LocalDate ngaySinh = null;
-    if (!ngaySinhStr.isEmpty()) {
-      try {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        ngaySinh = LocalDate.parse(ngaySinhStr, formatter);
-        if (ngaySinh.isAfter(LocalDate.now())) {
-          JOptionPane.showMessageDialog(this, "Ngày sinh phải trước ngày hiện tại!", "Cảnh báo",
-              JOptionPane.WARNING_MESSAGE);
-          return;
-        }
-      } catch (DateTimeParseException e) {
-        JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ! Vui lòng nhập dd/MM/yyyy", "Cảnh báo",
-            JOptionPane.WARNING_MESSAGE);
-        return;
-      }
+    Date selectedDate = (Date) spnNgaySinh.getValue();
+    LocalDate ngaySinh = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    if (ngaySinh.isAfter(LocalDate.now())) {
+      JOptionPane.showMessageDialog(this, "Ngày sinh phải trước ngày hiện tại!", "Cảnh báo",
+          JOptionPane.WARNING_MESSAGE);
+      return;
     }
 
     if (!sdt.isEmpty() && !sdt.matches("^\\d{10}$")) {

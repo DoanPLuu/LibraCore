@@ -33,7 +33,7 @@ public class ChiTietPhieuMuonDialog extends JDialog {
     JTextField tfNhanVien = makeField(tenNV);
     JTextField tfNgayMuon = makeField(pm.getNgayMuon() != null ? pm.getNgayMuon().toString() : "");
     JTextField tfHenTra = makeField(pm.getNgayHenTra() != null ? pm.getNgayHenTra().toString() : "");
-    JTextField tfTrangThai = makeField(toViTrangThai(pm.getTrangThai()));
+    JTextField tfTrangThai = makeField(toViTrangThai(pm));
 
     int rows = "DaHuy".equals(pm.getTrangThai()) ? 6 : 5;
     JPanel infoPanel = new JPanel(new GridLayout(rows, 2, 6, 4));
@@ -90,7 +90,7 @@ public class ChiTietPhieuMuonDialog extends JDialog {
           + "  |  Nhân viên: " + tenNV
           + "  |  Ngày mượn: " + pm.getNgayMuon()
           + "  |  Hạn trả: " + pm.getNgayHenTra()
-          + "  |  Trạng thái: " + toViTrangThai(pm.getTrangThai());
+          + "  |  Trạng thái: " + toViTrangThai(pm);
       String[] cols = { "Mã cuốn", "Tên sách", "Tình trạng", "Ngày trả" };
       PdfExportUtil.export(parentFrame, title, subtitle, cols,
           PdfExportUtil.fromTableModel(tableModel), "PhieuMuon_" + pm.getIdPhieuMuon() + ".pdf");
@@ -116,11 +116,19 @@ public class ChiTietPhieuMuonDialog extends JDialog {
     return tf;
   }
 
-  private String toViTrangThai(String tt) {
+  private String toViTrangThai(PhieuMuon pm) {
+    String tt = pm.getTrangThai();
     if (tt == null)
       return "";
     return switch (tt) {
-      case "DangMuon" -> "Đang mượn";
+      case "DangMuon" -> {
+        java.time.LocalDate ngayHenTra = pm.getNgayHenTra();
+        if (ngayHenTra != null
+            && java.time.temporal.ChronoUnit.DAYS.between(ngayHenTra, java.time.LocalDate.now()) > 0) {
+          yield "Đang mượn/Quá hạn";
+        }
+        yield "Đang mượn";
+      }
       case "DaTra" -> "Đã trả";
       case "DaHuy" -> "Đã hủy";
       case "QuaHan" -> "Quá hạn";
