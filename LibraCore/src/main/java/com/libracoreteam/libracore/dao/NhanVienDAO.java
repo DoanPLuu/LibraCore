@@ -33,7 +33,7 @@ public class NhanVienDAO implements IDAO<NhanVien> {
   private static final String COL_ANH = "AnhNhanVien";
 
   public List<NhanVien> getActive() {
-    String sql = "SELECT * FROM nhanvien WHERE HoatDong = ? ORDER BY TenNhanVien ASC";
+    String sql = "SELECT * FROM nhanvien WHERE HoatDong = ? ORDER BY id_NhanVien ASC";
     List<NhanVien> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -50,7 +50,7 @@ public class NhanVienDAO implements IDAO<NhanVien> {
 
   @Override
   public List<NhanVien> getAll() {
-    String sql = "SELECT * FROM nhanvien ORDER BY TenNhanVien ASC";
+    String sql = "SELECT * FROM nhanvien ORDER BY id_NhanVien ASC";
     List<NhanVien> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);

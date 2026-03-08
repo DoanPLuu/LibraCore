@@ -40,6 +40,17 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         
     }
     
+    private void customComponets() {
+        int iconSize = 16;
+        jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
+        jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
+        jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
+        jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
+        jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+        jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm kiếm");
+        jPasswordField1.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
+    }
+    
     private void initTable() {
         tableModel = new DefaultTableModel(
             new Object [][] {},
@@ -53,7 +64,7 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jTable1.setModel(tableModel);
         jTable1.setRowHeight(30);   
     }
-
+    
     private void loadDataToTable() {
         tableModel.setRowCount(0);
         List<TaiKhoan> listTaiKhoan = taiKhoanBUS.getAll();
@@ -108,7 +119,6 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jTextFieldTimKiem = new javax.swing.JTextField();
         jButtonTimKiem = new javax.swing.JButton();
         jButtonLamMoi = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
         jPanelNutDieuKhien = new javax.swing.JPanel();
         jButtonThem = new javax.swing.JButton();
         jButtonSua = new javax.swing.JButton();
@@ -160,10 +170,6 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jButtonLamMoi.setPreferredSize(new java.awt.Dimension(40, 40));
         jButtonLamMoi.addActionListener(this::jButtonLamMoiActionPerformed);
         jPanelTimKiem.add(jButtonLamMoi);
-
-        jCheckBox1.setText("Hiện đã khóa");
-        jCheckBox1.setPreferredSize(new java.awt.Dimension(93, 40));
-        jPanelTimKiem.add(jCheckBox1);
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
@@ -236,9 +242,9 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jLabelMaTaiKhoan.setText("Mã Tài Khoản");
         jPanelMaTaiKhoan.add(jLabelMaTaiKhoan);
 
+        jTextFieldMaTaiKhoan.setEditable(false);
         jTextFieldMaTaiKhoan.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldMaTaiKhoan.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextFieldMaTaiKhoan.setEnabled(false);
         jPanelMaTaiKhoan.add(jTextFieldMaTaiKhoan);
 
         jPanelFields.add(jPanelMaTaiKhoan);
@@ -248,9 +254,9 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jLabelTenDangNhap.setText("Tên Đăng Nhập");
         jPanelTenDangNhap.add(jLabelTenDangNhap);
 
+        jTextFieldTenDangNhap.setEditable(false);
         jTextFieldTenDangNhap.setBackground(new java.awt.Color(255, 255, 255));
         jTextFieldTenDangNhap.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextFieldTenDangNhap.setEnabled(false);
         jTextFieldTenDangNhap.addActionListener(this::jTextFieldTenDangNhapActionPerformed);
         jPanelTenDangNhap.add(jTextFieldTenDangNhap);
 
@@ -262,6 +268,7 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         jPanelMatKhau.add(jLabelMatKhau);
 
         jPasswordField1.setEditable(false);
+        jPasswordField1.setBackground(new java.awt.Color(255, 255, 255));
         jPanelMatKhau.add(jPasswordField1);
 
         jPanelFields.add(jPanelMatKhau);
@@ -281,23 +288,40 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
         add(jPanelRight, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void customComponets() {
-        int iconSize = 16;
-        jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
-        jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
-        jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
-        jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
-        jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
-        jTextFieldTimKiem.putClientProperty("JTextField.placeholderText", "Tìm kiếm");
-        jPasswordField1.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
-    }
+    
     
     
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
-        ThemTaiKhoanDialog dialog = new ThemTaiKhoanDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true);
+        // 1. Lấy danh sách nhân viên đang hoạt động từ BUS
+        com.libracoreteam.libracore.bus.NhanVienBUS nhanVienBUS = new com.libracoreteam.libracore.bus.NhanVienBUS();
+        java.util.List<com.libracoreteam.libracore.model.NhanVien> dsNhanVien = nhanVienBUS.getActive();
+        
+        // 2. Kiểm tra xem có ai chưa có tài khoản không (idTaiKhoan == null)
+        boolean coNguoiChuaCoTK = false;
+        for (com.libracoreteam.libracore.model.NhanVien nv : dsNhanVien) {
+            if (nv.getIdTaiKhoan() == null) {
+                coNguoiChuaCoTK = true;
+                break; // Chỉ cần tìm thấy 1 người là đủ điều kiện mở form, thoát vòng lặp cho nhẹ máy
+            }
+        }
+        
+        // 3. Nếu không có ai (tất cả đều đã có tài khoản) -> Chặn lại và báo lỗi
+        if (!coNguoiChuaCoTK) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Hiện tại tất cả nhân viên đều đã được cấp tài khoản!", 
+                "Thông báo", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            return; // Lệnh return này sẽ kết thúc hàm ngay lập tức, KHÔNG chạy xuống code mở Dialog bên dưới
+        }
+        
+        // 4. Nếu qua được bước trên (nghĩa là có người chưa có TK) -> Mở form Thêm bình thường
+        com.libracoreteam.libracore.gui.dialog.ThemTaiKhoanDialog dialog = 
+                new com.libracoreteam.libracore.gui.dialog.ThemTaiKhoanDialog(
+                        (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true);
         dialog.setVisible(true);
         
+        // 5. Sau khi đóng form Thêm, nếu có lưu thì load lại bảng
         if (dialog.isSaved()) {
             loadDataToTable();
             clearFields();
@@ -409,7 +433,6 @@ public class TaiKhoanPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXoa;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabelMaTaiKhoan;
     private javax.swing.JLabel jLabelMatKhau;
     private javax.swing.JLabel jLabelTenDangNhap;
