@@ -608,7 +608,7 @@ public class NXBPanel extends javax.swing.JPanel {
                     jTextFieldTenNXB.getText(),
                     jTextFieldDiaChiNXB.getText(),
                     jTextFieldSDT.getText(),
-                    currentSelected.isHoatDong() // chưa cho sửa trạng thái ở UI
+                    currentSelected.isHoatDong() 
             );
 
             if (!ok) {

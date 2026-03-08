@@ -26,7 +26,7 @@ public class NCC {
         return tenNCC;
     }
     
-    // Setters
+    
     public void setIdNCC(int idNCC) {
         this.idNCC = idNCC;
     }

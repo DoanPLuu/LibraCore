@@ -41,7 +41,7 @@ public class ThemTacGiaDialog extends JDialog {
         spnNgaySinh = new JSpinner(dateModel);
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
         spnNgaySinh.setEditor(dateEditor);
-        spnNgaySinh.setValue(new Date()); // Mặc định là ngày hiện tại
+        spnNgaySinh.setValue(new Date());
         
         formPanel.add(new JLabel("Ngày sinh:"));
         formPanel.add(spnNgaySinh);

@@ -118,7 +118,7 @@ public class LoginPanel extends JPanel {
                 case "WRONG_PASS":
                     JOptionPane.showMessageDialog(this,
                             "Sai tài khoản hoặc mật khẩu!", "Lỗi đăng nhập", JOptionPane.ERROR_MESSAGE);
-                    txtPass.setText(""); // Xóa ô mật khẩu để nhập lại
+                    txtPass.setText("");
                     txtPass.requestFocus();
                     break;
                 case "LOCKED":

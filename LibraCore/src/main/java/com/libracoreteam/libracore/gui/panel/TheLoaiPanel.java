@@ -106,7 +106,6 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         
-        // Khởi tạo nút Sửa và Xóa
         jButtonSua = new javax.swing.JButton();
         jButtonXoa = new javax.swing.JButton();
 
@@ -171,13 +170,11 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         jButtonThem.addActionListener(this::jButtonThemActionPerformed);
         jPanelNutThem.add(jButtonThem);
 
-        // Đưa nút Sửa vào
         jButtonSua.setText("Sửa");
         jButtonSua.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonSua.addActionListener(this::jButtonSuaActionPerformed);
         jPanelNutThem.add(jButtonSua);
 
-        // Đưa nút Xóa vào
         jButtonXoa.setText("Xóa");
         jButtonXoa.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonXoa.addActionListener(this::jButtonXoaActionPerformed);
@@ -271,7 +268,6 @@ public class TheLoaiPanel extends javax.swing.JPanel {
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             
-            // Icon cho Sửa và Xóa
             jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253))); 
             jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69))); 
     }
@@ -283,7 +279,6 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         loadData(); 
     }
 
-    // Sự kiện Nút Sửa
     private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {
         if (currentSelected == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một thể loại để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -295,7 +290,6 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         loadData(); 
     }
 
-    // Sự kiện Nút Xóa
     private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {
         if (currentSelected == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một thể loại để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -417,8 +411,8 @@ public class TheLoaiPanel extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler9;
     private javax.swing.JButton jButtonLamMoi;
     private javax.swing.JButton jButtonThem;
-    private javax.swing.JButton jButtonSua; // Khai báo nút sửa
-    private javax.swing.JButton jButtonXoa; // Khai báo nút xóa
+    private javax.swing.JButton jButtonSua; 
+    private javax.swing.JButton jButtonXoa;
     private javax.swing.JButton jButtonTimKiem;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JLabel jLabelMaTheLoai;

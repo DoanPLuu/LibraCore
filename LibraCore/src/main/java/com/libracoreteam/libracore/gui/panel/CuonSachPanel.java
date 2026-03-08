@@ -410,23 +410,18 @@ public class CuonSachPanel extends javax.swing.JPanel {
     }
 
     private void jTextFieldMaSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaSachActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldMaSachActionPerformed
 
     private void jTextFieldTenCuonSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTenCuonSachActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldTenCuonSachActionPerformed
 
     private void jTextFieldTrangThaiMuonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTrangThaiMuonActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldTrangThaiMuonActionPerformed
 
     private void jTextFieldTinhTrangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTinhTrangActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldTinhTrangActionPerformed
 
     private void jTextFieldDaHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDaHuyActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldDaHuyActionPerformed
 
     private void jButtonXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXuatActionPerformed
@@ -495,7 +490,6 @@ public class CuonSachPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonLamMoiActionPerformed
 
     private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
-        // Khong dung: panel phai o che do read-only.
     }//GEN-LAST:event_jButtonXacNhanActionPerformed
     
 

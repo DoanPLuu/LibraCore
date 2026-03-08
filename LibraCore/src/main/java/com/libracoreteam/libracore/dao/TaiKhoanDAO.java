@@ -69,7 +69,6 @@ public class TaiKhoanDAO {
             pst.setString(3, tk.getMatKhau());
             
             if (pst.executeUpdate() > 0) {
-                // Lấy auto-increment ID từ database
                 try (java.sql.ResultSet rs = pst.getGeneratedKeys()) {
                     if (rs.next()) {
                         tk.setIdTaiKhoan(rs.getInt(1));
@@ -161,7 +160,7 @@ public class TaiKhoanDAO {
                 if (rs.next()) {
                     result = new HashMap<>();
                     result.put("idTaiKhoan", rs.getInt("id_TaiKhoan"));
-                    result.put("matKhau", rs.getString("MatKhau")); // Mật khẩu chữ thường
+                    result.put("matKhau", rs.getString("MatKhau")); 
                     result.put("tenNhanVien", rs.getString("TenNhanVien"));
                     result.put("hoatDong", rs.getBoolean("HoatDong"));
                     result.put("tenVaiTro", rs.getString("TenVaiTro"));

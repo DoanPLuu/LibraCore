@@ -257,7 +257,7 @@ public class MenuPanel extends JPanel {
     
     private String getSubMenuTooltip(int parentIndex, int subIndex) {
         switch (parentIndex) {
-            case 1: // Quản lý sách
+            case 1: 
                 switch (subIndex) {
                     case 1: return "Quản lý danh mục sách";
                     case 2: return "Quản lý từng quyển sách (bản thể hiện)";
@@ -266,37 +266,37 @@ public class MenuPanel extends JPanel {
                     case 5: return "Quản lý thể loại sách";
                     default: return "";
                 }
-            case 2: // Quản lý thành viên
+            case 2: 
                 switch (subIndex) {
                     case 1: return "Quản lý thông tin thành viên/độc giả";
                     case 2: return "Quản lý thẻ thành viên";
                     default: return "";
                 }
-            case 3: // Quản lý mượn - trả
+            case 3: 
                 switch (subIndex) {
                     case 1: return "Tạo và quản lý phiếu mượn - trả sách";
                     default: return "";
                 }
-            case 4: // Quản lý phạt - trả phạt
+            case 4:
                 switch (subIndex) {
                     case 1: return "Quản lý phiếu phạt";
                     case 2: return "Quản lý mức phạt";
                     default: return "";
                 }
-            case 5: // Quản lý nhập sách
+            case 5:
                 switch (subIndex) {
                     case 1: return "Quản lý phiếu nhập sách";
                     case 2: return "Quản lý nhà cung cấp";
                     default: return "";
                 }
-            case 6: // Quản lý người dùng
+            case 6: 
                 switch (subIndex) {
                     case 1: return "Quản lý thông tin nhân viên";
                     case 2: return "Quản lý tài khoản đăng nhập";
                     case 3: return "Quản lý vai trò/quyền hạn";
                     default: return "";
                 }
-            case 7: // Thống kê báo cáo
+            case 7: 
                 switch (subIndex) {
                     case 1: return "Thống kê sách theo nhiều tiêu chí";
                     case 2: return "Thống kê mượn trả sách";
@@ -324,10 +324,8 @@ public class MenuPanel extends JPanel {
         }
         
         item.addActionListener(e -> {
-            // AUTO-CLOSE: Đóng tất cả submenu đang mở trước (trừ menu hiện tại nếu đang mở)
             closeAllSubMenusExcept(index);
             
-            // Bỏ selected state của item cũ
             if (selectedMenuItem != null && selectedMenuItem != item) {
                 selectedMenuItem.setSelected(false);
             }
@@ -336,19 +334,15 @@ public class MenuPanel extends JPanel {
             selectedMenuItem = item;
             
             if (hasSubMenu) {
-                // Có submenu - toggle mở/đóng
                 boolean isSubMenuOpen = isSubMenuOpen(index);
                 if (isSubMenuOpen) {
-                    // Đang mở → đóng lại
                     hideMenu(item, index);
                     item.setSelected(false);
                 } else {
-                    // Đang đóng → mở ra
                     addSubMenu(item, index, length, getComponentZOrder(item));
                     item.setSelected(true);
                 }
             } else {
-                // Không có submenu, chuyển màn hình
                 String screenName = mapToScreenName(index);
                 mainFrame.showScreen(screenName);
             }

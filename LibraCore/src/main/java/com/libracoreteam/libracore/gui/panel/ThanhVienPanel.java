@@ -22,7 +22,7 @@ public class ThanhVienPanel extends JPanel {
     private DefaultTableModel tableModel;
     private DocGiaBUS docGiaBUS;
     private List<DocGia> listDocGia;
-    private List<DocGia> currentList; // List dùng để hiển thị (hỗ trợ tìm kiếm)
+    private List<DocGia> currentList; 
     private JTextField txtSearch;
 
     public ThanhVienPanel() {
@@ -35,22 +35,17 @@ public class ThanhVienPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
 
-        // ==========================================
-        // TOP-BAR: CHUẨN HÓA GIAO DIỆN TÌM KIẾM & CÔNG CỤ
-        // ==========================================
         JPanel pnlTop = new JPanel(new BorderLayout());
         pnlTop.setBackground(new Color(255, 153, 153)); // Nền đỏ nhạt đồng bộ hệ thống
 
         JPanel pnlCongCu = new JPanel(new BorderLayout());
         pnlCongCu.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        // --- CỤM BÊN TRÁI: Tìm kiếm & Làm mới ---
         JPanel pnlTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         
         txtSearch = new JTextField();
         txtSearch.setPreferredSize(new Dimension(200, 40));
         txtSearch.putClientProperty("JTextField.placeholderText", "Tìm kiếm độc giả...");
-        // Bắt sự kiện gõ phím để tìm kiếm Live Search
         txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) { actionTimKiem(); }
             public void removeUpdate(javax.swing.event.DocumentEvent e) { actionTimKiem(); }
@@ -74,7 +69,6 @@ public class ThanhVienPanel extends JPanel {
         pnlTimKiem.add(btnSearch);
         pnlTimKiem.add(btnRefresh);
 
-        // --- CỤM BÊN PHẢI: Xuất, Thêm, Sửa, Xóa ---
         JPanel pnlNutBam = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         
         Dimension btnSize = new Dimension(90, 40);
@@ -115,14 +109,10 @@ public class ThanhVienPanel extends JPanel {
         pnlTop.add(pnlCongCu, BorderLayout.CENTER);
         add(pnlTop, BorderLayout.NORTH);
 
-        // ==========================================
-        // KHU VỰC BẢNG (TABLE)
-        // ==========================================
         JPanel pnlBoard = new JPanel(new BorderLayout());
         pnlBoard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         pnlBoard.setBackground(Color.WHITE);
 
-        // Tui sửa lại mảng Cột để khớp với số lượng dữ liệu sếp đổ vào (6 cột)
         String[] cols = {"Mã ĐG", "Họ Tên", "Ngày Sinh", "SĐT", "Email", "Địa Chỉ"};
         tableModel = new DefaultTableModel(cols, 0) {
             @Override public boolean isCellEditable(int row, int col) { return false; }
@@ -137,9 +127,6 @@ public class ThanhVienPanel extends JPanel {
         add(pnlBoard, BorderLayout.CENTER);
     }
 
-    // ==========================================
-    // LOGIC XỬ LÝ
-    // ==========================================
     public void loadData() {
         listDocGia = docGiaBUS.getAllDocGia();
         currentList = new ArrayList<>(listDocGia);
@@ -165,7 +152,6 @@ public class ThanhVienPanel extends JPanel {
         if (keyword.isEmpty()) {
             currentList = new ArrayList<>(listDocGia);
         } else {
-            // Lọc trực tiếp trên danh sách đã tải về cho mượt (Live Search)
             currentList = listDocGia.stream()
                 .filter(dg -> String.valueOf(dg.getIdDocGia()).contains(keyword) || 
                               (dg.getTenDocGia() != null && dg.getTenDocGia().toLowerCase().contains(keyword)) ||

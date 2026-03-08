@@ -201,7 +201,6 @@ public class SachBUS {
             throw new IllegalArgumentException("Mô tả quá dài");
         }
 
-        // Tạm thời: yêu cầu tối thiểu 1 tác giả + 1 thể loại (thường đúng nghiệp vụ)
         if (tacGiaIds == null || tacGiaIds.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng chọn ít nhất 1 tác giả");
         }

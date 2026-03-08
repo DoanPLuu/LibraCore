@@ -39,7 +39,6 @@ public class LoginFrame extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // 1. Panel nền.
         JPanel backgroundPanel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -56,22 +55,18 @@ public class LoginFrame extends JFrame {
             }
         };
 
-        // 2. Setup CardLayout để quản lý các Panel con
         cardLayout = new CardLayout();
         mainContainerPanel = new JPanel(cardLayout);
         mainContainerPanel.setOpaque(false);
 
-        // 3. Thêm LoginPanel vào hệ thống thẻ (Truyền 'this' là LoginFrame)
         mainContainerPanel.add(new LoginPanel(this), LOGIN_CARD);
 
         backgroundPanel.add(mainContainerPanel, BorderLayout.CENTER);
         setContentPane(backgroundPanel);
 
-        // Hiển thị thẻ Đăng nhập mặc định
         cardLayout.show(mainContainerPanel, LOGIN_CARD);
     }
 
-    // --- Hàm điều hướng khi đăng nhập thành công ---
     public void onLoginSuccess() {
         MainFrame mainFrame = new MainFrame();
         mainFrame.setVisible(true);

@@ -89,11 +89,9 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void createContentPanels() {
-        // DASHBOARD
         dashboardPanel = new DashboardPanel();
         contentPanel.add(dashboardPanel, "DASHBOARD");
 
-        // BOOK group
         contentPanel.add(createPlaceholderPanel("Quản lý sách"), "BOOK");
 
         sachPanel = new SachPanel();
@@ -111,7 +109,6 @@ public class MainFrame extends javax.swing.JFrame {
         theLoaiPanel = new TheLoaiPanel();
         contentPanel.add(theLoaiPanel, "BOOK_5");
 
-        // MEMBER group
         contentPanel.add(createPlaceholderPanel("Quản lý thành viên"), "MEMBER");
 
         thanhVienPanel = new ThanhVienPanel();
@@ -120,13 +117,11 @@ public class MainFrame extends javax.swing.JFrame {
         theThanhVienPanel = new TheThanhVienPanel();
         contentPanel.add(theThanhVienPanel, "MEMBER_2");
 
-        // BORROW group
         contentPanel.add(createPlaceholderPanel("Quản lý mượn - trả"), "BORROW");
 
         muonTraSachPanel = new MuonTraSachPanel();
         contentPanel.add(muonTraSachPanel, "BORROW_1");
 
-        // FINE group
         contentPanel.add(createPlaceholderPanel("Quản lý phạt - trả phạt"), "FINE");
 
         phatPanel = new PhatPanel();
@@ -135,7 +130,6 @@ public class MainFrame extends javax.swing.JFrame {
         mucPhatPanel = new MucPhatPanel();
         contentPanel.add(mucPhatPanel, "FINE_2");
 
-        // IMPORT group
         contentPanel.add(createPlaceholderPanel("Quản lý nhập sách"), "IMPORT");
 
         nhapSachPanel = new NhapSachPanel();
@@ -144,26 +138,20 @@ public class MainFrame extends javax.swing.JFrame {
         nccPanel = new NCCPanel();
         contentPanel.add(nccPanel, "IMPORT_2");
 
-        // USER group
         contentPanel.add(createPlaceholderPanel("Quản lý người dùng"), "USER");
 
-        // USER_1: Nhân viên
         nhanVienPanel = new NhanVienPanel();
         contentPanel.add(nhanVienPanel, "USER_1");
 
-        // USER_2: Tài khoản
         taiKhoanPanel = new TaiKhoanPanel();
         contentPanel.add(taiKhoanPanel, "USER_2");
 
-        // USER_3: Vai trò
         vaiTroPanel = new VaiTroPanel();
         contentPanel.add(vaiTroPanel, "USER_3");
 
-        // ACCOUNT: Tài khoản cá nhân
         taiKhoanCaNhanPanel = new TaiKhoanCaNhanPanel();
         contentPanel.add(taiKhoanCaNhanPanel, "ACCOUNT");
 
-        // REPORT group
         contentPanel.add(createPlaceholderPanel("Thống kê báo cáo"), "REPORT");
 
         thongKeSachPanel = new ThongKeSachPanel();
@@ -206,7 +194,6 @@ public class MainFrame extends javax.swing.JFrame {
                         cuonSachPanel.loadData();
                     break;
                 case "BOOK_3":
-                    // nếu TacGiaPanel có hàm load, bạn thêm ở đây
                     break;
                 case "BOOK_4":
                     if (nxbPanel != null)
@@ -232,7 +219,6 @@ public class MainFrame extends javax.swing.JFrame {
                     if (nhapSachPanel != null)
                         nhapSachPanel.loadData();
                     break;
-                // Bạn có thể bổ sung thêm case cho USER_1, USER_2, USER_3, ACCOUNT, REPORT_1 nếu cần reload
             }
         } catch (Exception e) {
             System.err.println("✗ Không tìm thấy màn hình: " + screenName);

@@ -1,6 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
 
 package com.libracoreteam.libracore;
 
@@ -17,7 +14,6 @@ public class Main {
         
         setupLookAndFeel();
         
-        // 3. Launch application
         java.awt.EventQueue.invokeLater(() -> {
             new LoginFrame().setVisible(true);
             System.out.println("Application started!");

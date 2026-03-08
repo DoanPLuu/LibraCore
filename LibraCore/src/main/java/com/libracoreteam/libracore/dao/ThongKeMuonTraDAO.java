@@ -20,7 +20,7 @@ public class ThongKeMuonTraDAO {
                      "    pm.NgayMuon, " +
                      "    (SELECT MAX(NgayTra) FROM chitietphieumuon WHERE id_PhieuMuon = pm.id_PhieuMuon) AS NgayTra, " +
                      "    pm.TrangThai, " +
-                     "    pm.TongSoSachMuon " + // <--- Lấy thẳng cột Tổng số sách mượn
+                     "    pm.TongSoSachMuon " + 
                      "FROM phieumuon pm " +
                      "LEFT JOIN thethanhvien ttv ON pm.id_TheThanhVien = ttv.id_TheThanhVien " +
                      "LEFT JOIN docgia dg ON ttv.id_DocGia = dg.id_DocGia " +
@@ -47,7 +47,7 @@ public class ThongKeMuonTraDAO {
                         rs.getDate("NgayMuon"),
                         rs.getDate("NgayTra"),
                         rs.getString("TrangThai"),
-                        rs.getInt("TongSoSachMuon") // Cột số 6 là số lượng sách
+                        rs.getInt("TongSoSachMuon")
                     });
                 }
             }
