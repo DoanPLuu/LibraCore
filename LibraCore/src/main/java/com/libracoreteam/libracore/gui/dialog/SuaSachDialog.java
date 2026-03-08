@@ -14,29 +14,21 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Dialog sửa sách (mock để test luồng UI).
- * - Dùng MigLayout 11.4.2
- * - Có checklist Tác giả + Thể loại (multi-select)
- * - Pre-fill dữ liệu giả lập để test "sửa"
- */
+
 public class SuaSachDialog extends JDialog {
 
     private final SachBUS sachBUS = new SachBUS();
     private final int editingIdSach;
     private boolean saved = false;
 
-    // ===== Field cơ bản =====
     private JTextField txtTenSach;
     private JTextField txtNamXB;
     private JTextField txtSoTrang;
-//    private JTextField txtGiaSach;
 
     private JTextArea txtMoTa;
 
     private JComboBox<IdNameItem> cboNXB;
 
-    // ===== Checkbox list =====
     private DefaultListModel<CheckListItem> tacGiaModel;
     private DefaultListModel<CheckListItem> theLoaiModel;
 
@@ -59,7 +51,6 @@ public class SuaSachDialog extends JDialog {
         if (editingIdSach > 0) {
             loadDataForEdit(editingIdSach);
         } else {
-            // vẫn giữ mock để test UI nếu chưa có luồng chọn sách
             loadMockDataForEdit();
         }
     }
@@ -73,12 +64,10 @@ public class SuaSachDialog extends JDialog {
                 )
         );
 
-        // ===== Tên sách =====
         txtTenSach = new JTextField(25);
         formPanel.add(new JLabel("Tên sách:"));
         formPanel.add(txtTenSach);
 
-        // ===== Tác giả (checkbox list) =====
         tacGiaModel = new DefaultListModel<>();
 
         lstTacGia = CheckListUtils.createCheckList(tacGiaModel);
@@ -88,7 +77,6 @@ public class SuaSachDialog extends JDialog {
         formPanel.add(new JLabel("Tác giả:"), "top");
         formPanel.add(spTacGia, "hmin 90");
 
-        // ===== Thể loại (checkbox list) =====
         theLoaiModel = new DefaultListModel<>();
 
         lstTheLoai = CheckListUtils.createCheckList(theLoaiModel);
@@ -98,23 +86,19 @@ public class SuaSachDialog extends JDialog {
         formPanel.add(new JLabel("Thể loại:"), "top");
         formPanel.add(spTheLoai, "hmin 90");
 
-        // ===== Nhà xuất bản =====
         cboNXB = new JComboBox<>();
 
         formPanel.add(new JLabel("Nhà xuất bản:"));
         formPanel.add(cboNXB);
 
-        // ===== Năm xuất bản =====
         txtNamXB = new JTextField(10);
         formPanel.add(new JLabel("Năm xuất bản:"));
         formPanel.add(txtNamXB);
 
-        // ===== Số trang =====
         txtSoTrang = new JTextField(10);
         formPanel.add(new JLabel("Số trang:"));
         formPanel.add(txtSoTrang);
 
-        // ===== Mô tả =====
         txtMoTa = new JTextArea(4, 25);
         txtMoTa.setLineWrap(true);
         txtMoTa.setWrapStyleWord(true);
@@ -128,12 +112,7 @@ public class SuaSachDialog extends JDialog {
         formPanel.add(new JLabel("Mô tả:"), "top");
         formPanel.add(spMoTa, "hmin 100");
 
-        // ===== Giá sách =====
-//        txtGiaSach = new JTextField(10);
-//        formPanel.add(new JLabel("Giá sách:"));
-//        formPanel.add(txtGiaSach);
 
-        // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         btnXacNhan = new JButton("Xác nhận");
         btnHuy = new JButton("Hủy");
@@ -153,26 +132,17 @@ public class SuaSachDialog extends JDialog {
         setResizable(false);
     }
 
-    /**
-     * Mock dữ liệu để giả lập trạng thái "sửa".
-     * Có thể thay bằng load từ DAO theo id_Sach sau này.
-     */
     private void loadMockDataForEdit() {
-        // Mock field cơ bản
         txtTenSach.setText("Harry Potter và Hòn đá Phù thủy");
         selectComboByName(cboNXB, "NXB Trẻ");
         txtNamXB.setText("2000");
         txtSoTrang.setText("320");
-//        txtGiaSach.setText("89000");
         txtMoTa.setText("Mock dữ liệu để test sửa sách.\nCó checklist tác giả và thể loại.");
 
-        // Mock: chọn sẵn tác giả + thể loại
-        // (VD: Rowling + Giả tưởng + Thiếu nhi)
         setSelectedById(tacGiaModel, 2, true);
         setSelectedById(theLoaiModel, 2, true);
         setSelectedById(theLoaiModel, 3, true);
 
-        // repaint list để thấy tick ngay
         lstTacGia.repaint();
         lstTheLoai.repaint();
     }
@@ -251,12 +221,10 @@ public class SuaSachDialog extends JDialog {
             txtSoTrang.setText(s.getSoTrang() != null ? String.valueOf(s.getSoTrang()) : "");
             txtMoTa.setText(s.getMoTa() != null ? s.getMoTa() : "");
 
-            // chọn NXB theo id
             if (s.getIdNXB() != null) {
                 selectComboById(cboNXB, s.getIdNXB());
             }
 
-            // tick tác giả / thể loại theo bảng nối
             List<Integer> tgIds = sachBUS.getTacGiaIdsBySach(idSach);
             List<Integer> tlIds = sachBUS.getTheLoaiIdsBySach(idSach);
 

@@ -44,12 +44,8 @@ public class DocGiaDAO {
         String sqlThe = "INSERT INTO TheThanhVien (id_DocGia, NgayCap, NgayHetHan, TrangThai) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection()) {
-            // Tắt tự động lưu. Bật chế độ Transaction: Mua 1 tặng 1, hỏng 1 là đền cả 2!
             conn.setAutoCommit(false);
 
-            // BƯỚC 1: THÊM ĐỘC GIẢ
-            // Phải có thêm cờ Statement.RETURN_GENERATED_KEYS để bảo MySQL "Ê, tạo xong nhớ
-            // ném cái ID lại cho tao nhé!"
             try (PreparedStatement psDocGia = conn.prepareStatement(sqlDocGia, Statement.RETURN_GENERATED_KEYS)) {
                 psDocGia.setString(1, docGia.getTenDocGia());
                 psDocGia.setString(2, docGia.getDiaChi());
@@ -61,12 +57,10 @@ public class DocGiaDAO {
                 int rowsAffected = psDocGia.executeUpdate();
 
                 if (rowsAffected > 0) {
-                    // BƯỚC 2: HỨNG LẤY CÁI ID VỪA TẠO
                     try (ResultSet rs = psDocGia.getGeneratedKeys()) {
                         if (rs.next()) {
                             int idDocGiaMoi = rs.getInt(1);
 
-                            // BƯỚC 3: THÊM THẺ THÀNH VIÊN
                             try (PreparedStatement psThe = conn.prepareStatement(sqlThe)) {
                                 LocalDate ngayCap = LocalDate.now(); 
                                 LocalDate ngayHetHan = ngayCap.plusYears(1);
@@ -86,15 +80,15 @@ public class DocGiaDAO {
                     return true;
 
                 } else {
-                    conn.rollback(); // Thêm độc giả xịt -> Hủy bỏ toàn bộ
+                    conn.rollback();
                     return false;
                 }
             } catch (SQLException ex) {
-                conn.rollback(); // Lỡ đang chạy mà báo lỗi (sai kiểu dữ liệu...) -> Quay xe, không lưu gì hết
+                conn.rollback(); 
                 ex.printStackTrace();
                 return false;
             } finally {
-                conn.setAutoCommit(true); // Trả lại trạng thái bình thường cho hệ thống
+                conn.setAutoCommit(true); 
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -132,9 +126,7 @@ public class DocGiaDAO {
         }
     }
     
-    // Hàm đang nợ sách hay không, trả về true nếu còn sách chưa trả
     public boolean isDangNoSach(int idDocGia) {
-        // Tìm xem có phiếu mượn nào của ông này đang ở trạng thái 'DangMuon' không
         String sql = "SELECT COUNT(*) FROM PhieuMuon pm " +
                      "JOIN TheThanhVien t ON pm.id_TheThanhVien = t.id_TheThanhVien " +
                      "WHERE t.id_DocGia = ? AND pm.TrangThai = 'DangMuon'";
@@ -149,7 +141,6 @@ public class DocGiaDAO {
         return false;
     }
     
-    // Hàm kiểm tra xem thẻ có đang họat động không
     public boolean isTheDangHoatDong(int idDocGia) {
         String sql = "SELECT COUNT(*) FROM TheThanhVien WHERE id_DocGia = ? AND TrangThai = 'HoatDong'";
         try (Connection conn = DBConnection.getConnection();

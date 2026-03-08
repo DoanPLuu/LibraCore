@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ThemNXBDialog extends JDialog {
-    // ===== Fields =====
     private JTextField txtTenNXB;
     private JTextField txtDiaChi;
     private JTextField txtSDT;
@@ -36,27 +35,22 @@ public class ThemNXBDialog extends JDialog {
                 )
         );
 
-        // ===== Tên NXB =====
         txtTenNXB = new JTextField(25);
         formPanel.add(new JLabel("Tên NXB:"));
         formPanel.add(txtTenNXB);
 
-        // ===== Địa chỉ =====
         txtDiaChi = new JTextField(25);
         formPanel.add(new JLabel("Địa chỉ:"));
         formPanel.add(txtDiaChi);
 
-        // ===== Số điện thoại =====
         txtSDT = new JTextField(15);
         formPanel.add(new JLabel("Số điện thoại:"));
         formPanel.add(txtSDT);
 
-        // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         btnLuu = new JButton("Xác nhận");
         btnHuy = new JButton("Hủy");
         
-        // Thêm icon cho buttons
         int iconSize = 16;
         btnLuu.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(40, 167, 69)));
         btnHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(220, 53, 69)));
@@ -67,7 +61,6 @@ public class ThemNXBDialog extends JDialog {
         btnLuu.addActionListener(e -> onSave());
         btnHuy.addActionListener(e -> dispose());
 
-        // ===== Layout tổng =====
         setLayout(new BorderLayout());
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);

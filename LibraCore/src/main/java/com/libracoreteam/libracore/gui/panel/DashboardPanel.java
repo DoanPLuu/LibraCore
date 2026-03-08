@@ -14,7 +14,6 @@ public class DashboardPanel extends JPanel {
     
     private ThongKeBUS thongKeBUS;
     
-    // Các nhãn hiển thị số liệu thực tế
     private JLabel lblTongSachVal;
     private JLabel lblTongDocGiaVal;
     private JLabel lblPhieuMuonVal;
@@ -28,10 +27,9 @@ public class DashboardPanel extends JPanel {
     
     private void initComponents() {
         setLayout(new BorderLayout());
-        setBackground(new Color(245, 245, 250)); // Màu nền xám nhạt hiện đại
+        setBackground(new Color(245, 245, 250)); 
         setBorder(new EmptyBorder(20, 20, 20, 20));
         
-        // ========== HEADER ==========
         JPanel pnlHeader = new JPanel(new BorderLayout());
         pnlHeader.setOpaque(false);
         pnlHeader.setBorder(new EmptyBorder(0, 0, 20, 0));
@@ -50,7 +48,6 @@ public class DashboardPanel extends JPanel {
         pnlTitle.add(lblSub);
         pnlHeader.add(pnlTitle, BorderLayout.WEST);
         
-        // Nút Refresh (Làm mới số liệu)
         JButton btnRefresh = new JButton("Làm mới dữ liệu");
         btnRefresh.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, 16, Color.WHITE));
         btnRefresh.setBackground(new Color(21, 110, 71));
@@ -68,30 +65,24 @@ public class DashboardPanel extends JPanel {
         
         add(pnlHeader, BorderLayout.NORTH);
         
-        // ========== CARDS (THẺ THỐNG KÊ) ==========
-        // Dùng MigLayout chia 4 cột đều nhau, gap 20px, chiều cao card cố định 160px
         JPanel pnlCards = new JPanel(new MigLayout("wrap 4, insets 0, gap 20", "[grow, fill][grow, fill][grow, fill][grow, fill]", "[160!]"));
         pnlCards.setOpaque(false);
         
-        // Khởi tạo các Label chứa dữ liệu
         lblTongSachVal = createValueLabel();
         lblTongDocGiaVal = createValueLabel();
         lblPhieuMuonVal = createValueLabel();
         lblDoanhThuVal = createValueLabel();
         
 
-        // Thêm 4 thẻ với 4 màu khác nhau cho sinh động
         pnlCards.add(createCard("Tổng Đầu Sách", lblTongSachVal, FontAwesomeSolid.BOOK, new Color(41, 128, 185))); // Xanh dương
         pnlCards.add(createCard("Độc Giả Hoạt Động", lblTongDocGiaVal, FontAwesomeSolid.USER_GRADUATE, new Color(39, 174, 96))); // Xanh lá
         pnlCards.add(createCard("Phiếu Đang Mượn", lblPhieuMuonVal, FontAwesomeSolid.CLIPBOARD_LIST, new Color(243, 156, 18))); // Cam
         pnlCards.add(createCard("Doanh Thu Phạt", lblDoanhThuVal, FontAwesomeSolid.MONEY_BILL_WAVE, new Color(192, 57, 43))); // Đỏ
         
-        // Thêm phần Cards lên Top của vùng Center
         JPanel pnlCenter = new JPanel(new BorderLayout());
         pnlCenter.setOpaque(false);
         pnlCenter.add(pnlCards, BorderLayout.NORTH);
         
-        // Có thể thêm 1 cái ảnh/biểu đồ hay bảng trống ở dưới cho đỡ trống
         JLabel lblChartPlaceholder = new JLabel("Khu vực hiển thị biểu đồ/bảng dữ liệu (Cập nhật sau)", SwingConstants.CENTER);
         lblChartPlaceholder.setFont(new Font("Segoe UI", Font.ITALIC, 16));
         lblChartPlaceholder.setForeground(new Color(180, 180, 180));
@@ -124,12 +115,12 @@ public class DashboardPanel extends JPanel {
         card.setBackground(bgColor);
         JLabel lblTitle = new JLabel(title);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblTitle.setForeground(new Color(255, 255, 255, 220)); // Trắng mờ
+        lblTitle.setForeground(new Color(255, 255, 255, 220)); 
         JLabel lblIcon = new JLabel();
-        lblIcon.setIcon(FontIcon.of(iconType, 50, new Color(255, 255, 255, 100))); // Trắng mờ 100
-        card.add(lblTitle, "wrap");           // Tiêu đề ở trên, wrap xuống dòng
-        card.add(lblValue, "growy, bottom");  // Số liệu chìm xuống dưới
-        card.add(lblIcon, "dock east");       // Icon neo vào mép phải
+        lblIcon.setIcon(FontIcon.of(iconType, 50, new Color(255, 255, 255, 100))); 
+        card.add(lblTitle, "wrap");         
+        card.add(lblValue, "growy, bottom"); 
+        card.add(lblIcon, "dock east");      
         return card;
     }
 }

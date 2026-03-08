@@ -12,7 +12,6 @@ public class ChiTietPhieuMuonDAO{
 
     public List<ChiTietPhieuMuon> getByPhieuMuonId(int idPhieuMuon) {
         List<ChiTietPhieuMuon> list = new ArrayList<>();
-        // JOIN 3 bảng: ChiTiet -> CuonSach -> Sach (để lấy tên sách)
         String sql = "SELECT ct.*, s.ten_Sach FROM ChiTietPhieuMuon ct " +
                 "JOIN CuonSach cs ON ct.id_CuonSach = cs.id_CuonSach " +
                 "JOIN Sach s ON cs.id_Sach = s.id_Sach " +
@@ -30,7 +29,6 @@ public class ChiTietPhieuMuonDAO{
                 if (rs.getDate("ngay_Tra") != null) ct.setNgayTra(rs.getDate("ngay_Tra").toLocalDate());
                 ct.setTinhTrangTra(rs.getString("tinh_Trang_Tra"));
 
-                // Tạo đối tượng CuonSach giả để chứa tên sách hiển thị
                 CuonSach cs = new CuonSach();
                 Sach s = new Sach();
                 s.setTenSach(rs.getString("ten_Sach"));

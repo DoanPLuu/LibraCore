@@ -14,12 +14,11 @@ import java.util.Date;
 
 public class ThanhVienDialog extends JDialog {
     private DocGiaBUS docGiaBUS;
-    private DocGia docGiaEdit; // Nếu null -> Thêm mới, Khác null -> Sửa
+    private DocGia docGiaEdit; 
     private boolean isSuccess = false;
 
-    // Components
     private JTextField txtTen, txtSdt, txtEmail, txtDiaChi;
-    private JSpinner spnNgaySinh; // Thay thế JTextField bằng JSpinner xịn xò
+    private JSpinner spnNgaySinh; 
 
     public ThanhVienDialog(JFrame parent, DocGia docGia) {
         super(parent, docGia == null ? "Thêm Độc Giả" : "Sửa Độc Giả", true);
@@ -29,13 +28,12 @@ public class ThanhVienDialog extends JDialog {
         initComponents();
         fillData();
 
-        pack(); // Tự động co giãn theo nội dung, không fix cứng Size nữa
+        pack(); 
         setLocationRelativeTo(parent);
         setResizable(false);
     }
 
     private void initComponents() {
-        // Dùng MigLayout chuẩn mực giống ThemSachDialog
         JPanel formPanel = new JPanel(
                 new MigLayout(
                         "wrap 2, insets 20, gapx 15, gapy 12",
@@ -44,12 +42,10 @@ public class ThanhVienDialog extends JDialog {
                 )
         );
 
-        // 1. Họ Tên
         txtTen = new JTextField(20);
         formPanel.add(new JLabel("Họ tên:"));
         formPanel.add(txtTen);
 
-        // 2. Ngày Sinh (Sử dụng JSpinner Date)
         SpinnerDateModel dateModel = new SpinnerDateModel();
         spnNgaySinh = new JSpinner(dateModel);
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
@@ -57,22 +53,18 @@ public class ThanhVienDialog extends JDialog {
         formPanel.add(new JLabel("Ngày sinh:"));
         formPanel.add(spnNgaySinh);
 
-        // 3. Số điện thoại
         txtSdt = new JTextField(15);
         formPanel.add(new JLabel("Số điện thoại:"));
         formPanel.add(txtSdt);
 
-        // 4. Email
         txtEmail = new JTextField(20);
         formPanel.add(new JLabel("Email:"));
         formPanel.add(txtEmail);
 
-        // 5. Địa chỉ
         txtDiaChi = new JTextField(20);
         formPanel.add(new JLabel("Địa chỉ:"));
         formPanel.add(txtDiaChi);
 
-        // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         JButton btnLuu = new JButton("Xác nhận");
         JButton btnHuy = new JButton("Hủy");
@@ -99,7 +91,6 @@ public class ThanhVienDialog extends JDialog {
             txtEmail.setText(docGiaEdit.getEmail());
             txtDiaChi.setText(docGiaEdit.getDiaChi());
 
-            // Convert LocalDate từ DB sang java.util.Date cho JSpinner
             if (docGiaEdit.getNgaySinh() != null) {
                 Date date = Date.from(docGiaEdit.getNgaySinh().atStartOfDay(ZoneId.systemDefault()).toInstant());
                 spnNgaySinh.setValue(date);
@@ -119,7 +110,6 @@ public class ThanhVienDialog extends JDialog {
                 return;
             }
 
-            // Convert Date từ JSpinner về lại LocalDate cho DB
             Date selectedDate = (Date) spnNgaySinh.getValue();
             LocalDate ngSinh = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 

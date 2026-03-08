@@ -61,7 +61,6 @@ public class CuonSachDAO{
         }
     }
 
-    // Kiểm tra tính khả dụng của cuốn sách (Đang rảnh và tình trạng tốt)
     public boolean isAvailable(int idCuonSach) {
         String sql = "SELECT COUNT(*) FROM CuonSach WHERE id_CuonSach = ? AND TrangThaiMuon = 'Ranh' AND TinhTrangSach = 'Tot'";
         try (Connection conn = DBConnection.getConnection();
@@ -118,7 +117,6 @@ public class CuonSachDAO{
         boolean daHuy = rs.getBoolean("DaHuy");
         c.setDaHuy(rs.wasNull() ? false : daHuy);
         
-        // --- BỔ SUNG MAPPING CHO ChiTietPhieuNhap ---
         int idCTPN = rs.getInt("id_ChiTietPhieuNhap");
         if (!rs.wasNull()) {
             c.setIdChiTietPhieuNhap(idCTPN);

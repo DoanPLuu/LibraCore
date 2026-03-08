@@ -13,7 +13,7 @@ import java.util.List;
 public class ThongKeMuonTraDAO {
 
     public List<Object[]> getThongKeMuonTra(LocalDate from, LocalDate to) {
-        // CÂU LỆNH CHUẨN XÁC DỰA TRÊN LibraCoreV9.sql
+        
         String sql = "SELECT " +
                      "    pm.id_PhieuMuon, " +
                      "    COALESCE(dg.TenDocGia, 'Khách lẻ') AS TenDocGia, " + 

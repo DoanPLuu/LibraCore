@@ -12,7 +12,6 @@ import java.util.Map;
 
 public class TaiKhoanDAO {
 
-    // Lấy tất cả tài khoản
     public List<TaiKhoan> getAll() {
         List<TaiKhoan> list = new ArrayList<>();
         String sql = "SELECT id_TaiKhoan, id_VaiTro, TaiKhoan, MatKhau FROM TaiKhoan";
@@ -36,7 +35,6 @@ public class TaiKhoanDAO {
         return list;
     }
     
-    // Lấy tài khoản theo ID
     public TaiKhoan getById(int id) {
         String sql = "SELECT id_TaiKhoan, id_VaiTro, TaiKhoan, MatKhau FROM TaiKhoan WHERE id_TaiKhoan = ?";
         
@@ -60,7 +58,6 @@ public class TaiKhoanDAO {
         return null;
     }
     
-    // Thêm tài khoản mới
     public boolean insert(TaiKhoan tk) {
         String sql = "INSERT INTO TaiKhoan (id_VaiTro, TaiKhoan, MatKhau) VALUES (?, ?, ?)";
         
@@ -87,7 +84,6 @@ public class TaiKhoanDAO {
         return false;
     }
     
-    // Cập nhật tài khoản
     public boolean update(TaiKhoan tk) {
         String sql = "UPDATE TaiKhoan SET id_VaiTro = ?, TaiKhoan = ?, MatKhau = ? WHERE id_TaiKhoan = ?";
         
@@ -106,7 +102,6 @@ public class TaiKhoanDAO {
         return false;
     }
     
-    // Xóa tài khoản
     public boolean delete(int id) {
         String sql = "DELETE FROM TaiKhoan WHERE id_TaiKhoan = ?";
         
@@ -121,7 +116,6 @@ public class TaiKhoanDAO {
         return false;
     }
     
-    // Tìm kiếm tài khoản
     public List<TaiKhoan> search(String keyword) {
         List<TaiKhoan> list = new ArrayList<>();
         String sql = "SELECT id_TaiKhoan, id_VaiTro, TaiKhoan, MatKhau FROM TaiKhoan WHERE TaiKhoan LIKE ? OR CAST(id_TaiKhoan AS NVARCHAR) LIKE ?";
@@ -153,7 +147,6 @@ public class TaiKhoanDAO {
     public Map<String, Object> getLoginInfo(String username) {
         Map<String, Object> result = null;
 
-        // Lấy mật khẩu, tên nhân viên và trạng thái hoạt động
         String sql = "SELECT tk.id_TaiKhoan, tk.MatKhau, nv.TenNhanVien, nv.HoatDong, vt.TenVaiTro " +
                 "FROM TaiKhoan tk " +
                 "JOIN NhanVien nv ON tk.id_TaiKhoan = nv.id_TaiKhoan " +

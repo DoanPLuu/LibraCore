@@ -62,24 +62,20 @@ public class TheThanhVienBUS {
 
     public int toggleLockCard(TheThanhVien t) {
         if ("BiKhoa".equals(t.getTrangThai())) {
-            // NẾU ĐANG BỊ KHÓA MÀ ĐÒI MỞ -> Check xem chủ thẻ còn sống không!
             DocGiaDAO dgDao = new DocGiaDAO();
             if (!dgDao.checkDocGiaTonTai(t.getIdDocGia())) {
-                return -1; // Mã lỗi -1: Độc giả đã bị xóa mềm!
+                return -1;
             }
             
-            // Nếu qua ải thì cho mở khóa
             t.setTrangThai("HoatDong");
         } else {
-            // Nếu đang HoatDong thì cho Khóa bình thường
             t.setTrangThai("BiKhoa");
         }
         
-        // Cập nhật xuống Database
         if (theThanhVienDAO.update(t)) {
-            return 1; // Thành công
+            return 1; 
         } else {
-            return 0; // Lỗi DB
+            return 0; 
         }
     }
     

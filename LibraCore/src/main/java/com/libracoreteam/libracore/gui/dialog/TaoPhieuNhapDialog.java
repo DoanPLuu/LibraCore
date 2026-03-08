@@ -392,7 +392,6 @@ public class TaoPhieuNhapDialog extends JDialog {
         if (text.isEmpty()) {
             return BigDecimal.ZERO;
         }
-        // Cho phép nhập kiểu "10,000" để tránh lỗi format thường gặp.
         text = text.replace(",", "");
         return new BigDecimal(text);
     }

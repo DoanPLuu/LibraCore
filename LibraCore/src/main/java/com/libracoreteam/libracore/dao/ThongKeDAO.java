@@ -12,7 +12,6 @@ import java.util.List;
 
 public class ThongKeDAO {
 
-    // ─── Dashboard summary counts ────────────────────────────────────────────
 
     public int getTongSoSach() {
         return executeCountQuery("SELECT COUNT(*) FROM Sach WHERE HoatDong = 1");
@@ -39,12 +38,8 @@ public class ThongKeDAO {
         return 0.0;
     }
 
-    // ─── Thống kê theo ngày ─────────────────────────────────────────────────
 
-    /**
-     * Tổng số sách (cuốn sách) được nhập vào kho trong khoảng ngày.
-     * Columns: TenSach, TheLoai, SoLuong, Ngay (NgayNhap)
-     */
+    
     public List<Object[]> getSachNhapKho(LocalDate from, LocalDate to) {
         String sql = "SELECT s.TenSach, " +
                 "  COALESCE(GROUP_CONCAT(DISTINCT tl.TenTheLoai ORDER BY tl.TenTheLoai SEPARATOR ', '), '') AS TheLoai, "
@@ -63,10 +58,7 @@ public class ThongKeDAO {
         return runQuery(sql, from, to);
     }
 
-    /**
-     * Sách đang mượn (phiếu mượn khởi tạo trong khoảng ngày, chưa trả).
-     * Columns: TenSach, TheLoai, SoLuong (số cuốn mượn), NgayMuon
-     */
+    
     public List<Object[]> getSachDangMuon(LocalDate from, LocalDate to) {
         String sql = "SELECT s.TenSach, " +
                 "  COALESCE(GROUP_CONCAT(DISTINCT tl.TenTheLoai ORDER BY tl.TenTheLoai SEPARATOR ', '), '') AS TheLoai, "
@@ -86,10 +78,7 @@ public class ThongKeDAO {
         return runQuery(sql, from, to);
     }
 
-    /**
-     * Sách hỏng hoặc mất (tính trạng Hong/Mat), nhập kho trong khoảng ngày.
-     * Columns: TenSach, TheLoai, SoLuong, Ngay (NgayNhap)
-     */
+    
     public List<Object[]> getSachHongHoacMat(LocalDate from, LocalDate to) {
         String sql = "SELECT s.TenSach, " +
                 "  COALESCE(GROUP_CONCAT(DISTINCT tl.TenTheLoai ORDER BY tl.TenTheLoai SEPARATOR ', '), '') AS TheLoai, "
@@ -110,10 +99,7 @@ public class ThongKeDAO {
         return runQuery(sql, from, to);
     }
 
-    /**
-     * Tổng số sách (cuốn sách) hiện có trong kho, nhập trong khoảng ngày.
-     * Columns: TenSach, TheLoai, SoLuong, Ngay
-     */
+    
     public List<Object[]> getTongSoSachTheoSach(LocalDate from, LocalDate to) {
         String sql = "SELECT s.TenSach, " +
                 "  COALESCE(GROUP_CONCAT(DISTINCT tl.TenTheLoai ORDER BY tl.TenTheLoai SEPARATOR ', '), '') AS TheLoai, "
@@ -133,7 +119,6 @@ public class ThongKeDAO {
         return runQuery(sql, from, to);
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────────────────
 
     private List<Object[]> runQuery(String sql, LocalDate from, LocalDate to) {
         List<Object[]> rows = new ArrayList<>();
@@ -144,10 +129,10 @@ public class ThongKeDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     rows.add(new Object[] {
-                            rs.getString(1), // TenSach
-                            rs.getString(2), // TheLoai
-                            rs.getInt(3), // SoLuong
-                            rs.getDate(4) // Ngay (may be null)
+                            rs.getString(1), 
+                            rs.getString(2), 
+                            rs.getInt(3), 
+                            rs.getDate(4) 
                     });
                 }
             }

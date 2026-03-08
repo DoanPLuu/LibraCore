@@ -12,7 +12,6 @@ public class TheLoaiBUS {
     }
     
     public List<TheLoai> getActive() {
-        // Gọi xuống hàm getAll của DAO vì hàm getAll đã được cấu hình chỉ lấy dữ liệu hoạt động
         return dao.getAll(); 
     }
 
@@ -20,7 +19,7 @@ public class TheLoaiBUS {
         if (tl.getTenTheLoai() == null || tl.getTenTheLoai().trim().isEmpty()) {
             throw new IllegalArgumentException("Tên thể loại không được để trống");
         }
-        return dao.insert(tl); // Hàm insert này là anh em mình vừa thêm vào DAO ở Lỗi số 5 đó
+        return dao.insert(tl); 
     }
     public boolean update(TheLoai tl) {
         if (tl.getTenTheLoai() == null || tl.getTenTheLoai().trim().isEmpty()) {

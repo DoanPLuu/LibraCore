@@ -33,7 +33,6 @@ public class SachBUS {
         this(new SachDAO(), new NXBDAO(), new TacGiaDAO(), new TheLoaiDAO());
     }
 
-    /* ==================== READ ==================== */
 
     public List<Sach> getActive() {
         return sachDAO.getActive();
@@ -69,7 +68,6 @@ public class SachBUS {
     }
 
     public List<TheLoai> getTheLoaiActive() {
-        // Đổi thành getAll() vì hàm này ở DAO đã được thiết lập để chỉ lấy dữ liệu đang hoạt động
         return theLoaiDAO.getAll(); 
     }
 
@@ -83,7 +81,6 @@ public class SachBUS {
         return sachDAO.getTheLoaiIdsBySach(idSach);
     }
 
-    /* ==================== WRITE ==================== */
 
     public Sach create(
             String tenSach,
@@ -165,7 +162,6 @@ public class SachBUS {
         return sachDAO.softDelete(idSach);
     }
 
-    /* ==================== VALIDATION ==================== */
 
     private void validateForCreateOrUpdate(
             int idSach,
@@ -184,7 +180,6 @@ public class SachBUS {
             throw new IllegalArgumentException("Tên sách quá dài");
         }
 
-        // NXB: cho phép null; nếu có thì phải > 0
         if (idNXB != null && idNXB <= 0) {
             throw new IllegalArgumentException("Nhà xuất bản không hợp lệ");
         }
@@ -219,7 +214,6 @@ public class SachBUS {
         }
     }
 
-    /* ==================== HELPERS ==================== */
 
     private static String safeTrim(String s) {
         return s == null ? null : s.trim();

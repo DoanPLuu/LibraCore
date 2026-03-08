@@ -11,7 +11,6 @@ import java.time.ZoneId;
 import java.util.Date;
 
 public class ThemTacGiaDialog extends JDialog {
-    // ===== Fields =====
     private JTextField txtTenTacGia;
     private JSpinner spnNgaySinh;
     private JTextField txtNoiSinh;
@@ -34,12 +33,10 @@ public class ThemTacGiaDialog extends JDialog {
                 )
         );
 
-        // ===== Tên tác giả =====
         txtTenTacGia = new JTextField(25);
         formPanel.add(new JLabel("Tên tác giả:"));
         formPanel.add(txtTenTacGia);
 
-        // ===== Ngày sinh =====
         SpinnerDateModel dateModel = new SpinnerDateModel();
         spnNgaySinh = new JSpinner(dateModel);
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
@@ -49,22 +46,18 @@ public class ThemTacGiaDialog extends JDialog {
         formPanel.add(new JLabel("Ngày sinh:"));
         formPanel.add(spnNgaySinh);
 
-        // ===== Nơi sinh =====
         txtNoiSinh = new JTextField(25);
         formPanel.add(new JLabel("Nơi sinh:"));
         formPanel.add(txtNoiSinh);
 
-        // ===== Số điện thoại =====
         txtSDT = new JTextField(15);
         formPanel.add(new JLabel("Số điện thoại:"));
         formPanel.add(txtSDT);
 
-        // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         btnLuu = new JButton("Xác nhận");
         btnHuy = new JButton("Hủy");
         
-        // Thêm icon cho buttons
         int iconSize = 16;
         btnLuu.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(40, 167, 69)));
         btnHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(220, 53, 69)));
@@ -75,7 +68,6 @@ public class ThemTacGiaDialog extends JDialog {
         btnLuu.addActionListener(e -> onSave());
         btnHuy.addActionListener(e -> dispose());
 
-        // ===== Layout tổng =====
         setLayout(new BorderLayout());
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -86,7 +78,6 @@ public class ThemTacGiaDialog extends JDialog {
     }
 
     private void onSave() {
-        // 1. Lấy và Validate dữ liệu
         String tenTacGia = txtTenTacGia.getText().trim();
         String noiSinh = txtNoiSinh.getText().trim();
         String sdt = txtSDT.getText().trim();
@@ -96,16 +87,13 @@ public class ThemTacGiaDialog extends JDialog {
             return;
         }
 
-        // Chuyển Date sang LocalDate
         java.util.Date selectedDate = (java.util.Date) spnNgaySinh.getValue();
         java.time.LocalDate ngaySinh = selectedDate.toInstant()
                 .atZone(java.time.ZoneId.systemDefault())
                 .toLocalDate();
         
-        // 2. Gom vào DTO
         com.libracoreteam.libracore.model.TacGia tacGia = new com.libracoreteam.libracore.model.TacGia(tenTacGia, ngaySinh, noiSinh, sdt);
         
-        // 3. Gọi DAO để lưu
         com.libracoreteam.libracore.dao.TacGiaDAO tacGiaDAO = new com.libracoreteam.libracore.dao.TacGiaDAO();
         if (tacGiaDAO.insert(tacGia)) {
             JOptionPane.showMessageDialog(this, "Thêm tác giả thành công!");

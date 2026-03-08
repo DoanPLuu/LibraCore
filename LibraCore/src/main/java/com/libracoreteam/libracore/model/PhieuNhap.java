@@ -1,15 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
 import java.time.LocalDate;
 import java.util.List;
-/**
- *
- * @author luuis
- */
+
 public class PhieuNhap {
      private int idPhieuNhap;
     private Integer idNCC;
@@ -47,7 +41,6 @@ public class PhieuNhap {
         this.trangThai = "ChuaNhap";
     }
     
-    // Getters
     public int getIdPhieuNhap() {
         return idPhieuNhap;
     }
@@ -84,7 +77,6 @@ public class PhieuNhap {
         return nhanVien;
     }
     
-    // Setters
     public void setIdPhieuNhap(int idPhieuNhap) {
         this.idPhieuNhap = idPhieuNhap;
     }

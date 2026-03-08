@@ -1,15 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
 import java.math.BigDecimal;
 
-/**
- *
- * @author luuis
- */
+
 public class ChiTietPhieuNhap {
     private int idChiTietPhieuNhap;
     private int idPhieuNhap;
@@ -39,7 +33,7 @@ public class ChiTietPhieuNhap {
         this.giaTien = giaTien;
     }
     
-    // Getters
+   
     public int getIdChiTietPhieuNhap() {
         return idChiTietPhieuNhap;
     }
@@ -64,7 +58,7 @@ public class ChiTietPhieuNhap {
         return sach;
     }
     
-    // Setters
+  
     public void setIdChiTietPhieuNhap(int idChiTietPhieuNhap) {
         this.idChiTietPhieuNhap = idChiTietPhieuNhap;
     }
@@ -89,7 +83,7 @@ public class ChiTietPhieuNhap {
         this.sach = sach;
     }
     
-    // Utility method
+    
     public BigDecimal tinhThanhTien() {
         if (soLuong != null && giaTien != null) {
             return giaTien.multiply(BigDecimal.valueOf(soLuong));

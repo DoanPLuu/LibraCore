@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Collections;
 
 public class ThemTaiKhoanDialog extends JDialog {
-    // ===== Fields =====
     private JComboBox<NhanVienWrapper> cmbNhanVien;
     private JTextField txtTenDangNhap;
     private JPasswordField txtMatKhau;
@@ -43,37 +42,30 @@ public class ThemTaiKhoanDialog extends JDialog {
                 )
         );
 
-        // ===== Chọn nhân viên =====
         cmbNhanVien = new JComboBox<>();
         formPanel.add(new JLabel("Chọn nhân viên:"));
         formPanel.add(cmbNhanVien);
 
-        // ===== Tên đăng nhập =====
         txtTenDangNhap = new JTextField(25);
         formPanel.add(new JLabel("Tên Đăng Nhập:"));
         formPanel.add(txtTenDangNhap);
 
-        // ===== Mật khẩu =====
         txtMatKhau = new JPasswordField(25);
         formPanel.add(new JLabel("Mật Khẩu:"));
         formPanel.add(txtMatKhau);
 
-        // ===== Nhập lại mật khẩu =====
         txtMatKhauLai = new JPasswordField(25);
         formPanel.add(new JLabel("Nhập Lại Mật Khẩu:"));
         formPanel.add(txtMatKhauLai);
 
-        // ===== Vai trò =====
         cmbVaiTro = new JComboBox<>();
         formPanel.add(new JLabel("Vai Trò:"));
         formPanel.add(cmbVaiTro);
 
-        // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         btnLuu = new JButton("Xác nhận");
         btnHuy = new JButton("Hủy");
         
-        // Thêm icon cho buttons
         int iconSize = 16;
         btnLuu.setIcon(FontIcon.of(FontAwesomeSolid.CHECK_CIRCLE, iconSize, new Color(40, 167, 69)));
         btnHuy.setIcon(FontIcon.of(FontAwesomeSolid.TIMES_CIRCLE, iconSize, new Color(220, 53, 69)));
@@ -84,7 +76,6 @@ public class ThemTaiKhoanDialog extends JDialog {
         btnLuu.addActionListener(e -> onSave());
         btnHuy.addActionListener(e -> dispose());
 
-        // ===== Layout tổng =====
         setLayout(new BorderLayout());
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -95,7 +86,6 @@ public class ThemTaiKhoanDialog extends JDialog {
     }
 
     private void onSave() {
-        // Check xem user đã chọn nhân viên chưa
         NhanVienWrapper wrapper = (NhanVienWrapper) cmbNhanVien.getSelectedItem();
         if (wrapper == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên để cấp tài khoản!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
@@ -111,9 +101,8 @@ public class ThemTaiKhoanDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn vai trò!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int vaiTro = selectedRole.getIdVaiTro(); // ID vai trò thực tế
+        int vaiTro = selectedRole.getIdVaiTro(); 
 
-        // 1. Validate dữ liệu
         if (tenDangNhap.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên đăng nhập không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
@@ -139,18 +128,14 @@ public class ThemTaiKhoanDialog extends JDialog {
             return;
         }
 
-        // 2. Gom vào DTO
         com.libracoreteam.libracore.model.TaiKhoan tk = new com.libracoreteam.libracore.model.TaiKhoan(
                 vaiTro, tenDangNhap, matKhau
         );
 
-        // 3. Gọi BUS để lưu
         com.libracoreteam.libracore.bus.TaiKhoanBUS taiKhoanBUS = new com.libracoreteam.libracore.bus.TaiKhoanBUS();
         if (taiKhoanBUS.add(tk)) {
-            // 4. Lấy ID tài khoản vừa tạo
             int idTaiKhoan = tk.getIdTaiKhoan();
             
-            // 5. UPDATE bảng NhanVien: gán id_TaiKhoan cho nhân viên được chọn
             nhanVien.setIdTaiKhoan(idTaiKhoan);
             com.libracoreteam.libracore.bus.NhanVienBUS nhanVienBUS = new com.libracoreteam.libracore.bus.NhanVienBUS();
             if (nhanVienBUS.update(nhanVien)) {
@@ -169,13 +154,11 @@ public class ThemTaiKhoanDialog extends JDialog {
         return saved;
     }
 
-    // ===== Load nhân viên chưa có tài khoản =====
     private void loadNhanVienChuaCoTaiKhoan() {
         cmbNhanVien.removeAllItems();
         NhanVienBUS nhanVienBUS = new NhanVienBUS();
         List<NhanVien> dsNhanVien = nhanVienBUS.getActive();
         
-        // Lọc nhân viên chưa có tài khoản
         List<NhanVien> result = new java.util.ArrayList<>();
         for (NhanVien nv : dsNhanVien) {
             if (nv.getIdTaiKhoan() == null) {
@@ -183,10 +166,8 @@ public class ThemTaiKhoanDialog extends JDialog {
             }
         }
         
-        // Sắp xếp theo ID nhân viên tăng dần
         Collections.sort(result, (nv1, nv2) -> Integer.compare(nv1.getIdNhanVien(), nv2.getIdNhanVien()));
         
-        // Thêm vào ComboBox bằng wrapper
         for (NhanVien nv : result) {
             cmbNhanVien.addItem(new NhanVienWrapper(nv));
         }
@@ -206,7 +187,6 @@ public class ThemTaiKhoanDialog extends JDialog {
         }
     }
     
-    // ===== Inner class: Wrapper để hiển thị định dạng "ID: ... -- Tên: ..." =====
     private static class NhanVienWrapper {
         private NhanVien nhanVien;
         

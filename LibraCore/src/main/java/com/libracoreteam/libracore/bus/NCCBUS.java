@@ -17,7 +17,6 @@ public class NCCBUS {
         this.nccDAO = nccDAO;
     }
 
-    /* ==================== READ ==================== */
 
     public List<NCC> getAll() {
         return nccDAO.getAll();
@@ -38,12 +37,10 @@ public class NCCBUS {
         return nccDAO.search(k);
     }
 
-    /* ==================== WRITE ==================== */
 
     public NCC create(String tenNCC) {
         tenNCC = safeTrim(tenNCC);
         
-        // Kiểm tra dữ liệu đầu vào
         validateForCreateOrUpdate(0, tenNCC);
 
         NCC ncc = new NCC();
@@ -57,7 +54,6 @@ public class NCCBUS {
     }
 
 public boolean update(com.libracoreteam.libracore.model.NCC ncc) {
-        // Kiểm tra dữ liệu hợp lệ trước khi đẩy xuống DAO
         if (ncc == null) {
             return false;
         }
@@ -65,7 +61,6 @@ public boolean update(com.libracoreteam.libracore.model.NCC ncc) {
             throw new IllegalArgumentException("Tên nhà cung cấp không được để trống!");
         }
         
-        // Gọi DAO để thực thi lệnh SQL
         return nccDAO.update(ncc);
     }
 
@@ -76,7 +71,6 @@ public boolean update(com.libracoreteam.libracore.model.NCC ncc) {
         return nccDAO.softDelete(id);
     }
 
-    /* ==================== VALIDATION ==================== */
 
     private void validateForCreateOrUpdate(int idNCC, String tenNCC) {
         if (tenNCC == null || tenNCC.isEmpty()) {
@@ -86,13 +80,11 @@ public boolean update(com.libracoreteam.libracore.model.NCC ncc) {
             throw new IllegalArgumentException("Tên Nhà cung cấp quá dài (tối đa 255 ký tự)");
         }
 
-        // Kiểm tra trùng tên (Cần bổ sung hàm existsByName trong NCCDAO)
         if (nccDAO.existsByName(tenNCC, idNCC)) {
             throw new IllegalArgumentException("Tên Nhà cung cấp đã tồn tại trong hệ thống");
         }
     }
 
-    /* ==================== HELPERS ==================== */
 
     private static String safeTrim(String s) {
         return s == null ? null : s.trim();

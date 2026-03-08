@@ -24,7 +24,6 @@ public class MucPhatBUS {
   }
 
   public void insert(MucPhat mp) {
-    // Có thể thêm logic kiểm tra dữ liệu ở đây (ví dụ tiền phạt phải > 0)
     boolean ok = dao.insert(mp);
     if (!ok) {
       throw new RuntimeException("Lỗi khi thêm mức phạt mới!");

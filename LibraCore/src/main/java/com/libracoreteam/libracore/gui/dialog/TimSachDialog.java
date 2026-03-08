@@ -49,12 +49,10 @@ public class TimSachDialog extends JDialog {
         tblResults.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblResults.setRowHeight(25);
 
-        // Hide ID column
         tblResults.getColumnModel().getColumn(0).setMinWidth(0);
         tblResults.getColumnModel().getColumn(0).setMaxWidth(0);
         tblResults.getColumnModel().getColumn(0).setWidth(0);
 
-        // Events
         tblResults.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -84,7 +82,6 @@ public class TimSachDialog extends JDialog {
     public void searchAndShow(String keyword) {
         tableModel.setRowCount(0);
         
-        // Gọi searchActive từ BUS
         List<Sach> results = sachBUS.searchActive(keyword);
 
         if (results.isEmpty()) {

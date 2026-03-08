@@ -118,8 +118,6 @@ public class ThemVaiTroDialog extends JDialog {
         switch (id) {
             case 1:
                 return "Quản lý sách";
-//            case 2:
-//                return "Quản lý cuốn sách";
             case 2:
                 return "Quản lý nhập sách";
             case 3:
