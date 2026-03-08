@@ -27,7 +27,6 @@ public class LoginPanel extends JPanel {
         setLayout(new GridLayout(1, 2));
 
 
-        // BÊN TRÁI: TEXT CHÀO MỪNG
 
         JPanel leftPanel = new JPanel(new GridBagLayout());
         leftPanel.setOpaque(false);
@@ -52,7 +51,6 @@ public class LoginPanel extends JPanel {
         add(leftPanel);
 
 
-        // BÊN PHẢI: FORM ĐĂNG NHẬP.
 
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setOpaque(false);
@@ -110,7 +108,6 @@ public class LoginPanel extends JPanel {
                 return;
             }
 
-            // Gọi thẳng xuống BUS để xử lý
             TaiKhoanBUS bus = new TaiKhoanBUS();
             String loginResult = bus.checkLogin(user, passChars);
 

@@ -72,17 +72,14 @@ public class TacGiaPanel extends javax.swing.JPanel {
         String keyword = jTextFieldTimKiem.getText();
         if (keyword != null) keyword = keyword.trim();
 
-        // Nếu ô tìm kiếm rỗng hoặc là chữ mặc định
         if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
             loadData();
             return;
         }
 
         try {
-            // Gọi BUS để tìm kiếm
             currentList = bus.search(keyword);
             
-            // Xóa dữ liệu cũ và đổ dữ liệu mới lên bảng
             tblModel.setRowCount(0);
             for (TacGia tg : currentList) {
                 tblModel.addRow(new Object[]{
@@ -94,7 +91,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
                 });
             }
             
-            // Làm sạch các ô điền thông tin bên phải sau khi tìm
             jTableSach.clearSelection();
             jTextFieldMaTacGia.setText("");
             jTextFieldTenTacGia.setText("");
@@ -109,7 +105,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
     }
 
     private void bindEvents() {
-        // Sự kiện click bảng
         jTableSach.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && jTableSach.getSelectedRow() != -1) {
                 currentSelected = currentList.get(jTableSach.getSelectedRow());
@@ -121,7 +116,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
             }
         });
         
-        // Cảm biến Live Search
+        
         jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
@@ -129,6 +124,22 @@ public class TacGiaPanel extends javax.swing.JPanel {
             public void removeUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
             @Override
             public void changedUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
+        });
+        jTextFieldTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (jTextFieldTimKiem.getText().equals("Tìm kiếm...")) {
+                    jTextFieldTimKiem.setText("");
+                    jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); // Chữ đen khi gõ
+                }
+            }
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (jTextFieldTimKiem.getText().trim().isEmpty()) {
+                    jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); // Trả lại chữ xám
+                    jTextFieldTimKiem.setText("Tìm kiếm...");
+                }
+            }
         });
     }
 
@@ -145,8 +156,8 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jPanelNutThem = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
-        jButtonSua = new javax.swing.JButton(); // Khai báo nút Sửa
-        jButtonXoa = new javax.swing.JButton(); // Khai báo nút Xóa
+        jButtonSua = new javax.swing.JButton(); 
+        jButtonXoa = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -328,7 +339,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
             jButtonTimKiem.setIcon(FontIcon.of(FontAwesomeSolid.SEARCH, iconSize, new Color(100, 100, 100)));
             jButtonLamMoi.setIcon(FontIcon.of(FontAwesomeSolid.SYNC_ALT, iconSize, new Color(100, 100, 100)));
             jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253))); 
-            jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69))); // Icon nút Xóa
+            jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69))); 
     }
     
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -433,13 +444,10 @@ public class TacGiaPanel extends javax.swing.JPanel {
     }
     
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {
-// Trả ô tìm kiếm về mặc định
         jTextFieldTimKiem.setText("Tìm kiếm...");
         
-        // Tải lại toàn bộ dữ liệu
         loadData();
         
-        // Làm sạch form bên phải
         jTableSach.clearSelection();
         jTextFieldMaTacGia.setText("");
         jTextFieldTenTacGia.setText("");

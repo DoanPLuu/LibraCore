@@ -96,8 +96,8 @@ public class NXBBUS {
         }
 
         if (sdt != null && !sdt.isEmpty()) {
-            if (!sdt.matches("\\d{9,15}")) {
-                throw new IllegalArgumentException("Số điện thoại không hợp lệ");
+            if (!sdt.matches("0\\d{9}")) {
+                throw new IllegalArgumentException("Số điện thoại bắt buộc phải bắt đầu bằng số 0 và có đúng 10 chữ số!");
             }
         }
 

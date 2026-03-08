@@ -36,7 +36,7 @@ public class DashboardPanel extends JPanel {
         
         JLabel lblTitle = new JLabel("DASHBOARD TỔNG QUAN");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(new Color(21, 110, 71)); // Màu xanh chủ đạo của hệ thống
+        lblTitle.setForeground(new Color(21, 110, 71));
         
         JLabel lblSub = new JLabel("Cập nhật số liệu thời gian thực từ hệ thống LibraCore");
         lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -56,7 +56,7 @@ public class DashboardPanel extends JPanel {
         btnRefresh.setFocusPainted(false);
         btnRefresh.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnRefresh.setPreferredSize(new Dimension(160, 40));
-        btnRefresh.addActionListener(e -> loadData()); // Click vào là gọi lại DB
+        btnRefresh.addActionListener(e -> loadData()); 
         
         JPanel pnlHeaderRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         pnlHeaderRight.setOpaque(false);
@@ -74,10 +74,10 @@ public class DashboardPanel extends JPanel {
         lblDoanhThuVal = createValueLabel();
         
 
-        pnlCards.add(createCard("Tổng Đầu Sách", lblTongSachVal, FontAwesomeSolid.BOOK, new Color(41, 128, 185))); // Xanh dương
-        pnlCards.add(createCard("Độc Giả Hoạt Động", lblTongDocGiaVal, FontAwesomeSolid.USER_GRADUATE, new Color(39, 174, 96))); // Xanh lá
-        pnlCards.add(createCard("Phiếu Đang Mượn", lblPhieuMuonVal, FontAwesomeSolid.CLIPBOARD_LIST, new Color(243, 156, 18))); // Cam
-        pnlCards.add(createCard("Doanh Thu Phạt", lblDoanhThuVal, FontAwesomeSolid.MONEY_BILL_WAVE, new Color(192, 57, 43))); // Đỏ
+        pnlCards.add(createCard("Tổng Đầu Sách", lblTongSachVal, FontAwesomeSolid.BOOK, new Color(41, 128, 185))); 
+        pnlCards.add(createCard("Độc Giả Hoạt Động", lblTongDocGiaVal, FontAwesomeSolid.USER_GRADUATE, new Color(39, 174, 96))); 
+        pnlCards.add(createCard("Phiếu Đang Mượn", lblPhieuMuonVal, FontAwesomeSolid.CLIPBOARD_LIST, new Color(243, 156, 18))); 
+        pnlCards.add(createCard("Doanh Thu Phạt", lblDoanhThuVal, FontAwesomeSolid.MONEY_BILL_WAVE, new Color(192, 57, 43)));
         
         JPanel pnlCenter = new JPanel(new BorderLayout());
         pnlCenter.setOpaque(false);

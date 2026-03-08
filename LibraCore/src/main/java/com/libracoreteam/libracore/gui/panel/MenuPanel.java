@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.gui.panel;
 
 import com.libracoreteam.libracore.gui.MainFrame;
@@ -18,27 +15,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-/**
- *
- * @author luuis
- */
+
 public class MenuPanel extends JPanel {
     private MainFrame mainFrame;
     private MigLayout layout;
-    private boolean isCollapsed = false; // hiện tại chưa dùng đến, giữ cho tương lai
+    private boolean isCollapsed = false; 
     private MenuItem selectedMenuItem = null;
     
-    // Map để track menu đang mở: key = menu index, value = {menuItem, subMenuPanel}
+    
     private Map<Integer, MenuSubMenuInfo> openSubMenus = new HashMap<>();
     
-    // Quyền hiển thị menu theo vai trò
     private boolean[] allowedMenus;
-    // Cờ admin tạm thời không dùng trực tiếp nhưng giữ để mở rộng
     private boolean isAdminRole = false;
     
-    /**
-     * Inner class để lưu thông tin menu đang mở
-     */
+    
     private static class MenuSubMenuInfo {
         MenuItem menuItem;
         JPanel subMenuPanel;
@@ -49,15 +39,7 @@ public class MenuPanel extends JPanel {
         }
     }
     
-    // Cấu trúc menu items
-    // 0: Dashboard
-    // 1: Quản lý sách          -> Sách, Quyển sách, Tác giả, Nhà xuất bản, Thể loại
-    // 2: Quản lý thành viên    -> Thành viên, Thẻ thành viên
-    // 3: Quản lý mượn - trả    -> Mượn - trả sách
-    // 4: Quản lý phạt - trả phạt -> Phạt, Mức phạt
-    // 5: Quản lý nhập sách     -> Nhập sách, Nhà cung cấp
-    // 6: Quản lý người dùng    -> Nhân viên, Tài khoản, Vai trò
-    // 7: Thống kê báo cáo      -> Thống kê sách, Thống kê mượn trả, Thống kê tiền phạt
+    
     private String[][] menuItems = {
         {"Dashboard"},
         {"Quản lý sách", "Sách", "Cuốn sách", "Tác giả", "Nhà xuất bản", "Thể loại"},
@@ -87,13 +69,11 @@ public class MenuPanel extends JPanel {
                 "wrap 1, fillx, insets 8 8 8 8", "[fill]"));
         panel.setOpaque(false);
     
-        // Nút Tài khoản
         MenuItem accountBtn = new MenuItem("Tài khoản", false);
         accountBtn.setIcon(FontIcon.of(FontAwesomeSolid.USER_CIRCLE, 18, Color.WHITE));
         accountBtn.setToolTipText("Thông tin cá nhân, đổi mật khẩu");
         accountBtn.setHorizontalAlignment(SwingConstants.LEFT);
     
-        // Nút Đăng xuất
         MenuItem logoutBtn = new MenuItem("Đăng xuất", false);
         logoutBtn.setIcon(FontIcon.of(FontAwesomeSolid.SIGN_OUT_ALT, 18, Color.WHITE));
         logoutBtn.setToolTipText("Đăng xuất khỏi hệ thống");
@@ -111,16 +91,13 @@ public class MenuPanel extends JPanel {
 
 
     private void handleAccountButton() {
-        // 1. Đóng tất cả các menu con đang mở cho giao diện gọn gàng
-        closeAllSubMenusExcept(-1); // Truyền -1 vì nút này không thuộc menu nào trong mảng menuItems
+        closeAllSubMenusExcept(-1);
 
-        // 2. Xóa trạng thái đang chọn (highlight) của các menu item khác
         if (selectedMenuItem != null) {
             selectedMenuItem.setSelected(false);
             selectedMenuItem = null;
         }
 
-        // 3. Gọi MainFrame để hiển thị Panel Tài khoản cá nhân
         mainFrame.showScreen("ACCOUNT");
     }
 
@@ -134,16 +111,13 @@ public class MenuPanel extends JPanel {
         );
 
         if (xacNhan == JOptionPane.YES_OPTION) {
-            // Xóa phiên làm việc
             UserSession.getInstance().logout();
 
-            // Đóng cửa sổ hiện tại
             Window window = SwingUtilities.getWindowAncestor(this);
             if (window != null) {
                 window.dispose();
             }
 
-            // Mở lại màn hình đăng nhập
             EventQueue.invokeLater(() -> {
                 new LoginFrame().setVisible(true);
             });
@@ -157,17 +131,14 @@ public class MenuPanel extends JPanel {
         setBackground(new Color(21, 110, 71));
         setOpaque(true);
 
-        // Thêm padding cho toàn bộ panel
         setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
-        // Tạo menu items theo quyền
         for (int i = 0; i < menuItems.length; i++) {
             if (!shouldShowMenu(i)) {
                 continue;
             }
             addMenu(menuItems[i][0], i);
 
-            // Thêm spacing nhỏ sau mỗi menu item (trừ item cuối)
             if (i < menuItems.length - 1) {
                 add(createSpacer(), "h 2!");
             }
@@ -185,13 +156,11 @@ public class MenuPanel extends JPanel {
             allowedMenus[i] = false;
         }
 
-        // Dashboard luôn hiển thị
         allowedMenus[0] = true;
 
         UserSession session = UserSession.getInstance();
         String tenVaiTro = session.getVaiTro();
         if (tenVaiTro == null || tenVaiTro.trim().isEmpty()) {
-            // Nếu chưa đăng nhập rõ ràng, cho phép tất cả để tránh khóa UI
             for (int i = 0; i < menuCount; i++) {
                 allowedMenus[i] = true;
             }
@@ -220,7 +189,6 @@ public class MenuPanel extends JPanel {
         }
 
         if (idVaiTro <= 0) {
-            // Không tìm thấy vai trò -> fallback cho phép tất cả
             for (int i = 0; i < menuCount; i++) {
                 allowedMenus[i] = true;
             }
@@ -230,14 +198,6 @@ public class MenuPanel extends JPanel {
 
         java.util.List<Integer> quyenIds = vaiTroBUS.getQuyenIdsByVaiTro(idVaiTro);
         Set<Integer> quyenSet = new HashSet<Integer>(quyenIds);
-
-        // Map id_Quyen -> index menu chính (sau khi bỏ QL_CUONSACH và dồn ID)
-        // 1: QL_SACH           -> menu 1 (Quản lý sách)
-        // 2: QL_NHAPSACH       -> menu 5 (Quản lý nhập sách)
-        // 3: QL_DOCGIA_THE     -> menu 2 (Quản lý thành viên)
-        // 4: QL_MUON_TRA       -> menu 3 (Quản lý mượn - trả)
-        // 5: QL_PHIEU_PHAT     -> menu 4 (Quản lý phạt)
-        // 6: QL_NHANVIEN       -> menu 6 (Quản lý người dùng)
 
         if (quyenSet.contains(1)) {
             allowedMenus[1] = true;
@@ -258,7 +218,6 @@ public class MenuPanel extends JPanel {
             allowedMenus[6] = true;
         }
 
-        // Thống kê báo cáo (menu 7) mặc định chỉ cho Admin, nên để false khi không phải admin
     }
 
     private boolean shouldShowMenu(int index) {
@@ -270,14 +229,14 @@ public class MenuPanel extends JPanel {
     
     private FontIcon getIcon(int index) {
         switch (index) {
-            case 0: return FontIcon.of(FontAwesomeSolid.HOME, 18, Color.WHITE);           // Dashboard
-            case 1: return FontIcon.of(FontAwesomeSolid.BOOK, 18, Color.WHITE);           // Quản lý sách
-            case 2: return FontIcon.of(FontAwesomeSolid.USER_FRIENDS, 18, Color.WHITE);   // Quản lý thành viên
-            case 3: return FontIcon.of(FontAwesomeSolid.BOOK_READER, 18, Color.WHITE);    // Mượn - trả
-            case 4: return FontIcon.of(FontAwesomeSolid.MONEY_CHECK_ALT, 18, Color.WHITE);// Phạt - trả phạt
-            case 5: return FontIcon.of(FontAwesomeSolid.TRUCK_LOADING, 18, Color.WHITE);  // Nhập sách
-            case 6: return FontIcon.of(FontAwesomeSolid.USER_COG, 18, Color.WHITE);       // Người dùng
-            case 7: return FontIcon.of(FontAwesomeSolid.CHART_BAR, 18, Color.WHITE);      // Thống kê báo cáo
+            case 0: return FontIcon.of(FontAwesomeSolid.HOME, 18, Color.WHITE);          
+            case 1: return FontIcon.of(FontAwesomeSolid.BOOK, 18, Color.WHITE);          
+            case 2: return FontIcon.of(FontAwesomeSolid.USER_FRIENDS, 18, Color.WHITE);  
+            case 3: return FontIcon.of(FontAwesomeSolid.BOOK_READER, 18, Color.WHITE);    
+            case 4: return FontIcon.of(FontAwesomeSolid.MONEY_CHECK_ALT, 18, Color.WHITE);
+            case 5: return FontIcon.of(FontAwesomeSolid.TRUCK_LOADING, 18, Color.WHITE);  
+            case 6: return FontIcon.of(FontAwesomeSolid.USER_COG, 18, Color.WHITE);     
+            case 7: return FontIcon.of(FontAwesomeSolid.CHART_BAR, 18, Color.WHITE);      
             default: return null;
         }
     }

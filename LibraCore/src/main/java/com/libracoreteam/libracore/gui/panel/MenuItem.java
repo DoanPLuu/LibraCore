@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.gui.panel;
 
 import javax.swing.*;
@@ -10,15 +7,11 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
-/**
- *
- * @author luuis
- */
 public class MenuItem extends JButton {
     private boolean isSelected = false;
     private boolean hasSubMenu = false;
-    private float arrowAnimation = 0f; // Dùng cho Phase 3 (dropdown animation)
-    private boolean isPressed = false; // Track press state để vẽ press effect
+    private float arrowAnimation = 0f; 
+    private boolean isPressed = false;
     
     public MenuItem(String text, boolean hasSubMenu) {
         super(text);
@@ -35,7 +28,7 @@ public class MenuItem extends JButton {
         setFocusPainted(false);
         setBorderPainted(false);
 
-        // Hover và Press effect
+       
         addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -50,7 +43,7 @@ public class MenuItem extends JButton {
                 if (!isSelected) {
                     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
-                isPressed = false; // Reset press state khi mouse ra ngoài
+                isPressed = false;
                 repaint();
             }
 
@@ -74,7 +67,7 @@ public class MenuItem extends JButton {
     
     public void setSelected(boolean selected) {
         this.isSelected = selected;
-        repaint(); // Vẽ lại để hiển thị selected state
+        repaint(); 
     }
     
     public boolean hasSubMenu() {
@@ -88,7 +81,7 @@ public class MenuItem extends JButton {
     
     public void initSubMenuStyle() {
         setBorder(new EmptyBorder(10, 40, 10, 15));
-        // Background sẽ được vẽ trong paintComponent()
+       
     }
     
     @Override
@@ -98,28 +91,25 @@ public class MenuItem extends JButton {
         
         boolean isSubMenuItem = isSubMenu();
         
-        // Vẽ background dựa trên state (selected > pressed > hover > default)
+      
         Color bgColor = null;
         
         if (isSelected) {
-            // Selected state - màu xanh nhạt
+          
             bgColor = new Color(43, 141, 98);
         } else if (isPressed) {
-            // Pressed state - màu xanh đậm để rõ ràng khi click
+            
             if (isSubMenuItem) {
-                bgColor = new Color(10, 60, 40); // Đậm hơn cho submenu
+                bgColor = new Color(10, 60, 40); 
             } else {
                 bgColor = new Color(15, 80, 50);
             }
         } else if (getModel().isRollover()) {
-            // Hover state - màu xanh nhạt
             bgColor = new Color(43, 141, 98);
         } else if (isSubMenuItem) {
-            // Submenu item có background mặc định
             bgColor = new Color(18, 99, 63);
         }
         
-        // Vẽ background nếu có
         if (bgColor != null) {
             g2.setColor(bgColor);
             g2.fillRect(0, 0, getWidth(), getHeight());
@@ -127,14 +117,11 @@ public class MenuItem extends JButton {
         
         g2.dispose();
         
-        // Gọi super để vẽ text và icon
         super.paintComponent(g);
         
-        // Vẽ border indicator và arrow sau cùng
         g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        // Vẽ arrow nếu có submenu
         if (hasSubMenu && !isSubMenuItem) {
         g2.setColor(getForeground());
 
@@ -151,8 +138,6 @@ public class MenuItem extends JButton {
         AffineTransform at = new AffineTransform();
         at.translate(x, y);
 
-        // arrowAnimation < 0.5: chỉ xuống
-        // arrowAnimation >= 0.5: xoay sang phải
         if (arrowAnimation >= 0.5f) {
             at.rotate(Math.toRadians(-90), size / 2.0, size / 2.0);
         }
@@ -164,7 +149,6 @@ public class MenuItem extends JButton {
     }
     
     private boolean isSubMenu() {
-        // Kiểm tra xem có phải submenu item không (dựa vào border)
         if (getBorder() instanceof EmptyBorder border) {
             return border.getBorderInsets(this).left > 30;
         }
