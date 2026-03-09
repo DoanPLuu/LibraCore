@@ -71,7 +71,7 @@ public class ThongKeDAO {
         String sql = "SELECT s.TenSach, " +
                 "  COALESCE(GROUP_CONCAT(DISTINCT tl.TenTheLoai ORDER BY tl.TenTheLoai SEPARATOR ', '), '') AS TheLoai, "
                 +
-                "  COUNT(ct.id_ChiTietPhieuMuon) AS SoLuong, " +
+                "  COUNT(DISTINCT ct.id_ChiTietPhieuMuon) AS SoLuong, " +
                 "  pm.NgayMuon " +
                 "FROM ChiTietPhieuMuon ct " +
                 "JOIN PhieuMuon pm ON pm.id_PhieuMuon = ct.id_PhieuMuon " +
@@ -94,7 +94,7 @@ public class ThongKeDAO {
         String sql = "SELECT s.TenSach, " +
                 "  COALESCE(GROUP_CONCAT(DISTINCT tl.TenTheLoai ORDER BY tl.TenTheLoai SEPARATOR ', '), '') AS TheLoai, "
                 +
-                "  COUNT(cs.id_CuonSach) AS SoLuong, " +
+                "  COUNT(DISTINCT cs.id_CuonSach) AS SoLuong, " +
                 "  MAX(pn.NgayNhap) AS NgayNhap " +
                 "FROM CuonSach cs " +
                 "JOIN Sach s ON s.id_Sach = cs.id_Sach " +
@@ -118,7 +118,7 @@ public class ThongKeDAO {
         String sql = "SELECT s.TenSach, " +
                 "  COALESCE(GROUP_CONCAT(DISTINCT tl.TenTheLoai ORDER BY tl.TenTheLoai SEPARATOR ', '), '') AS TheLoai, "
                 +
-                "  COUNT(cs.id_CuonSach) AS SoLuong, " +
+                "  COUNT(DISTINCT cs.id_CuonSach) AS SoLuong, " +
                 "  MAX(pn.NgayNhap) AS NgayNhap " +
                 "FROM CuonSach cs " +
                 "JOIN Sach s ON s.id_Sach = cs.id_Sach " +
