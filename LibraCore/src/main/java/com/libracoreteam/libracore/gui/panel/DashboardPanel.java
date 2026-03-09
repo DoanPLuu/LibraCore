@@ -39,15 +39,9 @@ public class DashboardPanel extends JPanel {
         JLabel lblTitle = new JLabel("DASHBOARD TỔNG QUAN");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
         lblTitle.setForeground(new Color(21, 110, 71)); // Màu xanh chủ đạo của hệ thống
-        
-        JLabel lblSub = new JLabel("Cập nhật số liệu thời gian thực từ hệ thống LibraCore");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        lblSub.setForeground(new Color(100, 100, 100));
-        
         JPanel pnlTitle = new JPanel(new GridLayout(2, 1));
         pnlTitle.setOpaque(false);
         pnlTitle.add(lblTitle);
-        pnlTitle.add(lblSub);
         pnlHeader.add(pnlTitle, BorderLayout.WEST);
         
         // Nút Refresh (Làm mới số liệu)
@@ -90,13 +84,10 @@ public class DashboardPanel extends JPanel {
         JPanel pnlCenter = new JPanel(new BorderLayout());
         pnlCenter.setOpaque(false);
         pnlCenter.add(pnlCards, BorderLayout.NORTH);
-        
-        // Có thể thêm 1 cái ảnh/biểu đồ hay bảng trống ở dưới cho đỡ trống
-        JLabel lblChartPlaceholder = new JLabel("Khu vực hiển thị biểu đồ/bảng dữ liệu (Cập nhật sau)", SwingConstants.CENTER);
-        lblChartPlaceholder.setFont(new Font("Segoe UI", Font.ITALIC, 16));
-        lblChartPlaceholder.setForeground(new Color(180, 180, 180));
-        pnlCenter.add(lblChartPlaceholder, BorderLayout.CENTER);
-
+        JLabel lblIntro = new JLabel("LIBRACORE - PHẦN MỀM QUẢN LÝ THƯ VIỆN", SwingConstants.CENTER);
+        lblIntro.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        lblIntro.setForeground(new Color(41, 128, 185));
+        pnlCenter.add(lblIntro, BorderLayout.CENTER);
         add(pnlCenter, BorderLayout.CENTER);
     }
     

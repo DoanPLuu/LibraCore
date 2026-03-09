@@ -32,62 +32,47 @@ public class NhanVienDAO implements IDAO<NhanVien> {
   private static final String COL_HOAT_DONG = "HoatDong";
   private static final String COL_ANH = "AnhNhanVien";
 
-  public List<NhanVien> getActive() {
-    String sql = "SELECT * FROM nhanvien WHERE HoatDong = ? ORDER BY TenNhanVien ASC";
+  private List<NhanVien> queryList(String sql, Object[] params) {
     List<NhanVien> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
-      ps.setBoolean(1, true);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next())
-          list.add(map(rs));
-      }
-      return list;
-    } catch (SQLException e) {
-      throw new RuntimeException("NhanVienDAO.getActive failed", e);
-    }
-  }
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-  @Override
-  public List<NhanVien> getAll() {
-    String sql = "SELECT * FROM nhanvien ORDER BY TenNhanVien ASC";
-    List<NhanVien> list = new ArrayList<>();
-    try (Connection conn = DBConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery()) {
-      while (rs.next())
-        list.add(map(rs));
-      return list;
-    } catch (SQLException e) {
-      throw new RuntimeException("NhanVienDAO.getAll failed", e);
-    }
-  }
+        if (params != null) {
+            for (int i = 0; i < params.length; i++) {
+                ps.setObject(i + 1, params[i]);
+            }
+        }
 
-  public NhanVien getById(int idNhanVien) {
-    String sql = "SELECT * FROM nhanvien WHERE id_NhanVien = ?";
-    try (Connection conn = DBConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
-      ps.setInt(1, idNhanVien);
-      try (ResultSet rs = ps.executeQuery()) {
-        return rs.next() ? map(rs) : null;
-      }
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) list.add(map(rs));
+        }
     } catch (SQLException e) {
-      throw new RuntimeException("NhanVienDAO.getById failed", e);
+        throw new RuntimeException("NhanVienDAO.queryList failed", e);
     }
-  }
+    return list;
+}
 
-  public NhanVien getByIdTaiKhoan(int idTaiKhoan) {
-    String sql = "SELECT * FROM nhanvien WHERE id_TaiKhoan = ?";
-    try (Connection conn = DBConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
-      ps.setInt(1, idTaiKhoan);
-      try (ResultSet rs = ps.executeQuery()) {
-        return rs.next() ? map(rs) : null;
-      }
-    } catch (SQLException e) {
-      throw new RuntimeException("NhanVienDAO.getByIdTaiKhoan failed", e);
+public List<NhanVien> getAll() {
+    String sql = "SELECT * FROM nhanvien ORDER BY id_NhanVien ASC";
+    return queryList(sql, null);
+}
+
+public List<NhanVien> getActive() {
+    String sql = "SELECT * FROM nhanvien WHERE HoatDong = 1 ORDER BY id_NhanVien ASC";
+    return queryList(sql, null);
+}
+
+    public NhanVien getById(int idNhanVien) {
+        String sql = "SELECT * FROM nhanvien WHERE id_NhanVien = ?";
+        List<NhanVien> list = queryList(sql, new Object[]{idNhanVien});
+        return list.isEmpty() ? null : list.get(0);
     }
-  }
+
+    public NhanVien getByIdTaiKhoan(int idTaiKhoan) {
+        String sql = "SELECT * FROM nhanvien WHERE id_TaiKhoan = ?";
+        List<NhanVien> list = queryList(sql, new Object[]{idTaiKhoan});
+        return list.isEmpty() ? null : list.get(0);
+    }
 
   @Override
   public boolean insert(NhanVien nv) {
@@ -146,25 +131,18 @@ public class NhanVienDAO implements IDAO<NhanVien> {
     }
   }
 
-  public List<NhanVien> searchActive(String keyword) {
-    String sql = "SELECT * FROM nhanvien WHERE HoatDong = ? AND (TenNhanVien LIKE ? OR SDT LIKE ? OR Email LIKE ?) ORDER BY TenNhanVien ASC";
-    String k = "%" + (keyword == null ? "" : keyword.trim()) + "%";
-    List<NhanVien> list = new ArrayList<>();
-    try (Connection conn = DBConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
-      ps.setBoolean(1, true);
-      ps.setString(2, k);
-      ps.setString(3, k);
-      ps.setString(4, k);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next())
-          list.add(map(rs));
-      }
-      return list;
-    } catch (SQLException e) {
-      throw new RuntimeException("NhanVienDAO.searchActive failed", e);
-    }
-  }
+  public List<NhanVien> search(String keyword) {
+        String sql = "SELECT * FROM nhanvien " +
+                    "WHERE HoatDong = 1 " +
+                    "AND (CAST(id_NhanVien AS CHAR) LIKE ? " +
+                    "OR TenNhanVien LIKE ? " +
+                    "OR SDT LIKE ? " +
+                    "OR Email LIKE ? " +
+                    "OR DATE_FORMAT(NgaySinh, '%d/%m/%Y') LIKE ?) " +
+                    "ORDER BY id_NhanVien ASC";
+        String param = "%" + keyword.trim() + "%";
+        return queryList(sql, new Object[]{param, param, param, param, param});
+    }   
 
   private void bindUpsert(PreparedStatement ps, NhanVien nv, boolean isUpdate) throws SQLException {
     if (nv.getIdTaiKhoan() == null)
