@@ -45,8 +45,7 @@ public class SuaTacGiaDialog extends JDialog {
         txtTenTacGia = new JTextField(25);
         formPanel.add(new JLabel("Tên tác giả:"));
         formPanel.add(txtTenTacGia);
-
-        SpinnerDateModel dateModel = new SpinnerDateModel();
+        SpinnerDateModel dateModel = new SpinnerDateModel(new Date(), null, null, java.util.Calendar.DAY_OF_MONTH);
         spnNgaySinh = new JSpinner(dateModel);
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
         spnNgaySinh.setEditor(dateEditor);
@@ -109,14 +108,24 @@ public class SuaTacGiaDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Tên tác giả không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        try {
+            spnNgaySinh.commitEdit();
+        } catch (java.text.ParseException e) {
+
+        }
+
+        Date selectedDate = (Date) spnNgaySinh.getValue();
+        LocalDate ngaySinh = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        if (ngaySinh.isAfter(LocalDate.now())) {
+            JOptionPane.showMessageDialog(this, "Không được nhập quá so với ngày hiện tại!", "Lỗi ngày sinh", JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
 
         currentTacGia.setTenTacGia(tenTacGia);
         currentTacGia.setNoiSinh(txtNoiSinh.getText().trim());
         currentTacGia.setSdt(txtSDT.getText().trim());
         currentTacGia.setHoatDong(chkHoatDong.isSelected());
-
-        Date selectedDate = (Date) spnNgaySinh.getValue();
-        LocalDate ngaySinh = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         currentTacGia.setNgaySinh(ngaySinh);
 
         TacGiaDAO tacGiaDAO = new TacGiaDAO();
