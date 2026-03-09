@@ -78,6 +78,11 @@ public class VaiTroPanel extends javax.swing.JPanel {
         jPanelCongCu.setLayout(new java.awt.BorderLayout());
 
         jTextFieldTimKiem.setPreferredSize(new java.awt.Dimension(150, 40));
+        jTextFieldTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldTimKiemKeyPressed(evt);
+            }
+        });
         jPanelTimKiem.add(jTextFieldTimKiem);
 
         jButtonTimKiem.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -120,16 +125,16 @@ public class VaiTroPanel extends javax.swing.JPanel {
         jPanelBoard.setLayout(new java.awt.BorderLayout());
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
             new String [] {
-                "ID", "Vai trò"
+                "ID", "Vai Trò"
             }
-        ) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        });
+        ));
         jScrollPane1.setViewportView(jTable1);
 
         jPanelBoard.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -287,6 +292,12 @@ public class VaiTroPanel extends javax.swing.JPanel {
 
         JOptionPane.showMessageDialog(this, sb.toString(), "Chi tiết vai trò", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jButtonChiTietActionPerformed
+
+    private void jTextFieldTimKiemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemKeyPressed
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            thucHienTimKiem();
+        }
+    }//GEN-LAST:event_jTextFieldTimKiemKeyPressed
 
     private String getQuyenDisplayName(Quyen q) {
         if (q == null) {

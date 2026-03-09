@@ -1,88 +1,77 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.libracoreteam.libracore.bus;
 
 import com.libracoreteam.libracore.dao.NhanVienDAO;
 import com.libracoreteam.libracore.model.NhanVien;
-
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author ASUS
- */
 public class NhanVienBUS {
-  private final NhanVienDAO nhanVienDAO;
 
-  public NhanVienBUS() {
-    this.nhanVienDAO = new NhanVienDAO();
-  }
+    private final NhanVienDAO nhanVienDAO;
 
-  // Lấy danh sách nhân viên đang hoạt động
-  public List<NhanVien> getActive() {
-    return nhanVienDAO.getActive();
-  }
-
-  // Lấy tất cả nhân viên (kể cả đã xóa mềm)
-  public List<NhanVien> getAll() {
-    return nhanVienDAO.getAll();
-  }
-
-  // Lấy nhân viên theo ID
-  public NhanVien getById(int id) {
-    if (id <= 0)
-      return null;
-    return nhanVienDAO.getById(id);
-  }
-
-  // Lấy nhân viên theo ID tài khoản
-  public NhanVien getByIdTaiKhoan(int idTaiKhoan) {
-    if (idTaiKhoan <= 0)
-      return null;
-    return nhanVienDAO.getByIdTaiKhoan(idTaiKhoan);
-  }
-
-  // Thêm nhân viên mới
-  public boolean add(NhanVien nv) {
-    if (!validate(nv)) {
-      return false;
+    public NhanVienBUS() {
+        this.nhanVienDAO = new NhanVienDAO();
     }
-    return nhanVienDAO.insert(nv);
-  }
 
-  // Cập nhật thông tin nhân viên
-  public boolean update(NhanVien nv) {
-    if (!validate(nv)) {
-      return false;
+    public List<NhanVien> getActive() {
+        return nhanVienDAO.getActive();
     }
-    return nhanVienDAO.update(nv);
-  }
 
-  // Xóa mềm nhân viên
-  public boolean delete(int idNhanVien) {
-    if (idNhanVien <= 0)
-      return false;
-    return nhanVienDAO.softDelete(idNhanVien);
-  }
-
-  // Tìm kiếm nhân viên
-  public List<NhanVien> searchActive(String keyword) {
-    if (keyword == null || keyword.trim().isEmpty()) {
-      return getActive();
+    public List<NhanVien> getAll() {
+        return nhanVienDAO.getAll();
     }
-    return nhanVienDAO.searchActive(keyword);
-  }
 
-  /* ==================== VALIDATION ==================== */
+    public NhanVien getById(int id) {
+        if (id <= 0) throw new IllegalArgumentException("ID nhân viên không hợp lệ.");
+        return nhanVienDAO.getById(id);
+    }
 
-  // Hàm kiểm tra tính hợp lệ của dữ liệu trước khi thêm/sửa
-  private boolean validate(NhanVien nv) {
-    if (nv == null)
-      return false;
-    if (nv.getTenNhanVien() == null || nv.getTenNhanVien().trim().isEmpty())
-      return false;
-    return true;
-  }
+    public NhanVien getByIdTaiKhoan(int idTaiKhoan) {
+        if (idTaiKhoan <= 0) throw new IllegalArgumentException("ID tài khoản không hợp lệ.");
+        return nhanVienDAO.getByIdTaiKhoan(idTaiKhoan);
+    }
+
+    public boolean add(NhanVien nv) {
+        validate(nv);
+        return nhanVienDAO.insert(nv);
+    }
+
+    public boolean update(NhanVien nv) {
+        if (nv == null || nv.getIdNhanVien() <= 0)
+            throw new IllegalArgumentException("Nhân viên không hợp lệ.");
+        validate(nv);
+        return nhanVienDAO.update(nv);
+    }
+
+    public boolean delete(int idNhanVien) {
+        if (idNhanVien <= 0) throw new IllegalArgumentException("ID nhân viên không hợp lệ.");
+        return nhanVienDAO.softDelete(idNhanVien);
+    }
+
+    public List<NhanVien> search(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) return getActive();
+
+        List<NhanVien> all = nhanVienDAO.search(keyword);
+        List<NhanVien> uuTien = new ArrayList<>();
+        List<NhanVien> lienQuan = new ArrayList<>();
+
+        for (NhanVien nv : all) {
+            if (String.valueOf(nv.getIdNhanVien()).equals(keyword.trim())) {
+                uuTien.add(nv);
+            } else {
+                lienQuan.add(nv);
+            }
+        }
+        uuTien.addAll(lienQuan);
+        return uuTien;
+    }
+
+    /* ==================== VALIDATION ==================== */
+
+    private void validate(NhanVien nv) {
+        if (nv == null)
+            throw new IllegalArgumentException("Nhân viên không được null.");
+        if (nv.getTenNhanVien() == null || nv.getTenNhanVien().trim().isEmpty())
+            throw new IllegalArgumentException("Tên nhân viên không được để trống.");
+    }
 }
