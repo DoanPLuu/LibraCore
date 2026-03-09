@@ -10,9 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO read-only dùng tạm cho UI chọn Thể loại (đổ checklist/combobox).
- */
+
 public class TheLoaiDAO {
 
     private static final String TABLE = "TheLoai";
@@ -25,9 +23,6 @@ public class TheLoaiDAO {
             "SELECT " + COL_ID + ", " + COL_TEN + ", " + COL_HOAT_DONG +
             " FROM " + TABLE;
 
-    /* ==================== READ ==================== */
-
-// 1. Sửa hàm getAll: Chỉ lấy thể loại đang hoạt động
     public List<TheLoai> getAll() {
         String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 ORDER BY " + COL_TEN + " ASC";
         return queryList(sql, null);
@@ -49,8 +44,7 @@ public class TheLoaiDAO {
             throw new RuntimeException("TheLoaiDAO.getById failed", e);
         }
     }
-    /*======WRITE========*/
-    // 2. Hàm Cập nhật (Sửa)
+
     public boolean update(TheLoai tl) {
         String sql = "UPDATE TheLoai SET TenTheLoai = ? WHERE id_TheLoai = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -64,7 +58,6 @@ public class TheLoaiDAO {
         }
     }
 
-    // 3. Hàm Xóa mềm (Đổi trạng thái HoatDong thành 0)
     public boolean softDelete(int id) {
         String sql = "UPDATE TheLoai SET HoatDong = 0 WHERE id_TheLoai = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -77,7 +70,6 @@ public class TheLoaiDAO {
         }
     }
 
-    // 4. Hàm Tìm kiếm (Tìm theo cả ID và Tên)
     public List<TheLoai> search(String keyword) {
         String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 AND (" + COL_ID + " LIKE ? OR " + COL_TEN + " LIKE ?) ORDER BY " + COL_TEN + " ASC";
         return queryList(sql, ps -> {
@@ -86,8 +78,6 @@ public class TheLoaiDAO {
             ps.setString(2, k);
         });
     }
-
-    /* ==================== HELPERS ==================== */
 
     private List<TheLoai> queryList(String sql, SQLConsumer<PreparedStatement> binder) {
         List<TheLoai> list = new ArrayList<>();
@@ -130,12 +120,12 @@ public class TheLoaiDAO {
              PreparedStatement ps = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             
             ps.setString(1, tl.getTenTheLoai());
-            ps.setBoolean(2, tl.isHoatDong()); // Mặc định là true
+            ps.setBoolean(2, tl.isHoatDong()); 
             
             if (ps.executeUpdate() > 0) {
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
-                        tl.setIdTheLoai(rs.getInt(1)); // Lấy ID mới tạo gán ngược lại
+                        tl.setIdTheLoai(rs.getInt(1)); 
                         return true;
                     }
                 }

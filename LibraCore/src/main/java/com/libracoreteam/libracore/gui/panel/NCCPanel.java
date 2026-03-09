@@ -28,7 +28,6 @@ public class NCCPanel extends javax.swing.JPanel {
     }
     
         private void InnitButton() {
-            // Cấu hình tập trung tại đây giúp dễ bảo trì màu sắc/kích thước đồng bộ
             int iconSize = 16;
 
             jButtonThem.setIcon(FontIcon.of(FontAwesomeSolid.PLUS_CIRCLE, iconSize, new Color(21, 110, 71)));
@@ -38,34 +37,25 @@ public class NCCPanel extends javax.swing.JPanel {
             jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
         }
         private void initTable() {
-        // Tạo model với 2 cột và không cho phép click đúp để sửa trực tiếp trên bảng
         tblModel = new javax.swing.table.DefaultTableModel(new Object[]{"Mã NCC", "Tên nhà cung cấp"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; 
             }
         };
-        jTableSach1.setModel(tblModel);
-        
-        // Chỉnh kích thước cột (Cột Mã nhỏ lại, cột Tên phình to ra)
+        jTableSach1.setModel(tblModel);        
         jTableSach1.getColumnModel().getColumn(0).setPreferredWidth(100);
         jTableSach1.getColumnModel().getColumn(0).setMaxWidth(150);
         jTableSach1.getColumnModel().getColumn(1).setPreferredWidth(400);
-
-        // Tranh thủ style lại bảng cho đẹp giống SachPanel
         jTableSach1.setRowHeight(30);
         jTableSach1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
     }
         private void bindEvents() {
-        // 1. Sự kiện click chọn 1 dòng trên bảng NCC
         jTableSach1.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = jTableSach1.getSelectedRow();
-                // Kiểm tra xem có dòng nào được chọn không và index có hợp lệ không
                 if (selectedRow >= 0 && selectedRow < currentList.size()) {
-                    currentSelected = currentList.get(selectedRow);
-                    
-                    // Hiển thị thông tin lên Form bên phải
+                    currentSelected = currentList.get(selectedRow);                  
                     jTextFieldMaNCC.setText(String.valueOf(currentSelected.getIdNCC()));
                     jTextTenNCC.setText(currentSelected.getTenNCC());
                 } else {
@@ -74,7 +64,6 @@ public class NCCPanel extends javax.swing.JPanel {
             }
         });
 
-        // 2. Cảm biến Live Search: Tự động chạy khi có thay đổi chữ trong ô Textfield
         jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
@@ -85,11 +74,9 @@ public class NCCPanel extends javax.swing.JPanel {
         });
     }
 
-    // 2. Hàm lấy dữ liệu từ DB đổ lên bảng
     public void loadDataToTable() {
-        tblModel.setRowCount(0); // Xóa trắng dữ liệu cũ
+        tblModel.setRowCount(0);
         try {
-            // ĐÃ SỬA TẠI ĐÂY: Phải gán dữ liệu vào biến currentList của class
             currentList = nccBUS.getAll(); 
             
             for (com.libracoreteam.libracore.model.NCC ncc : currentList) {
@@ -102,18 +89,15 @@ public class NCCPanel extends javax.swing.JPanel {
             javax.swing.JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu: " + e.getMessage(), "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }
-    // Động cơ Live Search cho NCC
+
     private void thucHienTimKiem() {
         String keyword = jTextFieldTimKiem.getText();
         if (keyword != null) {
             keyword = keyword.trim();
         }
 
-        // Nếu ô tìm kiếm rỗng hoặc đang là chữ placeholder "Tìm kiếm..."
         if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
-            loadDataToTable(); // Load lại toàn bộ dữ liệu
-            
-            // Xóa trắng form thông tin
+            loadDataToTable(); 
             jTableSach1.clearSelection();
             jTextFieldMaNCC.setText("");
             jTextTenNCC.setText("");
@@ -122,10 +106,7 @@ public class NCCPanel extends javax.swing.JPanel {
         }
 
         try {
-            // Gọi BUS để tìm kiếm
             currentList = nccBUS.search(keyword);
-            
-            // Xóa dữ liệu cũ trên bảng và đổ dữ liệu mới vào
             tblModel.setRowCount(0);
             for (com.libracoreteam.libracore.model.NCC ncc : currentList) {
                 tblModel.addRow(new Object[]{
@@ -133,8 +114,6 @@ public class NCCPanel extends javax.swing.JPanel {
                     ncc.getTenNCC()
                 });
             }
-            
-            // Xóa trắng các ô textfield bên phải sau khi bảng thay đổi
             jTableSach1.clearSelection();
             jTextFieldMaNCC.setText("");
             jTextTenNCC.setText("");
@@ -145,17 +124,12 @@ public class NCCPanel extends javax.swing.JPanel {
         }
     }
 
-    // 3. Hàm bắt sự kiện khi click vào một dòng trong bảng
         private void addTableListener() {
         jTableSach1.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = jTableSach1.getSelectedRow();
-                // Kiểm tra xem có dòng nào được chọn không và index có hợp lệ không
                 if (selectedRow >= 0 && selectedRow < currentList.size()) {
-                    // Cập nhật biến currentSelected giống như bên TacGia
                     currentSelected = currentList.get(selectedRow);
-                    
-                    // Hiển thị thông tin lên Form bên phải
                     jTextFieldMaNCC.setText(String.valueOf(currentSelected.getIdNCC()));
                     jTextTenNCC.setText(currentSelected.getTenNCC());
                 } else {
@@ -167,11 +141,6 @@ public class NCCPanel extends javax.swing.JPanel {
 
   
         
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -365,11 +334,7 @@ public class NCCPanel extends javax.swing.JPanel {
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLamMoiActionPerformed
         jTextFieldTimKiem.setText("Tìm kiếm...");
-        
-        // Load lại toàn bộ dữ liệu từ DB
         loadDataToTable();
-        
-        // Bỏ chọn bảng và làm sạch form thông tin
         jTableSach1.clearSelection();
         jTextFieldMaNCC.setText("");
         jTextTenNCC.setText("");
@@ -379,11 +344,9 @@ public class NCCPanel extends javax.swing.JPanel {
     private void jButtonThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonThemActionPerformed
         java.awt.Window owner = javax.swing.SwingUtilities.getWindowAncestor(this);
     
-    // 2. Mở hộp thoại Thêm NCC (Truyền thêm tham số true để khóa màn hình nền)
     com.libracoreteam.libracore.gui.dialog.ThemNCCDialog dialog = new com.libracoreteam.libracore.gui.dialog.ThemNCCDialog(owner, true);
     dialog.setVisible(true); 
-    
-    // 3. Sau khi hộp thoại đóng lại, kiểm tra xem đã thêm thành công chưa
+
     System.out.println("Dialog Thêm nhà cung cắp đã đóng, tiến hành reload lại bảng...");
     }//GEN-LAST:event_jButtonThemActionPerformed
 
@@ -392,7 +355,7 @@ public class NCCPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextFieldMaNCCActionPerformed
 
     private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXoaActionPerformed
-                // TODO add your handling code here:                                        
+                                      
         if (currentSelected == null) {
             javax.swing.JOptionPane.showMessageDialog(this, 
                     "Vui lòng chọn một nhà cung cấp trên bảng để xóa!", 
@@ -401,7 +364,6 @@ public class NCCPanel extends javax.swing.JPanel {
             return;
         }
 
-        // 2. Hiện hộp thoại xác nhận xóa
         int choice = javax.swing.JOptionPane.showConfirmDialog(
                 this,
                 "Bạn có chắc chắn muốn xóa (ngừng hoạt động) nhà cung cấp:\n\"" + currentSelected.getTenNCC() + "\" không?",
@@ -410,7 +372,6 @@ public class NCCPanel extends javax.swing.JPanel {
                 javax.swing.JOptionPane.QUESTION_MESSAGE
         );
 
-        // 3. Nếu chọn YES thì tiến hành gọi BUS để xóa
         if (choice == javax.swing.JOptionPane.YES_OPTION) {
             try {
                 boolean isDeleted = nccBUS.softDelete(currentSelected.getIdNCC());
@@ -434,7 +395,7 @@ public class NCCPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonXoaActionPerformed
 
     private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuaActionPerformed
-        // TODO add your handling code here:
+
         if (currentSelected == null) {
             javax.swing.JOptionPane.showMessageDialog(this, 
                     "Vui lòng chọn một nhà cung cấp trên bảng để sửa!", 
@@ -443,15 +404,12 @@ public class NCCPanel extends javax.swing.JPanel {
             return;
         }
 
-        // 2. Lấy Frame cha và mở hộp thoại Sửa
         java.awt.Window owner = javax.swing.SwingUtilities.getWindowAncestor(this);
         com.libracoreteam.libracore.gui.dialog.SuaNCCDialog dialog = 
                 new com.libracoreteam.libracore.gui.dialog.SuaNCCDialog((java.awt.Frame) owner, true, currentSelected);
         
-        // Hiển thị hộp thoại Sửa
         dialog.setVisible(true); 
 
-        // 3. Sau khi tắt hộp thoại, tải lại dữ liệu và xóa trắng form
         loadDataToTable();
         jTextFieldMaNCC.setText("");
         jTextTenNCC.setText("");
@@ -460,23 +418,23 @@ public class NCCPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonSuaActionPerformed
 
     private void jTextFieldTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemActionPerformed
-        // TODO add your handling code here:
+
         thucHienTimKiem();
     }//GEN-LAST:event_jTextFieldTimKiemActionPerformed
 
     private void jTextFieldTimKiemFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemFocusGained
-        // TODO add your handling code here:
-        if (jTextFieldTimKiem.getText().equals("Tìm kiếm...")) { // Chữ "Tìm kiếm..." phải khớp y hệt chữ bạn đang để trên giao diện
+
+        if (jTextFieldTimKiem.getText().equals("Tìm kiếm...")) { 
         jTextFieldTimKiem.setText("");
-        jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); // Đổi màu chữ thành đen đậm khi người dùng bắt đầu gõ
+        jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); 
     }
     }//GEN-LAST:event_jTextFieldTimKiemFocusGained
 
     private void jTextFieldTimKiemFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldTimKiemFocusLost
-        // TODO add your handling code here:
+
         if (jTextFieldTimKiem.getText().trim().isEmpty()) {
-        jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); // Đổi màu chữ thành xám mờ
-        jTextFieldTimKiem.setText("Tìm kiếm..."); // Hiện lại chữ mặc định
+        jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); 
+        jTextFieldTimKiem.setText("Tìm kiếm...");
     }
     }//GEN-LAST:event_jTextFieldTimKiemFocusLost
 

@@ -13,12 +13,12 @@ import java.time.ZoneId;
 import java.util.Date;
 
 public class SuaTacGiaDialog extends JDialog {
-    // ===== Fields =====
+
     private JTextField txtTenTacGia;
     private JSpinner spnNgaySinh;
     private JTextField txtNoiSinh;
     private JTextField txtSDT;
-    private JCheckBox chkHoatDong; // Form sửa phải có thêm cái này
+    private JCheckBox chkHoatDong; 
     
     private JButton btnLuu;
     private JButton btnHuy;
@@ -30,7 +30,7 @@ public class SuaTacGiaDialog extends JDialog {
         super(parent, "Sửa thông tin tác giả", modal);
         this.currentTacGia = tacGia;
         initComponents();
-        loadDataToForm(); // Đổ dữ liệu cũ lên form
+        loadDataToForm(); 
     }
 
     private void initComponents() {
@@ -42,12 +42,10 @@ public class SuaTacGiaDialog extends JDialog {
                 )
         );
 
-        // ===== Tên tác giả =====
         txtTenTacGia = new JTextField(25);
         formPanel.add(new JLabel("Tên tác giả:"));
         formPanel.add(txtTenTacGia);
 
-        // ===== Ngày sinh =====
         SpinnerDateModel dateModel = new SpinnerDateModel();
         spnNgaySinh = new JSpinner(dateModel);
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
@@ -56,22 +54,18 @@ public class SuaTacGiaDialog extends JDialog {
         formPanel.add(new JLabel("Ngày sinh:"));
         formPanel.add(spnNgaySinh);
 
-        // ===== Nơi sinh =====
         txtNoiSinh = new JTextField(25);
         formPanel.add(new JLabel("Nơi sinh:"));
         formPanel.add(txtNoiSinh);
 
-        // ===== Số điện thoại =====
         txtSDT = new JTextField(15);
         formPanel.add(new JLabel("Số điện thoại:"));
         formPanel.add(txtSDT);
 
-        // ===== Trạng thái hoạt động =====
         chkHoatDong = new JCheckBox("Còn hoạt động");
         formPanel.add(new JLabel("Trạng thái:"));
         formPanel.add(chkHoatDong);
 
-        // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         btnLuu = new JButton("Cập nhật");
         btnHuy = new JButton("Hủy");
@@ -95,7 +89,6 @@ public class SuaTacGiaDialog extends JDialog {
         setResizable(false);
     }
 
-    // Hàm này hút dữ liệu từ object truyền vào đắp lên giao diện
     private void loadDataToForm() {
         if (currentTacGia == null) return;
         
@@ -117,7 +110,6 @@ public class SuaTacGiaDialog extends JDialog {
             return;
         }
 
-        // Cập nhật lại Object hiện tại
         currentTacGia.setTenTacGia(tenTacGia);
         currentTacGia.setNoiSinh(txtNoiSinh.getText().trim());
         currentTacGia.setSdt(txtSDT.getText().trim());
@@ -126,8 +118,7 @@ public class SuaTacGiaDialog extends JDialog {
         Date selectedDate = (Date) spnNgaySinh.getValue();
         LocalDate ngaySinh = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         currentTacGia.setNgaySinh(ngaySinh);
-        
-        // Gọi DAO để UPDATE
+
         TacGiaDAO tacGiaDAO = new TacGiaDAO();
         if (tacGiaDAO.update(currentTacGia)) {
             isSaved = true;

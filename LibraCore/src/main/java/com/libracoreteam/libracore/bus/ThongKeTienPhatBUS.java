@@ -16,7 +16,6 @@ public class ThongKeTienPhatBUS {
     
     private final ThongKeTienPhatDAO dao = new ThongKeTienPhatDAO();
 
-    // Trả về List<Object[]>: [id_PhieuPhat, NgayLap, LyDoPhat, TrangThai, TienPhatPhaiNop]
     public List<Object[]> getThongKeTienPhat(LocalDate from, LocalDate to) {
         return dao.getThongKeTienPhat(from, to);
     }

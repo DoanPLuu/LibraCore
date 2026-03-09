@@ -23,7 +23,6 @@ public class TacGiaDAO {
             "SELECT " + COL_ID + ", " + COL_TEN + ", " + COL_NGAY_SINH + ", " + COL_NOI_SINH + ", " + COL_SDT + ", " + COL_HOAT_DONG +
             " FROM " + TABLE;
 
-    //Phần đọc
 
     public List<TacGia> getActive() {
         String sql = BASE_SELECT +
@@ -33,7 +32,6 @@ public class TacGiaDAO {
         return queryList(sql, ps -> ps.setBoolean(1, true));
     }
 
-// Sửa lại hàm getAll để chỉ lấy Tác giả đang hoạt động
     public List<TacGia> getAll() {
         String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 ORDER BY " + COL_TEN + " ASC";
         return queryList(sql, null);
@@ -55,8 +53,6 @@ public class TacGiaDAO {
             throw new RuntimeException("TacGiaDAO.getById failed", e);
         }
     }
-
-    //phần ghi
 
     public boolean insert(TacGia tacGia) {
         String sql =
@@ -135,8 +131,6 @@ public class TacGiaDAO {
         }
     }
 
-    //phần tìm kiếm check này nọ
-
     public List<TacGia> searchActive(String keyword) {
         String sql = BASE_SELECT +
                 " WHERE " + COL_HOAT_DONG + " = ? " +
@@ -151,7 +145,7 @@ public class TacGiaDAO {
             ps.setString(4, k);
         });
     }
-// Sửa lại hàm search để chỉ tìm Tác giả đang hoạt động
+    
     public List<TacGia> search(String keyword) {
         String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 AND (" + COL_ID + " LIKE ? OR " + COL_TEN + " LIKE ?) ORDER BY " + COL_TEN + " ASC";
 
@@ -189,7 +183,7 @@ public class TacGiaDAO {
         }
     }
 
-    //helper
+
 
     private List<TacGia> queryList(String sql, SQLConsumer<PreparedStatement> binder) {
         List<TacGia> list = new ArrayList<>();
@@ -216,8 +210,6 @@ public class TacGiaDAO {
         TacGia tacGia = new TacGia();
         tacGia.setIdTacGia(rs.getInt(COL_ID));
         tacGia.setTenTacGia(rs.getString(COL_TEN));
-        
-        // Xử lý LocalDate conversion (có thể NULL)
         Date ngaySinhDate = rs.getDate(COL_NGAY_SINH);
         tacGia.setNgaySinh(ngaySinhDate != null ? ngaySinhDate.toLocalDate() : null);
         

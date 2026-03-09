@@ -4,10 +4,6 @@
  */
 package com.libracoreteam.libracore.gui.dialog;
 
-/**
- *
- * @author Sang
- */
 import com.libracoreteam.libracore.bus.TheLoaiBUS;
 import com.libracoreteam.libracore.model.TheLoai;
 import javax.swing.*;

@@ -66,23 +66,20 @@ public class TacGiaPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu tác giả!");
         }
     }
-    
-    // Động cơ Live Search
+
     private void thucHienTimKiem() {
         String keyword = jTextFieldTimKiem.getText();
         if (keyword != null) keyword = keyword.trim();
 
-        // Nếu ô tìm kiếm rỗng hoặc là chữ mặc định
         if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
             loadData();
             return;
         }
 
         try {
-            // Gọi BUS để tìm kiếm
+
             currentList = bus.search(keyword);
-            
-            // Xóa dữ liệu cũ và đổ dữ liệu mới lên bảng
+
             tblModel.setRowCount(0);
             for (TacGia tg : currentList) {
                 tblModel.addRow(new Object[]{
@@ -93,8 +90,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
                     tg.getSdt() != null ? tg.getSdt() : "",
                 });
             }
-            
-            // Làm sạch các ô điền thông tin bên phải sau khi tìm
+
             jTableSach.clearSelection();
             jTextFieldMaTacGia.setText("");
             jTextFieldTenTacGia.setText("");
@@ -109,7 +105,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
     }
 
     private void bindEvents() {
-        // Sự kiện click bảng
         jTableSach.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && jTableSach.getSelectedRow() != -1) {
                 currentSelected = currentList.get(jTableSach.getSelectedRow());
@@ -120,8 +115,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
                 jTextFieldSDTTacGia.setText(currentSelected.getSdt() != null ? currentSelected.getSdt() : "");
             }
         });
-        
-        // Cảm biến Live Search
+
         jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) { thucHienTimKiem(); }
@@ -135,13 +129,13 @@ public class TacGiaPanel extends javax.swing.JPanel {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 if (jTextFieldTimKiem.getText().equals("Tìm kiếm...")) {
                     jTextFieldTimKiem.setText("");
-                    jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); // Chữ đen khi gõ
+                    jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); 
                 }
             }
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
                 if (jTextFieldTimKiem.getText().trim().isEmpty()) {
-                    jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); // Trả lại chữ xám
+                    jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); 
                     jTextFieldTimKiem.setText("Tìm kiếm...");
                 }
             }
@@ -161,8 +155,8 @@ public class TacGiaPanel extends javax.swing.JPanel {
         jPanelNutThem = new javax.swing.JPanel();
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
-        jButtonSua = new javax.swing.JButton(); // Khai báo nút Sửa
-        jButtonXoa = new javax.swing.JButton(); // Khai báo nút Xóa
+        jButtonSua = new javax.swing.JButton(); 
+        jButtonXoa = new javax.swing.JButton(); 
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -213,7 +207,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
 
         jPanelCongCu.add(jPanelTimKiem, java.awt.BorderLayout.WEST);
 
-        // Gắn 4 nút: Xuất - Thêm - Sửa - Xóa
         jButtonXuat.setText("Xuất");
         jButtonXuat.setPreferredSize(new java.awt.Dimension(90, 40));
         jButtonXuat.addActionListener(this::jButtonXuatActionPerformed);
@@ -353,8 +346,7 @@ public class TacGiaPanel extends javax.swing.JPanel {
         dialog.setVisible(true);
         loadData(); 
     }
-    
-    // Sự kiện Nút Sửa
+
     private void jButtonSuaActionPerformed(java.awt.event.ActionEvent evt) {
         if (currentSelected == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một tác giả trên bảng để sửa!");
@@ -366,7 +358,6 @@ public class TacGiaPanel extends javax.swing.JPanel {
         loadData(); 
     }
 
-    // Sự kiện Nút Xóa
     private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {
         if (currentSelected == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một tác giả trên bảng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -391,11 +382,9 @@ public class TacGiaPanel extends javax.swing.JPanel {
                 }
                 
                 JOptionPane.showMessageDialog(this, "Đã xoá (ngừng hoạt động) tác giả thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                
-                // Tải lại bảng
+
                 loadData(); 
-                
-                // Clear form
+
                 jTableSach.clearSelection();
                 jTextFieldMaTacGia.setText("");
                 jTextFieldTenTacGia.setText("");
@@ -449,13 +438,10 @@ public class TacGiaPanel extends javax.swing.JPanel {
     }
     
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {
-// Trả ô tìm kiếm về mặc định
         jTextFieldTimKiem.setText("Tìm kiếm...");
-        
-        // Tải lại toàn bộ dữ liệu
+
         loadData();
-        
-        // Làm sạch form bên phải
+
         jTableSach.clearSelection();
         jTextFieldMaTacGia.setText("");
         jTextFieldTenTacGia.setText("");
