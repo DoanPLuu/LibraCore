@@ -35,11 +35,8 @@ public class ThongKeTienPhatPanel extends JPanel {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public ThongKeTienPhatPanel() {
-        // Cài đặt Layout y hệt Mượn Trả
         setLayout(new BorderLayout(0, 0));
         setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-
-        // ── Toolbar (Thanh công cụ chứa Ngày và Nút) ─────────────────────────
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         toolbar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0xDDDDDD)));
 
@@ -55,8 +52,6 @@ public class ThongKeTienPhatPanel extends JPanel {
         dateTo.setDate(Date.valueOf(today));
         dateTo.setPreferredSize(new Dimension(120, 32));
         dateTo.setDateFormatString("dd/MM/yyyy");
-
-        // Nút Thống kê màu xanh dương đậm y hệt form Mượn Trả
         btnThongKe = new JButton("Thống kê");
         btnThongKe.setPreferredSize(new Dimension(100, 32));
         btnThongKe.setBackground(new Color(0x1565C0));
@@ -71,8 +66,6 @@ public class ThongKeTienPhatPanel extends JPanel {
         toolbar.add(btnThongKe);
 
         add(toolbar, BorderLayout.NORTH);
-
-        // ── Chart (Biểu đồ) ───────────────────────────────────────────────────
         dataset = new DefaultCategoryDataset();
         chart = ChartFactory.createBarChart(
                 "Biểu đồ Thống kê Tiền phạt", null, "Số tiền (VNĐ)", dataset,
@@ -81,31 +74,25 @@ public class ThongKeTienPhatPanel extends JPanel {
         styleChart(chart);
         chartPanel = new ChartPanel(chart);
         chartPanel.setMouseWheelEnabled(true);
-
-        // ── Table (Bảng dữ liệu) ──────────────────────────────────────────────
         tblModel = new DefaultTableModel(
                 new Object[]{"Mã Phiếu phạt", "Ngày lập", "Lý do phạt", "Trạng thái", "Tổng tiền phạt"}, 0) {
             @Override
             public boolean isCellEditable(int row, int col) { return false; }
         };
         table = new JTable(tblModel);
-        table.setRowHeight(28); // Chiều cao hàng chuẩn giống Mượn Trả
+        table.setRowHeight(28); 
         table.getTableHeader().setReorderingAllowed(false);
         table.setFillsViewportHeight(true);
 
         JScrollPane tableScroll = new JScrollPane(table);
-
-        // ── SplitPane (Thanh kéo chia đôi màn hình 60-40) ────────────────────
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, chartPanel, tableScroll);
         splitPane.setResizeWeight(0.60);
         splitPane.setDividerSize(6);
         splitPane.setBorder(null);
 
         add(splitPane, BorderLayout.CENTER);
-
-        // ── Events ───────────────────────────────────────────────────────────
         btnThongKe.addActionListener(e -> runThongKe());
-        runThongKe(); // Chạy luôn lần đầu khi mở form
+        runThongKe();
     }
 
     private void runThongKe() {

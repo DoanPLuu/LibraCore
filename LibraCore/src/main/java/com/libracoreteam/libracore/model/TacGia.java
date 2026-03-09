@@ -38,8 +38,6 @@ public class TacGia {
         this.sdt = sdt;
         this.hoatDong = true;
     }
-    
-    // Getters và Setters
     public int getIdTacGia() {
         return idTacGia;
     }

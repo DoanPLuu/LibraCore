@@ -4,10 +4,6 @@
  */
 package com.libracoreteam.libracore.dao;
 
-/**
- *
- * @author Sang
- */
 import com.libracoreteam.libracore.util.DBConnection;
 import java.sql.Connection;
 import java.sql.Date;
@@ -19,10 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThongKeTienPhatDAO {
-
-    /**
-     * Lấy danh sách Phiếu Phạt theo khoảng ngày và Trạng Thái
-     */
     public List<Object[]> getThongKeTienPhat(LocalDate from, LocalDate to) {
         String sql = "SELECT id_PhieuPhat, NgayLap, LyDoPhat, TrangThai, TienPhatPhaiNop " +
                      "FROM PhieuPhat " +

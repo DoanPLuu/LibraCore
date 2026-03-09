@@ -39,8 +39,6 @@ public class ThongKeMuonTraPanel extends JPanel {
     public ThongKeMuonTraPanel() {
         setLayout(new BorderLayout(0, 0));
         setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-
-        // ── Toolbar ──────────────────────────────────────────────────────────
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         toolbar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0xDDDDDD)));
 
@@ -71,8 +69,6 @@ public class ThongKeMuonTraPanel extends JPanel {
         toolbar.add(btnThongKe);
 
         add(toolbar, BorderLayout.NORTH);
-
-        // ── Chart ─────────────────────────────────────────────────────────────
         dataset = new DefaultCategoryDataset();
         chart = ChartFactory.createBarChart(
                 "Thống kê Số Sách Mượn & Trả", null, "Số lượng sách", dataset,
@@ -81,8 +77,6 @@ public class ThongKeMuonTraPanel extends JPanel {
         styleChart(chart);
         chartPanel = new ChartPanel(chart);
         chartPanel.setMouseWheelEnabled(true);
-
-        // ── Table ─────────────────────────────────────────────────────────────
         tblModel = new DefaultTableModel(
                 new Object[]{"Mã Phiếu", "Tên độc giả", "Số lượng sách", "Ngày mượn", "Ngày trả", "Trạng thái"}, 0) {
             @Override
@@ -101,8 +95,6 @@ public class ThongKeMuonTraPanel extends JPanel {
         splitPane.setBorder(null);
 
         add(splitPane, BorderLayout.CENTER);
-
-        // ── Events ───────────────────────────────────────────────────────────
         btnThongKe.addActionListener(e -> runThongKe());
         runThongKe();
     }
@@ -133,8 +125,6 @@ public class ThongKeMuonTraPanel extends JPanel {
 
     private void updateChart(List<Object[]> rows, LocalDate from, LocalDate to, String title) {
         dataset.clear();
-        
-        // Chỉ dùng 2 biến tổng thay vì chia theo từng ngày
         int tongDangMuon = 0;
         int tongDaTra = 0;
 
@@ -143,25 +133,19 @@ public class ThongKeMuonTraPanel extends JPanel {
             java.sql.Date sqlNgayTra = (java.sql.Date) row[3];
             String trangThai = (String) row[4];
             int soLuongSach = (Integer) row[5]; 
-
-            // 1. Chỉ sách Đang Mượn / Quá Hạn -> Quét theo Ngày Mượn
             if (("DangMuon".equals(trangThai) || "QuaHen".equals(trangThai)) && sqlNgayMuon != null) {
                 LocalDate d = sqlNgayMuon.toLocalDate();
                 if (!d.isBefore(from) && !d.isAfter(to)) {
-                    tongDangMuon += soLuongSach; // Cộng dồn vào biến tổng
+                    tongDangMuon += soLuongSach;
                 }
             }
-            
-            // 2. Chỉ sách Đã Trả -> Quét theo Ngày Trả
             if ("DaTra".equals(trangThai) && sqlNgayTra != null) {
                 LocalDate d = sqlNgayTra.toLocalDate();
                 if (!d.isBefore(from) && !d.isAfter(to)) {
-                    tongDaTra += soLuongSach; // Cộng dồn vào biến tổng
+                    tongDaTra += soLuongSach;
                 }
             }
         }
-
-        // Đưa 2 cột tổng lên biểu đồ, gộp chung vào 1 nhóm "Tổng cộng"
         String label = "Tổng cộng";
         dataset.addValue(tongDangMuon, "Số sách đang mượn", label);
         dataset.addValue(tongDaTra, "Số sách đã trả", label);
@@ -196,16 +180,12 @@ public class ThongKeMuonTraPanel extends JPanel {
         plot.setRangeGridlinePaint(new Color(0xE0E0E0));
 
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
-        
-        // ĐÃ CHỈNH SỬA: Tăng độ rộng cột lên (0.2) để cột to hơn vì bây giờ chỉ có 2 cột
         renderer.setMaximumBarWidth(0.20); 
         renderer.setItemMargin(0.05); 
         
-        renderer.setSeriesPaint(0, new Color(0x2196F3)); // Xanh dương cho Đang mượn
-        renderer.setSeriesPaint(1, new Color(0x4CAF50)); // Xanh lá cho Đã trả
-
+        renderer.setSeriesPaint(0, new Color(0x2196F3)); 
+        renderer.setSeriesPaint(1, new Color(0x4CAF50)); 
         CategoryAxis domainAxis = plot.getDomainAxis();
-        // ĐÃ CHỈNH SỬA: Hiển thị lại chữ ở trục X (Chữ "Tổng cộng")
         domainAxis.setTickLabelsVisible(true);
         domainAxis.setTickLabelFont(new Font("Segoe UI", Font.BOLD, 14));
 

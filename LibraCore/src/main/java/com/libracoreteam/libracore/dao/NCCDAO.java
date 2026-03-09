@@ -11,16 +11,10 @@ public class NCCDAO {
     private static final String TABLE = "ncc";
     private static final String COL_ID = "id_NCC";
     private static final String COL_TEN = "TenNCC";
-    
-    // ĐÃ SỬA: Dùng đúng tên cột HoatDong trong CSDL của bạn
     private static final String COL_HOAT_DONG = "HoatDong"; 
-
     private static final String BASE_SELECT = "SELECT " + COL_ID + ", " + COL_TEN + " FROM " + TABLE;
 
-    /* ==================== ĐỌC DỮ LIỆU (READ) ==================== */
-
     public List<NCC> getAll() {
-        // Chỉ lấy những NCC có HoatDong = 1 (ẩn những cái đã xóa)
         String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 ORDER BY " + COL_TEN + " ASC";
         return queryList(sql, null);
     }
@@ -43,7 +37,6 @@ public class NCCDAO {
     }
 
     public List<NCC> search(String keyword) {
-        // Tìm kiếm theo Mã và Tên, chỉ tìm những cái đang hoạt động
         String sql = BASE_SELECT + " WHERE " + COL_HOAT_DONG + " = 1 AND (" + COL_ID + " LIKE ? OR " + COL_TEN + " LIKE ?) ORDER BY " + COL_TEN + " ASC";
 
         return queryList(sql, ps -> {
@@ -56,9 +49,7 @@ public class NCCDAO {
             }
         });
     }
-
-    /* ==================== GHI DỮ LIỆU (WRITE) ==================== */
-
+    
     public boolean insert(NCC ncc) {
         String sql = "INSERT INTO " + TABLE + " (" + COL_TEN + ", " + COL_HOAT_DONG + ") VALUES (?, 1)";
 
@@ -83,7 +74,6 @@ public class NCCDAO {
     }
 
     public boolean update(com.libracoreteam.libracore.model.NCC ncc) {
-        // ĐÃ SỬA LỖI SAO LƯU: WHERE id_NCC = ? (thay vì MaNCC)
         String sql = "UPDATE " + TABLE + " SET " + COL_TEN + " = ? WHERE " + COL_ID + " = ?";
 
         try (java.sql.Connection conn = com.libracoreteam.libracore.util.DBConnection.getConnection();
@@ -100,7 +90,6 @@ public class NCCDAO {
     }
 
     public boolean softDelete(int id) {
-        // ĐÃ SỬA LỖI XÓA MỀM: Đổi thành HoatDong = 0
         String sql = "UPDATE " + TABLE + " SET " + COL_HOAT_DONG + " = 0 WHERE " + COL_ID + " = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -114,8 +103,6 @@ public class NCCDAO {
             throw new RuntimeException("NCCDAO.softDelete failed", e);
         }
     }
-
-    /* ==================== KIỂM TRA (VALIDATION) ==================== */
 
     public boolean existsByName(String tenNCC, int excludeId) {
         String sql = "SELECT 1 FROM " + TABLE + " WHERE " + COL_TEN + " = ? AND " + COL_HOAT_DONG + " = 1 AND " + COL_ID + " <> ?";
@@ -135,7 +122,6 @@ public class NCCDAO {
         }
     }
 
-    /* ==================== HÀM PHỤ TRỢ (HELPERS) ==================== */
 
     private List<NCC> queryList(String sql, SQLConsumer<PreparedStatement> binder) {
         List<NCC> list = new ArrayList<>();
