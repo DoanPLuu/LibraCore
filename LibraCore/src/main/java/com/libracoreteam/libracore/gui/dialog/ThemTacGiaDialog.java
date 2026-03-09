@@ -7,7 +7,6 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 
 public class ThemTacGiaDialog extends JDialog {
@@ -35,12 +34,10 @@ public class ThemTacGiaDialog extends JDialog {
         txtTenTacGia = new JTextField(25);
         formPanel.add(new JLabel("Tên tác giả:"));
         formPanel.add(txtTenTacGia);
-
-        SpinnerDateModel dateModel = new SpinnerDateModel();
+        SpinnerDateModel dateModel = new SpinnerDateModel(new Date(), null, null, java.util.Calendar.DAY_OF_MONTH);
         spnNgaySinh = new JSpinner(dateModel);
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spnNgaySinh, "dd/MM/yyyy");
         spnNgaySinh.setEditor(dateEditor);
-        spnNgaySinh.setValue(new Date()); 
         
         formPanel.add(new JLabel("Ngày sinh:"));
         formPanel.add(spnNgaySinh);
@@ -90,6 +87,10 @@ public class ThemTacGiaDialog extends JDialog {
         java.time.LocalDate ngaySinh = selectedDate.toInstant()
                 .atZone(java.time.ZoneId.systemDefault())
                 .toLocalDate();
+        if (ngaySinh.isAfter(LocalDate.now())) {
+            JOptionPane.showMessageDialog(this, "Không được nhập quá so với ngày hiện tại!", "Lỗi ngày sinh", JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
 
         com.libracoreteam.libracore.model.TacGia tacGia = new com.libracoreteam.libracore.model.TacGia(tenTacGia, ngaySinh, noiSinh, sdt);
         com.libracoreteam.libracore.dao.TacGiaDAO tacGiaDAO = new com.libracoreteam.libracore.dao.TacGiaDAO();
@@ -101,4 +102,3 @@ public class ThemTacGiaDialog extends JDialog {
         }
     }
 }
-
