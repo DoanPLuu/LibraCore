@@ -126,11 +126,17 @@ public class ThanhVienDialog extends JDialog {
                 msg = docGiaBUS.updateDocGia(docGiaEdit);
             }
 
-            JOptionPane.showMessageDialog(this, msg);
             if (msg.contains("thành công")) {
+                JOptionPane.showMessageDialog(this, msg);
                 isSuccess = true;
                 dispose();
+            }else if(msg.contains("thất bại")){
+                JOptionPane.showMessageDialog(this, msg, "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(this, msg, "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
+           
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Có lỗi xảy ra trong quá trình lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }

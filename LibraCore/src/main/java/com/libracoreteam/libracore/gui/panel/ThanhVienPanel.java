@@ -36,7 +36,7 @@ public class ThanhVienPanel extends JPanel {
         setBackground(Color.WHITE);
 
         JPanel pnlTop = new JPanel(new BorderLayout());
-        pnlTop.setBackground(new Color(255, 153, 153)); // Nền đỏ nhạt đồng bộ hệ thống
+        pnlTop.setBackground(new Color(255, 153, 153));
 
         JPanel pnlCongCu = new JPanel(new BorderLayout());
         pnlCongCu.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
