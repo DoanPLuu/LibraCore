@@ -1,12 +1,15 @@
 package com.libracoreteam.libracore.gui.dialog;
 
+import com.libracoreteam.libracore.bus.NhanVienBUS;
 import com.libracoreteam.libracore.bus.PhieuNhapBUS;
 import com.libracoreteam.libracore.dao.NCCDAO;
 import com.libracoreteam.libracore.dao.SachDAO;
 import com.libracoreteam.libracore.model.ChiTietPhieuNhap;
 import com.libracoreteam.libracore.model.NCC;
+import com.libracoreteam.libracore.model.NhanVien;
 import com.libracoreteam.libracore.model.PhieuNhap;
 import com.libracoreteam.libracore.model.Sach;
+import com.libracoreteam.libracore.util.UserSession;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -41,11 +44,12 @@ import net.miginfocom.swing.MigLayout;
 
 public class TaoPhieuNhapDialog extends JDialog {
 
-    private static final int MOCK_NHAN_VIEN_ID = 1;
-
     private final PhieuNhapBUS phieuNhapBUS = new PhieuNhapBUS();
     private final SachDAO sachDAO = new SachDAO();
     private final NCCDAO nccDAO = new NCCDAO();
+    private final NhanVienBUS nhanVienBUS = new NhanVienBUS();
+
+    private NhanVien currentNhanVien; // nhân viên đang đăng nhập
 
     private boolean saved = false;
     private boolean isUpdatingTotals = false;
@@ -79,9 +83,17 @@ public class TaoPhieuNhapDialog extends JDialog {
     }
 
     private void initComponents() {
+        // Lấy nhân viên hiện tại từ UserSession
+        int idTaiKhoan = UserSession.getInstance().getIdTaiKhoan();
+        currentNhanVien = nhanVienBUS.getByIdTaiKhoan(idTaiKhoan);
+
         txtNhanVien = new JTextField(20);
         txtNhanVien.setEditable(false);
-        txtNhanVien.setText("Nhân viên #" + MOCK_NHAN_VIEN_ID);
+        if (currentNhanVien != null) {
+            txtNhanVien.setText(currentNhanVien.getTenNhanVien());
+        } else {
+            txtNhanVien.setText("(Không tìm thấy nhân viên)");
+        }
 
         cbxNCC = new JComboBox<>();
         loadNCC();
@@ -119,7 +131,7 @@ public class TaoPhieuNhapDialog extends JDialog {
         btnThemSach = new JButton("Thêm vào phiếu");
         btnThemSach.addActionListener(e -> addSelectedSachToTable());
 
-        String[] cols = {"STT", "Tên sách", "Số lượng", "Đơn giá nhập", "Thành tiền", "Hành động"};
+        String[] cols = { "STT", "Tên sách", "Số lượng", "Đơn giá nhập", "Thành tiền", "Hành động" };
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -191,7 +203,8 @@ public class TaoPhieuNhapDialog extends JDialog {
                     return;
                 }
                 int col = e.getColumn();
-                if (col == 3 || col == 4 || col == TableModelEvent.ALL_COLUMNS || e.getType() == TableModelEvent.DELETE) {
+                if (col == 3 || col == 4 || col == TableModelEvent.ALL_COLUMNS
+                        || e.getType() == TableModelEvent.DELETE) {
                     updateTongs();
                 }
             }
@@ -223,6 +236,15 @@ public class TaoPhieuNhapDialog extends JDialog {
         for (Sach s : results) {
             cbxKetQuaTimKiem.addItem(s);
         }
+        cbxKetQuaTimKiem.setSelectedIndex(0);
+    }
+
+    /** Reset toàn bộ thanh tìm kiếm về trạng thái ban đầu. */
+    private void clearSearchBar() {
+        txtTimKiem.setText("");
+        cbxKetQuaTimKiem.removeAllItems(); // xóa items trong model
+        cbxKetQuaTimKiem.setSelectedItem(null); // buộc renderer reset
+        txtTimKiem.requestFocus();
     }
 
     private void addSelectedSachToTable() {
@@ -252,10 +274,7 @@ public class TaoPhieuNhapDialog extends JDialog {
         };
         tableModel.addRow(rowData);
 
-        txtTimKiem.setText("");
-        cbxKetQuaTimKiem.removeAllItems();
-        txtTimKiem.requestFocus();
-
+        clearSearchBar();
         updateTongs();
     }
 
@@ -332,11 +351,16 @@ public class TaoPhieuNhapDialog extends JDialog {
                 tongSoLuong += soLuong;
             }
 
+            if (currentNhanVien == null) {
+                throw new IllegalArgumentException(
+                        "Không xác định được nhân viên đăng nhập. Vui lòng đăng xuất và đăng nhập lại.");
+            }
+
             NCC ncc = (NCC) cbxNCC.getSelectedItem();
             PhieuNhap phieuNhap = new PhieuNhap();
             phieuNhap.setIdNCC(ncc == null ? null : ncc.getIdNCC());
             phieuNhap.setNgayNhap(LocalDate.now());
-            phieuNhap.setIdNhanVien(MOCK_NHAN_VIEN_ID);
+            phieuNhap.setIdNhanVien(currentNhanVien.getIdNhanVien());
             phieuNhap.setSoLuongSach(tongSoLuong);
             phieuNhap.setTrangThai("DaNhap");
 
@@ -407,7 +431,7 @@ public class TaoPhieuNhapDialog extends JDialog {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-                                                       int row, int column) {
+                int row, int column) {
             return this;
         }
     }
@@ -428,7 +452,8 @@ public class TaoPhieuNhapDialog extends JDialog {
         }
 
         @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+                int column) {
             this.row = row;
             return button;
         }

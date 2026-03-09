@@ -54,7 +54,7 @@ public class SachBUS {
         String k = keyword != null ? keyword.trim() : "";
         return sachDAO.searchActive(k);
     }
-    
+
     public List<Sach> searchByTacGia(String keyword) {
         String k = keyword != null ? keyword.trim() : "";
         return sachDAO.searchByTacGia(k);
@@ -69,17 +69,20 @@ public class SachBUS {
     }
 
     public List<TheLoai> getTheLoaiActive() {
-        // Đổi thành getAll() vì hàm này ở DAO đã được thiết lập để chỉ lấy dữ liệu đang hoạt động
-        return theLoaiDAO.getAll(); 
+        // Đổi thành getAll() vì hàm này ở DAO đã được thiết lập để chỉ lấy dữ liệu đang
+        // hoạt động
+        return theLoaiDAO.getAll();
     }
 
     public List<Integer> getTacGiaIdsBySach(int idSach) {
-        if (idSach <= 0) return new ArrayList<>();
+        if (idSach <= 0)
+            return new ArrayList<>();
         return sachDAO.getTacGiaIdsBySach(idSach);
     }
 
     public List<Integer> getTheLoaiIdsBySach(int idSach) {
-        if (idSach <= 0) return new ArrayList<>();
+        if (idSach <= 0)
+            return new ArrayList<>();
         return sachDAO.getTheLoaiIdsBySach(idSach);
     }
 
@@ -92,8 +95,7 @@ public class SachBUS {
             String soTrangText,
             String moTa,
             List<Integer> tacGiaIds,
-            List<Integer> theLoaiIds
-    ) {
+            List<Integer> theLoaiIds) {
         tenSach = safeTrim(tenSach);
         moTa = safeTrim(moTa);
 
@@ -129,8 +131,7 @@ public class SachBUS {
             String moTa,
             boolean hoatDong,
             List<Integer> tacGiaIds,
-            List<Integer> theLoaiIds
-    ) {
+            List<Integer> theLoaiIds) {
         if (idSach <= 0) {
             throw new IllegalArgumentException("ID sách không hợp lệ");
         }
@@ -175,8 +176,7 @@ public class SachBUS {
             Integer soTrang,
             String moTa,
             List<Integer> tacGiaIds,
-            List<Integer> theLoaiIds
-    ) {
+            List<Integer> theLoaiIds) {
         if (tenSach == null || tenSach.isEmpty()) {
             throw new IllegalArgumentException("Tên sách không được để trống");
         }
@@ -191,8 +191,8 @@ public class SachBUS {
 
         if (namXB != null) {
             int current = Year.now().getValue();
-            if (namXB < 1500 || namXB > current + 1) {
-                throw new IllegalArgumentException("Năm xuất bản không hợp lệ");
+            if (namXB < 1901 || namXB > current + 1) {
+                throw new IllegalArgumentException("Năm xuất bản phải từ 1901 đến " + (current + 1));
             }
         }
 
@@ -226,13 +226,15 @@ public class SachBUS {
     }
 
     private static Integer normalizeNullableFk(Integer id) {
-        if (id == null) return null;
+        if (id == null)
+            return null;
         return id > 0 ? id : null;
     }
 
     private static Integer parseNullableInt(String text, String fieldName) {
         String s = safeTrim(text);
-        if (s == null || s.isEmpty()) return null;
+        if (s == null || s.isEmpty())
+            return null;
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
@@ -241,11 +243,14 @@ public class SachBUS {
     }
 
     private static List<Integer> normalizeIds(List<Integer> ids) {
-        if (ids == null || ids.isEmpty()) return new ArrayList<>();
+        if (ids == null || ids.isEmpty())
+            return new ArrayList<>();
         Set<Integer> set = new LinkedHashSet<>();
         for (Integer id : ids) {
-            if (id == null) continue;
-            if (id > 0) set.add(id);
+            if (id == null)
+                continue;
+            if (id > 0)
+                set.add(id);
         }
         return new ArrayList<>(set);
     }

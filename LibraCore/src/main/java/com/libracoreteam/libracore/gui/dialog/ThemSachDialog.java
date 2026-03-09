@@ -16,18 +16,16 @@ import java.util.List;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
-
 public class ThemSachDialog extends JDialog {
 
     private final SachBUS sachBUS = new SachBUS();
     private boolean saved = false;
     private int createdId = -1;
 
- // ===== Field cơ bản =====
+    // ===== Field cơ bản =====
     private JTextField txtTenSach;
     private JTextField txtNamXB;
     private JTextField txtSoTrang;
-
 
     private JTextArea txtMoTa;
 
@@ -54,10 +52,8 @@ public class ThemSachDialog extends JDialog {
                 new MigLayout(
                         "wrap 2, insets 15, gapx 10, gapy 8",
                         "[right][grow, fill]",
-                        "[]"
-                )
-        );
-        
+                        "[]"));
+
         int iconSize = 16;
 
         // ===== Tên sách =====
@@ -114,8 +110,7 @@ public class ThemSachDialog extends JDialog {
         JScrollPane spMoTa = new JScrollPane(
                 txtMoTa,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-        );
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         formPanel.add(new JLabel("Mô tả:"));
         formPanel.add(spMoTa, "hmin 100");
@@ -158,8 +153,7 @@ public class ThemSachDialog extends JDialog {
                     txtSoTrang.getText(),
                     txtMoTa.getText(),
                     tacGiaIds,
-                    theLoaiIds
-            );
+                    theLoaiIds);
 
             saved = true;
             createdId = created.getIdSach();
@@ -170,6 +164,7 @@ public class ThemSachDialog extends JDialog {
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         } catch (RuntimeException ex) {
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage());
         }
     }
@@ -220,9 +215,11 @@ public class ThemSachDialog extends JDialog {
 
     private static List<Integer> toIdList(List<CheckListItem> items) {
         List<Integer> ids = new ArrayList<>();
-        if (items == null) return ids;
+        if (items == null)
+            return ids;
         for (CheckListItem it : items) {
-            if (it != null && it.getId() > 0) ids.add(it.getId());
+            if (it != null && it.getId() > 0)
+                ids.add(it.getId());
         }
         return ids;
     }
