@@ -27,8 +27,6 @@ public class LoginPanel extends JPanel {
         setLayout(new GridLayout(1, 2));
 
 
-        // BÊN TRÁI: TEXT CHÀO MỪNG
-
         JPanel leftPanel = new JPanel(new GridBagLayout());
         leftPanel.setOpaque(false);
         GridBagConstraints gbcLeft = new GridBagConstraints();
@@ -51,8 +49,6 @@ public class LoginPanel extends JPanel {
 
         add(leftPanel);
 
-
-        // BÊN PHẢI: FORM ĐĂNG NHẬP.
 
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setOpaque(false);
@@ -110,7 +106,6 @@ public class LoginPanel extends JPanel {
                 return;
             }
 
-            // Gọi thẳng xuống BUS để xử lý
             TaiKhoanBUS bus = new TaiKhoanBUS();
             String loginResult = bus.checkLogin(user, passChars);
 
@@ -121,7 +116,7 @@ public class LoginPanel extends JPanel {
                 case "WRONG_PASS":
                     JOptionPane.showMessageDialog(this,
                             "Sai tài khoản hoặc mật khẩu!", "Lỗi đăng nhập", JOptionPane.ERROR_MESSAGE);
-                    txtPass.setText(""); // Xóa ô mật khẩu để nhập lại
+                    txtPass.setText(""); 
                     txtPass.requestFocus();
                     break;
                 case "LOCKED":

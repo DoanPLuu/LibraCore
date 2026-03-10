@@ -1,16 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- *
- * @author luuis
- */
+
 public class PhieuMuon {
   private int idPhieuMuon;
   private Integer idNhanVien;
@@ -48,7 +42,6 @@ public class PhieuMuon {
     this.tongSoSachMuon = tongSoSachMuon;
   }
 
-  // Getters và Setters (bao gồm tongSoSachMuon)
   public int getIdPhieuMuon() {
     return idPhieuMuon;
   }
@@ -137,7 +130,6 @@ public class PhieuMuon {
     this.lyDoHuy = lyDoHuy;
   }
 
-  // Utility methods
   public boolean isDangMuon() {
     return "DangMuon".equals(trangThai);
   }

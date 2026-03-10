@@ -1,15 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
 public class CuonSach {
     private int idCuonSach;
     private int idSach;
     private String maCuonSach;
-    private String tinhTrangSach; // Enum: Tot, Hong, Mat
-    private String trangThaiMuon; // Enum: Ranh, DangMuon
+    private String tinhTrangSach; 
+    private String trangThaiMuon; 
     private Boolean daHuy;
     private Integer idChiTietPhieuNhap;
     
@@ -34,7 +31,6 @@ public class CuonSach {
         this.daHuy = false;
     }
     
-     // Getters
     public int getIdCuonSach() {
         return idCuonSach;
     }
@@ -65,7 +61,6 @@ public class CuonSach {
 
     
     
-    // Setters
     public void setIdCuonSach(int idCuonSach) {
         this.idCuonSach = idCuonSach;
     }
@@ -102,7 +97,6 @@ public class CuonSach {
         this.daHuy = daHuy;
     }
     
-    // Utility methods
     public boolean isRanh() {
         return "Ranh".equals(trangThaiMuon);
     }

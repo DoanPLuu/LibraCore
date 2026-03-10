@@ -135,7 +135,7 @@ public class MucPhatDAO {
     mp.setLoaiPhat(rs.getString("LoaiPhat"));
     mp.setSoTienPhat(rs.getBigDecimal("SoTienPhat"));
     mp.setMoTa(rs.getString("MoTa"));
-    mp.setHoatDong(rs.getBoolean("HoatDong"));//
+    mp.setHoatDong(rs.getBoolean("HoatDong"));
     return mp;
   }
 }

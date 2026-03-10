@@ -79,13 +79,13 @@ public class TheLoaiPanel extends javax.swing.JPanel {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 if (jTextFieldTimKiem.getText().equals("Tìm kiếm...")) {
                     jTextFieldTimKiem.setText("");
-                    jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); // Chữ đen khi gõ
+                    jTextFieldTimKiem.setForeground(new java.awt.Color(0, 0, 0)); 
                 }
             }
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
                 if (jTextFieldTimKiem.getText().trim().isEmpty()) {
-                    jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153)); // Trả lại chữ xám
+                    jTextFieldTimKiem.setForeground(new java.awt.Color(153, 153, 153));
                     jTextFieldTimKiem.setText("Tìm kiếm...");
                 }
             }
@@ -106,7 +106,6 @@ public class TheLoaiPanel extends javax.swing.JPanel {
         jButtonXuat = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         
-        // Khởi tạo nút Sửa và Xóa
         jButtonSua = new javax.swing.JButton();
         jButtonXoa = new javax.swing.JButton();
 

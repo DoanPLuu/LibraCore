@@ -30,7 +30,6 @@ public class SachDAO {
     private static final String COL_ID_TACGIA = "id_TacGia";
     private static final String COL_ID_THELOAI = "id_TheLoai";
 
-    /* ==================== READ (bảng Sach) ==================== */
 
     public List<Sach> getActive() {
         String sql =
@@ -90,7 +89,6 @@ public class SachDAO {
         }
     }
 
-    /* ==================== WRITE (bảng Sach) ==================== */
 
     public boolean insert(Sach s) {
         String sql =
@@ -151,7 +149,6 @@ public class SachDAO {
         }
     }
 
-    /* ==================== SEARCH / CHECK ==================== */
 
     public List<Sach> searchActive(String keyword) {
         String sql =
@@ -180,7 +177,6 @@ public class SachDAO {
     }
     
     public List<Sach> searchByTacGia(String keyword) {
-        // Lệnh SQL kết hợp 3 bảng: Sach, Sach_TacGia, TacGia
         String sql = 
                 "SELECT DISTINCT s.id_Sach, s.id_NXB, s.NamXuatBan, s.TenSach, s.MoTa, s.SoTrang, s.HoatDong " +
                 "FROM Sach s " +
@@ -228,7 +224,6 @@ public class SachDAO {
         }
     }
 
-    /* ==================== MANY-TO-MANY (ids) ==================== */
 
     public List<Integer> getTacGiaIdsBySach(int idSach) {
         String sql = "SELECT id_TacGia FROM Sach_TacGia WHERE id_Sach = ? ORDER BY id_TacGia ASC";
@@ -252,7 +247,6 @@ public class SachDAO {
             boolean oldAutoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
             try {
-                // 1) Insert Sach
                 try (PreparedStatement ps = conn.prepareStatement(sqlInsertSach, Statement.RETURN_GENERATED_KEYS)) {
                     bindSachForUpsert(ps, s, false);
                     if (ps.executeUpdate() == 0) {
@@ -268,7 +262,6 @@ public class SachDAO {
                     }
                 }
 
-                // 2) Insert relations
                 replaceTacGiaForSach(conn, s.getIdSach(), tgIds);
                 replaceTheLoaiForSach(conn, s.getIdSach(), tlIds);
 
@@ -309,7 +302,6 @@ public class SachDAO {
             boolean oldAutoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
             try {
-                // 1) Update Sach
                 try (PreparedStatement ps = conn.prepareStatement(sqlUpdateSach)) {
                     bindSachForUpsert(ps, s, true);
                     if (ps.executeUpdate() == 0) {
@@ -318,7 +310,6 @@ public class SachDAO {
                     }
                 }
 
-                // 2) Replace relations
                 replaceTacGiaForSach(conn, s.getIdSach(), tgIds);
                 replaceTheLoaiForSach(conn, s.getIdSach(), tlIds);
 
@@ -341,14 +332,11 @@ public class SachDAO {
         }
     }
 
-    /* ==================== HELPERS ==================== */
 
     private void bindSachForUpsert(PreparedStatement ps, Sach s, boolean includeIdAtEnd) throws SQLException {
-        // id_NXB (nullable)
         if (s.getIdNXB() == null) ps.setNull(1, Types.INTEGER);
         else ps.setInt(1, s.getIdNXB());
 
-        // NamXuatBan (YEAR) -> Integer (nullable)
         if (s.getNamXuatBan() == null) ps.setNull(2, Types.INTEGER);
         else ps.setInt(2, s.getNamXuatBan());
 
@@ -369,11 +357,9 @@ public class SachDAO {
         Sach s = new Sach();
         s.setIdSach(rs.getInt(COL_ID));
 
-        // id_NXB nullable
         int idNXB = rs.getInt(COL_ID_NXB);
         s.setIdNXB(rs.wasNull() ? null : idNXB);
 
-        // NamXuatBan (YEAR) nullable
         int nam = rs.getInt(COL_NAM_XB);
         s.setNamXuatBan(rs.wasNull() ? null : nam);
 

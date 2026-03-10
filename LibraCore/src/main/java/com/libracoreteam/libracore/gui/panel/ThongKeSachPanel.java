@@ -37,13 +37,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.imageio.ImageIO;
 
-/**
- * Panel thống kê sách theo ngày.
- * Layout hoàn toàn bằng code tay, không dùng NetBeans Form Editor.
- */
 public class ThongKeSachPanel extends JPanel {
 
-    // ─── Loại thống kê ──────────────────────────────────────────────────────
     private static final String[] LOAI_THONG_KE = {
             "Tổng số sách",
             "Sách đang mượn",
@@ -51,15 +46,13 @@ public class ThongKeSachPanel extends JPanel {
             "Sách hỏng / mất"
     };
 
-    // Màu tương ứng từng loại (chart bar color)
     private static final Color[] BAR_COLORS = {
-            new Color(0x2196F3), // xanh dương — Tổng số sách
-            new Color(0x4CAF50), // xanh lá — Đang mượn
-            new Color(0xFF9800), // cam — Nhập kho
-            new Color(0xF44336), // đỏ — Hỏng/mất
+            new Color(0x2196F3), 
+            new Color(0x4CAF50), 
+            new Color(0xFF9800), 
+            new Color(0xF44336),
     };
 
-    // ─── Components ─────────────────────────────────────────────────────────
     private final JDateChooser dateFrom;
     private final JDateChooser dateTo;
     private final JComboBox<String> comboLoai;
@@ -78,12 +71,10 @@ public class ThongKeSachPanel extends JPanel {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FMT_SHORT = DateTimeFormatter.ofPattern("dd/MM");
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
     public ThongKeSachPanel() {
         setLayout(new BorderLayout(0, 0));
         setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
-        // ── Toolbar ──────────────────────────────────────────────────────────
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         toolbar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0xDDDDDD)));
 
@@ -127,7 +118,6 @@ public class ThongKeSachPanel extends JPanel {
 
         add(toolbar, BorderLayout.NORTH);
 
-        // ── Chart ─────────────────────────────────────────────────────────────
         dataset = new DefaultCategoryDataset();
         chart = ChartFactory.createBarChart(
                 "Thống kê",
@@ -142,7 +132,6 @@ public class ThongKeSachPanel extends JPanel {
         chartPanel = new ChartPanel(chart);
         chartPanel.setMouseWheelEnabled(true);
 
-        // ── Table ─────────────────────────────────────────────────────────────
         tblModel = new DefaultTableModel(
                 new Object[] { "Tên sách", "Thể loại", "Số lượng", "Ngày" }, 0) {
             @Override
@@ -157,7 +146,6 @@ public class ThongKeSachPanel extends JPanel {
         table.getTableHeader().setResizingAllowed(true);
         table.setFillsViewportHeight(true);
 
-        // set col widths
         table.getColumnModel().getColumn(0).setPreferredWidth(250);
         table.getColumnModel().getColumn(1).setPreferredWidth(180);
         table.getColumnModel().getColumn(2).setPreferredWidth(80);
@@ -165,7 +153,6 @@ public class ThongKeSachPanel extends JPanel {
 
         JScrollPane tableScroll = new JScrollPane(table);
 
-        // ── SplitPane chart + table ───────────────────────────────────────────
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, chartPanel, tableScroll);
         splitPane.setResizeWeight(0.60);
         splitPane.setDividerSize(6);
@@ -173,15 +160,12 @@ public class ThongKeSachPanel extends JPanel {
 
         add(splitPane, BorderLayout.CENTER);
 
-        // ── Events ───────────────────────────────────────────────────────────
         btnThongKe.addActionListener(e -> runThongKe());
         btnXuatPDF.addActionListener(e -> exportPDF());
 
-        // Load mặc định
         runThongKe();
     }
 
-    // ─── Export PDF ──────────────────────────────────────────────────────────
 
     private void exportPDF() {
         if (tblModel.getRowCount() == 0) {
@@ -208,8 +192,6 @@ public class ThongKeSachPanel extends JPanel {
             PdfWriter.getInstance(doc, new FileOutputStream(file));
             doc.open();
 
-            // ── Font Unicode (hỗ trợ tiếng Việt) ────────────────────────────
-            // Thử Arial trước, fallback sang DejaVu nếu không tìm thấy
             String[] fontPaths = {
                     "C:/Windows/Fonts/arial.ttf",
                     "C:/Windows/Fonts/Arial.ttf",
@@ -255,7 +237,6 @@ public class ThongKeSachPanel extends JPanel {
             sub.setSpacingAfter(12);
             doc.add(sub);
 
-            // ── Biểu đồ ──────────────────────────────────────────────────────
             int chartW = 750, chartH = 350;
             BufferedImage chartImg = chart.createBufferedImage(chartW, chartH);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -268,13 +249,11 @@ public class ThongKeSachPanel extends JPanel {
 
             doc.add(Chunk.NEWLINE);
 
-            // ── Bảng dữ liệu ─────────────────────────────────────────────────
             int colCount = tblModel.getColumnCount();
             PdfPTable pdfTable = new PdfPTable(colCount);
             pdfTable.setWidthPercentage(100);
             pdfTable.setSpacingBefore(10);
 
-            // Header row
             BaseColor headerBg = new BaseColor(0x15, 0x65, 0xC0);
             for (int c = 0; c < colCount; c++) {
                 PdfPCell cell = new PdfPCell(new Phrase(tblModel.getColumnName(c), headerFont));
@@ -285,7 +264,6 @@ public class ThongKeSachPanel extends JPanel {
                 pdfTable.addCell(cell);
             }
 
-            // Data rows
             for (int r = 0; r < tblModel.getRowCount(); r++) {
                 BaseColor rowBg = (r % 2 == 0) ? BaseColor.WHITE : new BaseColor(0xF5, 0xF5, 0xF5);
                 for (int c = 0; c < colCount; c++) {
@@ -300,7 +278,6 @@ public class ThongKeSachPanel extends JPanel {
 
             doc.add(pdfTable);
 
-            // ── Footer ───────────────────────────────────────────────────────
             doc.add(Chunk.NEWLINE);
             com.itextpdf.text.Font footFont = new com.itextpdf.text.Font(bf, 8, com.itextpdf.text.Font.ITALIC,
                     BaseColor.GRAY);
@@ -328,7 +305,6 @@ public class ThongKeSachPanel extends JPanel {
         }
     }
 
-    // ─── Core logic ──────────────────────────────────────────────────────────
 
     private void runThongKe() {
         LocalDate from = getDateFrom();
@@ -406,7 +382,6 @@ public class ThongKeSachPanel extends JPanel {
         }
     }
 
-    // ─── Chart styling ───────────────────────────────────────────────────────
 
     private void styleChart(JFreeChart c, int colorIdx) {
         c.setBackgroundPaint(Color.WHITE);
@@ -418,21 +393,18 @@ public class ThongKeSachPanel extends JPanel {
         plot.setRangeGridlinePaint(new Color(0xE0E0E0));
         plot.setOutlineVisible(false);
 
-        // Renderer
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
         renderer.setMaximumBarWidth(0.08);
         renderer.setSeriesPaint(0, BAR_COLORS[colorIdx]);
         renderer.setShadowVisible(false);
         renderer.setDrawBarOutline(false);
 
-        // Category axis
         CategoryAxis domainAxis = plot.getDomainAxis();
         domainAxis.setVisible(rows() > 0);
         domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         domainAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 10));
         domainAxis.setLabel("Tên sách");
 
-        // Value axis
         plot.getRangeAxis().setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
         plot.getRangeAxis().setLabel("Số lượng");
     }
@@ -441,7 +413,6 @@ public class ThongKeSachPanel extends JPanel {
         return dataset.getColumnCount();
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────────────────
 
     private LocalDate getDateFrom() {
         java.util.Date d = dateFrom.getDate();

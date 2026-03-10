@@ -1,20 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
-/**
- *
- * @author luuis
- */
+
 public class TaiKhoan {
     private int idTaiKhoan;
     private int idVaiTro;
     private String taiKhoan;
     private String matKhau;
     
-    // Quan hệ (optional)
     private VaiTro vaiTro;
     
     public TaiKhoan() {
@@ -33,7 +26,6 @@ public class TaiKhoan {
         this.matKhau = matKhau;
     }
     
-    // Getters
     public int getIdTaiKhoan() {
         return idTaiKhoan;
     }
@@ -54,7 +46,6 @@ public class TaiKhoan {
         return vaiTro;
     }
     
-    // Setters
     public void setIdTaiKhoan(int idTaiKhoan) {
         this.idTaiKhoan = idTaiKhoan;
     }
@@ -77,7 +68,6 @@ public class TaiKhoan {
     
     @Override
     public String toString() {
-        // Không in password vì lý do bảo mật
         return "TaiKhoan{" +
                 "idTaiKhoan=" + idTaiKhoan +
                 ", taiKhoan='" + taiKhoan + '\'' +

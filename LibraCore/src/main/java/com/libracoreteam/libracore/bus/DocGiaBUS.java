@@ -17,10 +17,11 @@ public class DocGiaBUS {
         if (docGia.getNgaySinh().isAfter(java.time.LocalDate.now())) {
             return "Ngày sinh không được ở tương lai!";
         }
-        if(docGia.getSdt()==null || !docGia.getSdt().matches("\\d{10,11}")) return "Số điện thoại không đúng mẫu";
+        if(docGia.getSdt()==null || !docGia.getSdt().matches("^0\\d{9}$")) return "Số điện thoại không đúng mẫu";
         if (docGia.getEmail() != null && !docGia.getEmail().contains("@")) {
             return "Email không đúng định dạng!";
         }
+        if(docGia.getDiaChi()==null || docGia.getDiaChi().trim().isEmpty()) return "Địa chỉ không được bỏ trống";
         if(docGiaDAO.insert(docGia)){
             return "Thêm thành công";
         }else return "Thêm thất bại, lỗi hệ thống!";
@@ -41,13 +42,13 @@ public class DocGiaBUS {
         if(docGia.getTenDocGia()==null || docGia.getTenDocGia().trim().isEmpty()){
             return "Tên độc giả không được để trống";
         }
-        if (docGia.getSdt() != null && !docGia.getSdt().trim().isEmpty() && !docGia.getSdt().matches("\\d{10,11}")) {
+        if (docGia.getSdt() == null || docGia.getSdt().trim().isEmpty() || !docGia.getSdt().matches("^0\\d{9}$")) {
             return "Số điện thoại không đúng mẫu";
         }
         if (docGiaDAO.update(docGia)) {
             return "Cập nhật thành công!";
         } else {
-            return "Cập nhật thất bại, có thể độc giả không tồn tại!";
+            return "Cập nhật thất bại, lỗi hệ thống";
         }
     }
 }

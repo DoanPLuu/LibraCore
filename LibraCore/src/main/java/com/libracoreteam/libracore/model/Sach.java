@@ -1,15 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
 import java.util.List;
 
-/**
- *
- * @author luuis
- */
+
 public class Sach {
     private int idSach;
     private Integer idNXB;
@@ -46,7 +40,6 @@ public class Sach {
         this.hoatDong = true;
     }
 
-    // getter
     public int getIdSach() {
         return idSach;
     }
@@ -83,7 +76,6 @@ public class Sach {
         return nhaXuatBan;
     }
 
-    // setter
     public void setIdSach(int idSach) {
         this.idSach = idSach;
     }

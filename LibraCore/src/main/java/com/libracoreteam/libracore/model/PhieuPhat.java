@@ -1,17 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- *
- * @author luuis
- */
+
 public class PhieuPhat {
   private int idPhieuPhat;
   private LocalDate ngayLap;
@@ -21,7 +15,7 @@ public class PhieuPhat {
   private int idNhanVien;
   private String tenDocGia;
 
-  // Quan hệ (optional)
+  
   private List<ChiTietPhieuPhat> chiTiet;
   private NhanVien nhanVien;
 
@@ -47,7 +41,6 @@ public class PhieuPhat {
     this.idNhanVien = idNhanVien;
   }
 
-  // Getters
   public int getIdPhieuPhat() {
     return idPhieuPhat;
   }
@@ -80,7 +73,6 @@ public class PhieuPhat {
     return nhanVien;
   }
 
-  // Setters
   public void setIdPhieuPhat(int idPhieuPhat) {
     this.idPhieuPhat = idPhieuPhat;
   }
@@ -121,7 +113,6 @@ public class PhieuPhat {
     this.tenDocGia = tenDocGia;
   }
 
-  // Utility methods
   public boolean isDaThu() {
     return "DaThu".equals(trangThai);
   }

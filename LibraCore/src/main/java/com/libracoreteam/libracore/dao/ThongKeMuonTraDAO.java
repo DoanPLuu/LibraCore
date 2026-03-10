@@ -19,7 +19,7 @@ public class ThongKeMuonTraDAO {
                      "    pm.NgayMuon, " +
                      "    (SELECT MAX(NgayTra) FROM chitietphieumuon WHERE id_PhieuMuon = pm.id_PhieuMuon) AS NgayTra, " +
                      "    pm.TrangThai, " +
-                     "    pm.TongSoSachMuon " + // 
+                     "    pm.TongSoSachMuon " + 
                      "FROM phieumuon pm " +
                      "LEFT JOIN thethanhvien ttv ON pm.id_TheThanhVien = ttv.id_TheThanhVien " +
                      "LEFT JOIN docgia dg ON ttv.id_DocGia = dg.id_DocGia " +

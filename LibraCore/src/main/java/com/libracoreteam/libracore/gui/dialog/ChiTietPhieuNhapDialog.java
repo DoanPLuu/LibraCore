@@ -44,7 +44,6 @@ public class ChiTietPhieuNhapDialog extends JDialog {
         setTitle("Chi tiết phiếu nhập #" + phieuNhap.getIdPhieuNhap());
         setLayout(new BorderLayout(6, 6));
 
-        // ===== Panel thông tin giống các dialog phiếu mượn/phạt =====
         JPanel infoPanel = new JPanel(new GridLayout(4, 2, 6, 4));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin phiếu nhập"));
 
@@ -95,7 +94,6 @@ public class ChiTietPhieuNhapDialog extends JDialog {
         bottomPanel.add(lblTongTien);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // ===== Nút đóng giống các dialog khác =====
         JButton btnDong = new JButton("Đóng");
         btnDong.addActionListener(e -> dispose());
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));

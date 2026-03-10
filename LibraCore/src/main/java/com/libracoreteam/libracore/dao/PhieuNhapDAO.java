@@ -118,7 +118,6 @@ public class PhieuNhapDAO {
                     Map<Integer, Integer> nextSeqBySach = new HashMap<Integer, Integer>();
 
                     for (ChiTietPhieuNhap ct : chiTietList) {
-                        // 2) Insert chi tiet phieu nhap va lay id_ChiTietPhieuNhap moi tao
                         psDetail.setInt(1, phieuNhap.getIdPhieuNhap());
                         psDetail.setInt(2, ct.getIdSach());
 
@@ -147,7 +146,6 @@ public class PhieuNhapDAO {
                             idChiTietPhieuNhap = keys.getInt(1);
                         }
 
-                        // 3) Nhap kho thuc te: tao ban sao trong bang CuonSach theo SoLuong tung dong chi tiet
                         int soLuong = (ct.getSoLuong() == null) ? 0 : ct.getSoLuong();
                         if (soLuong <= 0) {
                             continue;

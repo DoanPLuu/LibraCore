@@ -22,7 +22,6 @@ public class ThemSachDialog extends JDialog {
     private boolean saved = false;
     private int createdId = -1;
 
-    // ===== Field cơ bản =====
     private JTextField txtTenSach;
     private JTextField txtNamXB;
     private JTextField txtSoTrang;
@@ -31,7 +30,6 @@ public class ThemSachDialog extends JDialog {
 
     private JComboBox<IdNameItem> cboNXB;
 
-    // ===== Checkbox list =====
     private DefaultListModel<CheckListItem> tacGiaModel;
     private DefaultListModel<CheckListItem> theLoaiModel;
 
@@ -56,12 +54,10 @@ public class ThemSachDialog extends JDialog {
 
         int iconSize = 16;
 
-        // ===== Tên sách =====
         txtTenSach = new JTextField(25);
         formPanel.add(new JLabel("Tên sách:"));
         formPanel.add(txtTenSach);
 
-        // ===== Tác giả (checkbox list) =====
         tacGiaModel = new DefaultListModel<>();
         loadTacGiaToModel();
 
@@ -73,7 +69,6 @@ public class ThemSachDialog extends JDialog {
         formPanel.add(new JLabel("Tác giả:"));
         formPanel.add(spTacGia, "hmin 80");
 
-        // ===== Thể loại (checkbox list) =====
         theLoaiModel = new DefaultListModel<>();
         loadTheLoaiToModel();
 
@@ -85,24 +80,20 @@ public class ThemSachDialog extends JDialog {
         formPanel.add(new JLabel("Thể loại:"));
         formPanel.add(spTheLoai, "hmin 80");
 
-        // ===== Nhà xuất bản =====
         cboNXB = new JComboBox<>();
         loadNXBToCombo();
 
         formPanel.add(new JLabel("Nhà xuất bản:"));
         formPanel.add(cboNXB);
 
-        // ===== Năm xuất bản =====
         txtNamXB = new JTextField(10);
         formPanel.add(new JLabel("Năm xuất bản:"));
         formPanel.add(txtNamXB);
 
-        // ===== Số trang =====
         txtSoTrang = new JTextField(10);
         formPanel.add(new JLabel("Số trang:"));
         formPanel.add(txtSoTrang);
 
-        // ===== Mô tả =====
         txtMoTa = new JTextArea(4, 25);
         txtMoTa.setLineWrap(true);
         txtMoTa.setWrapStyleWord(true);
@@ -115,7 +106,6 @@ public class ThemSachDialog extends JDialog {
         formPanel.add(new JLabel("Mô tả:"));
         formPanel.add(spMoTa, "hmin 100");
 
-        // ===== Buttons =====
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         jButtonLuu = new JButton("Xác nhận");
         jButtonHuy = new JButton("Hủy");
@@ -128,7 +118,6 @@ public class ThemSachDialog extends JDialog {
         jButtonLuu.addActionListener(e -> onSave());
         jButtonHuy.addActionListener(e -> dispose());
 
-        // ===== Layout tổng =====
         setLayout(new BorderLayout());
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);

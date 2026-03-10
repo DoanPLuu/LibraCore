@@ -49,7 +49,7 @@ public class TaoPhieuNhapDialog extends JDialog {
     private final NCCDAO nccDAO = new NCCDAO();
     private final NhanVienBUS nhanVienBUS = new NhanVienBUS();
 
-    private NhanVien currentNhanVien; // nhân viên đang đăng nhập
+    private NhanVien currentNhanVien; 
 
     private boolean saved = false;
     private boolean isUpdatingTotals = false;
@@ -83,7 +83,6 @@ public class TaoPhieuNhapDialog extends JDialog {
     }
 
     private void initComponents() {
-        // Lấy nhân viên hiện tại từ UserSession
         int idTaiKhoan = UserSession.getInstance().getIdTaiKhoan();
         currentNhanVien = nhanVienBUS.getByIdTaiKhoan(idTaiKhoan);
 
@@ -239,11 +238,10 @@ public class TaoPhieuNhapDialog extends JDialog {
         cbxKetQuaTimKiem.setSelectedIndex(0);
     }
 
-    /** Reset toàn bộ thanh tìm kiếm về trạng thái ban đầu. */
     private void clearSearchBar() {
         txtTimKiem.setText("");
-        cbxKetQuaTimKiem.removeAllItems(); // xóa items trong model
-        cbxKetQuaTimKiem.setSelectedItem(null); // buộc renderer reset
+        cbxKetQuaTimKiem.removeAllItems(); 
+        cbxKetQuaTimKiem.setSelectedItem(null); 
         txtTimKiem.requestFocus();
     }
 
@@ -416,7 +414,6 @@ public class TaoPhieuNhapDialog extends JDialog {
         if (text.isEmpty()) {
             return BigDecimal.ZERO;
         }
-        // Cho phép nhập kiểu "10,000" để tránh lỗi format thường gặp.
         text = text.replace(",", "");
         return new BigDecimal(text);
     }

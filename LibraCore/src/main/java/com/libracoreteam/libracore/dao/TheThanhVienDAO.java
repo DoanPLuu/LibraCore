@@ -24,7 +24,7 @@ public class TheThanhVienDAO {
                 if(resultSet.getDate("NgayHetHan")!=null) theThanhVien.setNgayHetHan(resultSet.getDate("NgayHetHan").toLocalDate());
 
                 theThanhVien.setTrangThai(resultSet.getString("TrangThai"));
-                //
+                
                 list.add(theThanhVien);
             }
         }catch (SQLException e){
