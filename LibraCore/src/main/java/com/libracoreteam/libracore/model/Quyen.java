@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
-/**
- *
- * @author luuis
- */
+
 public class Quyen {
     private int idQuyen;
     private String tenQuyen;
@@ -24,7 +18,6 @@ public class Quyen {
         this.tenQuyen = tenQuyen;
     }
     
-    // Getters
     public int getIdQuyen() {
         return idQuyen;
     }
@@ -33,7 +26,6 @@ public class Quyen {
         return tenQuyen;
     }
     
-    // Setters
     public void setIdQuyen(int idQuyen) {
         this.idQuyen = idQuyen;
     }

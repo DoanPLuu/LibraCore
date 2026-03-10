@@ -8,7 +8,6 @@ import java.util.List;
 public class ThongKeBUS {
     private final ThongKeDAO thongKeDAO = new ThongKeDAO();
 
-    // ─── Dashboard summary ───────────────────────────────────────────────────
 
     public int getTongSoSach() {
         return thongKeDAO.getTongSoSach();
@@ -28,8 +27,6 @@ public class ThongKeBUS {
         return df.format(doanhThu) + " VNĐ";
     }
 
-    // ─── Thống kê theo ngày ─────────────────────────────────────────────────
-    // Trả về List<Object[]>: [TenSach, TheLoai, SoLuong, Ngay]
 
     public List<Object[]> getSachNhapKho(LocalDate from, LocalDate to) {
         return thongKeDAO.getSachNhapKho(from, to);

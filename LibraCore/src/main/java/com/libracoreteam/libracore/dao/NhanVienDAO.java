@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.dao;
 
 import com.libracoreteam.libracore.model.NhanVien;
@@ -16,11 +13,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author ASUS
- */
-public class NhanVienDAO implements IDAO<NhanVien> {
+
+public class NhanVienDAO  {
 
   private static final String COL_ID = "id_NhanVien";
   private static final String COL_ID_TK = "id_TaiKhoan";
@@ -74,7 +68,7 @@ public List<NhanVien> getActive() {
         return list.isEmpty() ? null : list.get(0);
     }
 
-  @Override
+  
   public boolean insert(NhanVien nv) {
     String sql = "INSERT INTO nhanvien (id_TaiKhoan, TenNhanVien, NgaySinh, DiaChi, SDT, Email, HoatDong, AnhNhanVien) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     try (Connection conn = DBConnection.getConnection();
@@ -94,7 +88,7 @@ public List<NhanVien> getActive() {
     }
   }
 
-  @Override
+
   public boolean update(NhanVien nv) {
     String sql = "UPDATE nhanvien SET id_TaiKhoan=?, TenNhanVien=?, NgaySinh=?, DiaChi=?, SDT=?, Email=?, HoatDong=?, AnhNhanVien=? WHERE id_NhanVien=?";
     try (Connection conn = DBConnection.getConnection();
@@ -118,7 +112,7 @@ public List<NhanVien> getActive() {
     }
   }
 
-  @Override
+  
   public boolean softDelete(int idNhanVien) {
     String sql = "UPDATE nhanvien SET HoatDong = ? WHERE id_NhanVien = ?";
     try (Connection conn = DBConnection.getConnection();

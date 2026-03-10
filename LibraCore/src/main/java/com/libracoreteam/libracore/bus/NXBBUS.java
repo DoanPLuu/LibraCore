@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.bus;
 
 import com.libracoreteam.libracore.dao.NXBDAO;
@@ -9,10 +6,7 @@ import com.libracoreteam.libracore.model.NXB;
 import static com.mysql.cj.util.StringUtils.safeTrim;
 import java.util.List;
 
-/**
- *
- * @author luuis
- */
+
 public class NXBBUS {
     private final NXBDAO nxbDAO;
     
@@ -61,7 +55,7 @@ public class NXBBUS {
         if (!ok) {
             throw new RuntimeException("Thêm NXB thất bại (không insert được)");
         }
-        return nxb; // đã có id sau khi insert
+        return nxb;
     }
     
     public boolean update(int id, String tenNXB, String diaChi, String sdt, boolean hoatDong) {
@@ -97,19 +91,16 @@ public class NXBBUS {
             throw new IllegalArgumentException("Tên NXB không được để trống");
         }
 
-        // Ví dụ check độ dài
         if (tenNXB.length() > 255) {
             throw new IllegalArgumentException("Tên NXB quá dài");
         }
 
         if (sdt != null && !sdt.isEmpty()) {
-            // Yêu cầu: Bắt đầu bằng số 0 (số 0 đầu tiên) + theo sau là đúng 9 chữ số nữa (tổng 10 số)
             if (!sdt.matches("0\\d{9}")) {
                 throw new IllegalArgumentException("Số điện thoại bắt buộc phải bắt đầu bằng số 0 và có đúng 10 chữ số!");
             }
         }
 
-        // Check trùng tên trong các NXB đang hoạt động
         if (nxbDAO.existsActiveByName(tenNXB, id)) {
             throw new IllegalArgumentException("Tên NXB đã tồn tại (đang hoạt động)");
         }

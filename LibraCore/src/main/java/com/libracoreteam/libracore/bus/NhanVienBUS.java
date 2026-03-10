@@ -66,7 +66,6 @@ public class NhanVienBUS {
         return uuTien;
     }
 
-    /* ==================== VALIDATION ==================== */
 
     private void validate(NhanVien nv) {
         if (nv == null)

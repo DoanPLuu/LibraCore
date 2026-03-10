@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package com.libracoreteam.libracore.gui.panel;
 
 import java.awt.Color;
@@ -351,7 +348,6 @@ public class NCCPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonThemActionPerformed
 
     private void jTextFieldMaNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMaNCCActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldMaNCCActionPerformed
 
     private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXoaActionPerformed
@@ -379,7 +375,6 @@ public class NCCPanel extends javax.swing.JPanel {
                 if (isDeleted) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Đã xóa nhà cung cấp thành công!");
                     
-                    // Tải lại bảng, xóa trắng form
                     loadDataToTable();
                     jTextFieldMaNCC.setText("");
                     jTextTenNCC.setText("");

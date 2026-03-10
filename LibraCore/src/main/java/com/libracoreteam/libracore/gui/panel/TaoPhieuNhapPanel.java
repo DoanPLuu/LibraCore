@@ -19,16 +19,13 @@ import net.miginfocom.swing.MigLayout;
 
 public class TaoPhieuNhapPanel extends JPanel {
 
-    // --- Components ---
-    // Top Panel (Form)
     private JPanel formPanel;
     private JTextField txtNhanVien;
-    private JComboBox<String> cbxNCC; // Update type later to NCC
+    private JComboBox<String> cbxNCC; 
     private JTextField txtNgayNhap;
     private JTextField txtTongSoLuong;
     private JTextField txtTongTien;
 
-    // Bottom Panel (Table & Search)
     private JPanel tablePanel;
     private JTextField txtTimKiem;
     private JButton btnThemSach;
@@ -42,13 +39,12 @@ public class TaoPhieuNhapPanel extends JPanel {
     }
 
     private void initComponents() {
-        // --- Form Components ---
         txtNhanVien = new JTextField(20);
         txtNhanVien.setEditable(false);
-        txtNhanVien.setText("Admin"); // Demo text, update later with logged in user
+        txtNhanVien.setText("Admin"); 
 
         cbxNCC = new JComboBox<>();
-        cbxNCC.addItem("Loading NCC..."); // Demo, load from DB later
+        cbxNCC.addItem("Loading NCC..."); 
 
         txtNgayNhap = new JTextField(20);
         txtNgayNhap.setEditable(false);
@@ -62,7 +58,6 @@ public class TaoPhieuNhapPanel extends JPanel {
         txtTongTien.setFont(txtTongTien.getFont().deriveFont(Font.BOLD, 14f));
         txtTongTien.setForeground(new Color(255, 51, 51));
 
-        // --- Table Components ---
         txtTimKiem = new JTextField(30);
         txtTimKiem.putClientProperty("JTextField.placeholderText", "Nhập tên sách để tìm kiếm...");
         
@@ -72,7 +67,6 @@ public class TaoPhieuNhapPanel extends JPanel {
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Cho phép sửa cột 1 (Mã), 3 (Số lượng), 4 (Đơn giá), 6 (Hành động/Xóa)
                 return column == 1 || column == 3 || column == 4 || column == 6; 
             }
         };
@@ -88,7 +82,6 @@ public class TaoPhieuNhapPanel extends JPanel {
     private void setupLayout() {
         setLayout(new BorderLayout(10, 10));
 
-        // --- Top Panel (MigLayout) ---
         formPanel = new JPanel(new MigLayout("wrap 4, insets 20", "[right][grow][right][grow]"));
         
         JLabel lblTitle = new JLabel("THÔNG TIN PHIẾU NHẬP");
@@ -110,17 +103,13 @@ public class TaoPhieuNhapPanel extends JPanel {
 
         add(formPanel, BorderLayout.NORTH);
 
-        // --- Bottom Panel (MigLayout) ---
         tablePanel = new JPanel(new MigLayout("insets 20, fill", "[grow][]", "[][grow][]"));
         
-        // Search line
         tablePanel.add(txtTimKiem, "split 2, growx");
         tablePanel.add(btnThemSach, "wrap");
         
-        // Table
         tablePanel.add(new JScrollPane(tblChiTiet), "span 2, grow, wrap, gaptop 10, gapbottom 10");
         
-        // Save line
         tablePanel.add(btnLuuPhiếu, "span 2, right, width 150!, height 40!");
 
         add(tablePanel, BorderLayout.CENTER);

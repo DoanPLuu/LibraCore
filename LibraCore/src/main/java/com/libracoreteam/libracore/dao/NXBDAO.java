@@ -21,7 +21,6 @@ public class NXBDAO {
             "SELECT " + COL_ID + ", " + COL_TEN + ", " + COL_DIA_CHI + ", " + COL_SDT + ", " + COL_HOAT_DONG +
             " FROM " + TABLE;
 
-    //Phần đọc
 
     public List<NXB> getActive() {
         String sql = BASE_SELECT +
@@ -52,8 +51,6 @@ public class NXBDAO {
             throw new RuntimeException("NXBDAO.getById failed", e);
         }
     }
-
-    //phần ghi
 
     public boolean insert(NXB nxb) {
         String sql =
@@ -129,8 +126,6 @@ public class NXBDAO {
         }
     }
 
-    //phần tìm kiếm check này nọ
-
     public List<NXB> searchActive(String keyword) {
         String sql = BASE_SELECT +
                 " WHERE " + COL_HOAT_DONG + " = ? " +
@@ -168,8 +163,6 @@ public class NXBDAO {
             throw new RuntimeException("NXBDAO.existsActiveByName failed", e);
         }
     }
-
-    //helper
 
     private List<NXB> queryList(String sql, SQLConsumer<PreparedStatement> binder) {
         List<NXB> list = new ArrayList<>();

@@ -1,23 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
 import java.time.LocalDate;
 import java.util.List;
-/**
- *
- * @author luuis
- */
+
 public class PhieuNhap {
      private int idPhieuNhap;
     private Integer idNCC;
     private LocalDate ngayNhap;
     private Integer soLuongSach;
-    private String loaiPhieuNhap; // "Mua", "Tang"
+    private String loaiPhieuNhap; 
     private int idNhanVien;
-    private String trangThai; // "DaNhap", "DaHuy", "ChuaNhap"
+    private String trangThai; 
     
     private List<ChiTietPhieuNhap> chiTiet;
     private NCC ncc;
@@ -47,7 +41,6 @@ public class PhieuNhap {
         this.trangThai = "ChuaNhap";
     }
     
-    // Getters
     public int getIdPhieuNhap() {
         return idPhieuNhap;
     }
@@ -84,7 +77,6 @@ public class PhieuNhap {
         return nhanVien;
     }
     
-    // Setters
     public void setIdPhieuNhap(int idPhieuNhap) {
         this.idPhieuNhap = idPhieuNhap;
     }
@@ -129,7 +121,6 @@ public class PhieuNhap {
         this.trangThai = trangThai;
     }
     
-    // Utility methods
     public boolean isDaNhap() {
         return "DaNhap".equals(trangThai);
     }

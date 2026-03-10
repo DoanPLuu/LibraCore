@@ -35,25 +35,21 @@ public class SuaThongTinDialog extends JDialog {
                 )
         );
 
-        // Số điện thoại
         jTextFieldSDT = new JTextField(25);
         jTextFieldSDT.setText(employee.getSdt() != null ? employee.getSdt() : "");
         formPanel.add(new JLabel("Số điện thoại:"));
         formPanel.add(jTextFieldSDT);
 
-        // Địa chỉ
         jTextFieldDiaChi = new JTextField(25);
         jTextFieldDiaChi.setText(employee.getDiaChi() != null ? employee.getDiaChi() : "");
         formPanel.add(new JLabel("Địa chỉ:"));
         formPanel.add(jTextFieldDiaChi);
 
-        // Email
         jTextFieldEmail = new JTextField(25);
         jTextFieldEmail.setText(employee.getEmail() != null ? employee.getEmail() : "");
         formPanel.add(new JLabel("Email:"));
         formPanel.add(jTextFieldEmail);
 
-        // Button Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
         jButtonOK = new JButton("Xác nhận");
@@ -69,7 +65,6 @@ public class SuaThongTinDialog extends JDialog {
         jButtonOK.addActionListener(e -> handleOK());
         jButtonCancel.addActionListener(e -> handleCancel());
 
-        // Layout tổng
         setLayout(new BorderLayout());
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);

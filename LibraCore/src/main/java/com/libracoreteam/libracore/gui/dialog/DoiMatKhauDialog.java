@@ -31,22 +31,18 @@ public class DoiMatKhauDialog extends JDialog {
                 )
         );
 
-        // Mật khẩu hiện tại
         jPasswordFieldOld = new JPasswordField(25);
         formPanel.add(new JLabel("Mật khẩu hiện tại:"));
         formPanel.add(jPasswordFieldOld);
 
-        // Mật khẩu mới
         jPasswordFieldNew = new JPasswordField(25);
         formPanel.add(new JLabel("Mật khẩu mới:"));
         formPanel.add(jPasswordFieldNew);
 
-        // Xác nhận mật khẩu
         jPasswordFieldConfirm = new JPasswordField(25);
         formPanel.add(new JLabel("Xác nhận mật khẩu:"));
         formPanel.add(jPasswordFieldConfirm);
 
-        // Button Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
         jButtonOK = new JButton("Xác nhận");
@@ -62,7 +58,6 @@ public class DoiMatKhauDialog extends JDialog {
         jButtonOK.addActionListener(e -> handleOK());
         jButtonCancel.addActionListener(e -> handleCancel());
 
-        // Layout tổng
         setLayout(new BorderLayout());
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);

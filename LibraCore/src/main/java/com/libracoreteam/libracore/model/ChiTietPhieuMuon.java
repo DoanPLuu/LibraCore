@@ -1,21 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.libracoreteam.libracore.model;
 
 import java.time.LocalDate;
 
-/**
- *
- * @author luuis
- */
+
 public class ChiTietPhieuMuon {
     private int idChiTietPhieuMuon;
     private int idPhieuMuon;
     private int idCuonSach;  
     private LocalDate ngayTra;
-    private String tinhTrangTra; // "ChuaTra", "DaTra", "TreHan", "Hong"
+    private String tinhTrangTra; 
     
     private CuonSach cuonSach; 
     
@@ -37,7 +31,6 @@ public class ChiTietPhieuMuon {
         this.tinhTrangTra = tinhTrangTra;
     }
     
-    // Getters
     public int getIdChiTietPhieuMuon() {
         return idChiTietPhieuMuon;
     }
@@ -62,7 +55,6 @@ public class ChiTietPhieuMuon {
         return cuonSach;
     }
     
-    // Setters
     public void setIdChiTietPhieuMuon(int idChiTietPhieuMuon) {
         this.idChiTietPhieuMuon = idChiTietPhieuMuon;
     }

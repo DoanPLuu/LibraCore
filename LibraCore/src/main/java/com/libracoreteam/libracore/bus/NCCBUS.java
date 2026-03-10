@@ -65,7 +65,6 @@ public boolean update(com.libracoreteam.libracore.model.NCC ncc) {
         return nccDAO.softDelete(id);
     }
 
-    /* ==================== VALIDATION ==================== */
 
     private void validateForCreateOrUpdate(int idNCC, String tenNCC) {
         if (tenNCC == null || tenNCC.isEmpty()) {
