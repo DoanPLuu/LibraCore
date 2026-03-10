@@ -131,6 +131,40 @@ public class PhieuPhatDAO {
     return list;
   }
 
+  public List<ChiTietPhieuPhat> getChiTietByChiTietPhieuMuon(int idChiTietPhieuMuon) {
+    String sql = "SELECT ct.id_ChiTietPhieuPhat, ct.id_PhieuPhat, ct.id_ChiTietPhieuMuon, ct.id_MucPhat, ct.SoNgayTreHan, ct.TienPhatTra,"
+        + "mp.TenMucPhat, mp.LoaiPhat, mp.SoTienPhat "
+        + "FROM chitietphieuphat ct "
+        + "JOIN mucphat mp ON mp.id_MucPhat = ct.id_MucPhat "
+        + "WHERE ct.id_ChiTietPhieuMuon = ?";
+    List<ChiTietPhieuPhat> list = new ArrayList<>();
+    try (Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, idChiTietPhieuMuon);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          ChiTietPhieuPhat ct = new ChiTietPhieuPhat();
+          ct.setIdChiTietPhieuPhat(rs.getInt("id_ChiTietPhieuPhat"));
+          ct.setIdPhieuPhat(rs.getInt("id_PhieuPhat"));
+          ct.setIdChiTietPhieuMuon(rs.getInt("id_ChiTietPhieuMuon"));
+          ct.setIdMucPhat(rs.getInt("id_MucPhat"));
+          ct.setSoNgayTreHan(rs.getInt("SoNgayTreHan"));
+          ct.setTienPhatTra(rs.getBigDecimal("TienPhatTra"));
+          MucPhat mp = new MucPhat();
+          mp.setIdMucPhat(rs.getInt("id_MucPhat"));
+          mp.setTenMucPhat(rs.getString("TenMucPhat"));
+          mp.setLoaiPhat(rs.getString("LoaiPhat"));
+          mp.setSoTienPhat(rs.getBigDecimal("SoTienPhat"));
+          ct.setMucPhat(mp);
+          list.add(ct);
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("PhieuPhatDAO.getChiTietByChiTietPhieuMuon failed", e);
+    }
+    return list;
+  }
+
   public int insertWithDetails(PhieuPhat pp, List<ChiTietPhieuPhat> details, Connection conn) throws SQLException {
     String sqlPP = "INSERT INTO phieuphat (NgayLap, TienPhatPhaiNop, LyDoPhat, TrangThai, id_NhanVien) VALUES (?,?,?,?,?)";
     int idPhieuPhat;
