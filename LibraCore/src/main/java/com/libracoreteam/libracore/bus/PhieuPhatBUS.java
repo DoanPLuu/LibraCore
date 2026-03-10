@@ -38,6 +38,10 @@ public class PhieuPhatBUS {
     return phieuPhatDAO.getChiTiet(idPhieuPhat);
   }
 
+  public List<ChiTietPhieuPhat> getChiTietByChiTietPhieuMuon(int idChiTietPhieuMuon) {
+    return phieuPhatDAO.getChiTietByChiTietPhieuMuon(idChiTietPhieuMuon);
+  }
+
   public void thanhToan(int idPhieuPhat) {
     try (Connection conn = DBConnection.getConnection()) {
       conn.setAutoCommit(false);

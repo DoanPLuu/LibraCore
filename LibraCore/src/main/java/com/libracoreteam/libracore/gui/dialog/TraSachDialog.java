@@ -1,8 +1,10 @@
 package com.libracoreteam.libracore.gui.dialog;
 
-import com.libracoreteam.libracore.bus.PhieuMuonBUS;
 import com.libracoreteam.libracore.bus.MucPhatBUS;
+import com.libracoreteam.libracore.bus.PhieuMuonBUS;
+import com.libracoreteam.libracore.bus.PhieuPhatBUS;
 import com.libracoreteam.libracore.model.ChiTietPhieuMuon;
+import com.libracoreteam.libracore.model.ChiTietPhieuPhat;
 import com.libracoreteam.libracore.model.MucPhat;
 import com.libracoreteam.libracore.model.PhieuMuon;
 import com.libracoreteam.libracore.util.UserSession;
@@ -147,33 +149,40 @@ public class TraSachDialog extends JDialog {
     };
   }
 
-  private class ComboBoxRenderer extends JComboBox<String> implements javax.swing.table.TableCellRenderer {
-    public ComboBoxRenderer(String[] items) {
-      super(items);
-      setOpaque(true);
+  private class MixedCellRenderer implements javax.swing.table.TableCellRenderer {
+    private final String[] items;
+    private final JComboBox<String> combo;
+    private final JLabel label;
+
+    public MixedCellRenderer(String[] items) {
+      this.items = items;
+      this.combo = new JComboBox<>(items);
+      this.combo.setOpaque(true);
+      this.label = new JLabel();
+      this.label.setOpaque(true);
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected, boolean hasFocus,
         int row, int column) {
-      setSelectedItem(value);
-      boolean enabled = t.isCellEditable(row, column);
-      setEnabled(enabled);
-
       boolean daTra = dsChiTiet.get(row).getNgayTra() != null;
       if (daTra) {
-        setBackground(new Color(220, 220, 220));
-        setForeground(Color.GRAY);
-      } else {
-        if (isSelected) {
-          setBackground(t.getSelectionBackground());
-          setForeground(t.getSelectionForeground());
-        } else {
-          setBackground(t.getBackground());
-          setForeground(t.getForeground());
-        }
+        label.setText(value != null ? value.toString() : "");
+        label.setBackground(new Color(220, 220, 220));
+        label.setForeground(Color.GRAY);
+        label.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 0));
+        return label;
       }
-      return this;
+      combo.setModel(new DefaultComboBoxModel<>(items));
+      combo.setSelectedItem(value);
+      if (isSelected) {
+        combo.setBackground(t.getSelectionBackground());
+        combo.setForeground(t.getSelectionForeground());
+      } else {
+        combo.setBackground(t.getBackground());
+        combo.setForeground(t.getForeground());
+      }
+      return combo;
     }
   }
 
@@ -181,12 +190,12 @@ public class TraSachDialog extends JDialog {
     String[] tinhTrangOptions = { "Tot", "Hong", "Mat" };
     JComboBox<String> cbTinhTrang = new JComboBox<>(tinhTrangOptions);
     table.getColumnModel().getColumn(COL_TINH_TRANG).setCellEditor(new DefaultCellEditor(cbTinhTrang));
-    table.getColumnModel().getColumn(COL_TINH_TRANG).setCellRenderer(new ComboBoxRenderer(tinhTrangOptions));
+    table.getColumnModel().getColumn(COL_TINH_TRANG).setCellRenderer(new MixedCellRenderer(tinhTrangOptions));
 
     String[] mucPhatItems = buildMucPhatItems();
     JComboBox<String> cbMucPhat = new JComboBox<>(mucPhatItems);
     table.getColumnModel().getColumn(COL_MUC_PHAT).setCellEditor(new DefaultCellEditor(cbMucPhat));
-    table.getColumnModel().getColumn(COL_MUC_PHAT).setCellRenderer(new ComboBoxRenderer(mucPhatItems));
+    table.getColumnModel().getColumn(COL_MUC_PHAT).setCellRenderer(new MixedCellRenderer(mucPhatItems));
 
     table.getColumnModel().getColumn(COL_CHON).setMaxWidth(50);
     table.getColumnModel().getColumn(COL_MA).setMaxWidth(100);
@@ -207,21 +216,49 @@ public class TraSachDialog extends JDialog {
     tableModel.setRowCount(0);
     LocalDate ngayHenTra = phieuMuon.getNgayHenTra();
     LocalDate homNay = LocalDate.now();
+    PhieuPhatBUS phieuPhatBUS = new PhieuPhatBUS();
+
     for (ChiTietPhieuMuon ct : dsChiTiet) {
       boolean daTra = ct.getNgayTra() != null;
-      long soNgayTre = ngayHenTra != null ? Math.max(0, ChronoUnit.DAYS.between(ngayHenTra, homNay)) : 0;
-      BigDecimal phatTre = soNgayTre > 0 && mucPhatPerDay != null
-          ? mucPhatPerDay.getSoTienPhat().multiply(BigDecimal.valueOf(soNgayTre))
-          : BigDecimal.ZERO;
+      long soNgayTre = 0;
+      BigDecimal phatTre = BigDecimal.ZERO;
+      BigDecimal phatFixed = BigDecimal.ZERO;
+      String mucPhatStr = "0";
+
+      if (daTra) {
+        if (ngayHenTra != null) {
+          soNgayTre = Math.max(0, ChronoUnit.DAYS.between(ngayHenTra, ct.getNgayTra()));
+        }
+
+        List<ChiTietPhieuPhat> fines = phieuPhatBUS.getChiTietByChiTietPhieuMuon(ct.getIdChiTietPhieuMuon());
+        for (ChiTietPhieuPhat f : fines) {
+          if (f.getSoNgayTreHan() != null && f.getSoNgayTreHan() > 0) {
+            phatTre = phatTre.add(f.getTienPhatTra());
+          } else {
+            phatFixed = phatFixed.add(f.getTienPhatTra());
+            if (f.getMucPhat() != null && f.getMucPhat().getTenMucPhat() != null) {
+              mucPhatStr = f.getMucPhat().getTenMucPhat() + " (" + f.getTienPhatTra().toPlainString() + " đ)";
+            }
+          }
+        }
+      } else {
+        if (ngayHenTra != null) {
+          soNgayTre = Math.max(0, ChronoUnit.DAYS.between(ngayHenTra, homNay));
+        }
+        if (soNgayTre > 0 && mucPhatPerDay != null) {
+          phatTre = mucPhatPerDay.getSoTienPhat().multiply(BigDecimal.valueOf(soNgayTre));
+        }
+      }
+
       String tinhTrang = daTra ? toViTinhTrang(ct.getTinhTrangTra()) : "Tot";
       tableModel.addRow(new Object[] {
           daTra,
           ct.getCuonSach() != null ? ct.getCuonSach().getMaCuonSach() : "",
           ct.getCuonSach() != null && ct.getCuonSach().getSach() != null ? ct.getCuonSach().getSach().getTenSach() : "",
           tinhTrang,
-          "0",
+          mucPhatStr,
           phatTre.toPlainString(),
-          phatTre.toPlainString()
+          phatTre.add(phatFixed).toPlainString()
       });
     }
     renderDisabledRows();
