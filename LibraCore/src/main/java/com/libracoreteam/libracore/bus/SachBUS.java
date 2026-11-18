@@ -59,6 +59,16 @@ public class SachBUS {
         return sachDAO.searchByTacGia(k);
     }
 
+    public List<Sach> searchAll(String keyword) {
+        String k = keyword != null ? keyword.trim() : "";
+        return sachDAO.searchAll(k);
+    }
+
+    public List<Sach> searchAllByTacGia(String keyword) {
+        String k = keyword != null ? keyword.trim() : "";
+        return sachDAO.searchAllByTacGia(k);
+    }
+
     public List<NXB> getNXBActive() {
         return nxbDAO.getActive();
     }
@@ -125,7 +135,6 @@ public class SachBUS {
             String namXBText,
             String soTrangText,
             String moTa,
-            boolean hoatDong,
             List<Integer> tacGiaIds,
             List<Integer> theLoaiIds) {
         if (idSach <= 0) {
@@ -150,16 +159,18 @@ public class SachBUS {
         s.setNamXuatBan(namXB);
         s.setSoTrang(soTrang);
         s.setMoTa(moTa);
-        s.setHoatDong(hoatDong);
 
         return sachDAO.updateWithRelations(s, tgIds, tlIds);
     }
 
-    public boolean softDelete(int idSach) {
+    public boolean setHoatDong(int idSach, boolean expectedState, boolean newState) {
         if (idSach <= 0) {
             throw new IllegalArgumentException("ID sách không hợp lệ");
         }
-        return sachDAO.softDelete(idSach);
+        if (expectedState == newState) {
+            throw new IllegalArgumentException("Trạng thái mới phải khác trạng thái hiện tại");
+        }
+        return sachDAO.setHoatDong(idSach, expectedState, newState);
     }
 
 

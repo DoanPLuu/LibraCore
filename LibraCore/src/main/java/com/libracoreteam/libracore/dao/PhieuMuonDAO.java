@@ -117,7 +117,8 @@ public class PhieuMuonDAO {
   public List<CuonSach> getCuonSachRanh() {
     String sql = "SELECT c.id_CuonSach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.id_Sach, s.TenSach " +
         "FROM cuonsach c JOIN sach s ON s.id_Sach = c.id_Sach " +
-        "WHERE c.TrangThaiMuon = 'Ranh' AND c.TinhTrangSach = 'Tot' AND (c.DaHuy IS NULL OR c.DaHuy = 0) " +
+        "WHERE s.HoatDong = 1 AND c.TrangThaiMuon = 'Ranh' AND c.TinhTrangSach = 'Tot' " +
+        "AND (c.DaHuy IS NULL OR c.DaHuy = 0) " +
         "ORDER BY s.TenSach, c.MaCuonSach";
     List<CuonSach> list = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection();
@@ -143,6 +144,8 @@ public class PhieuMuonDAO {
   }
 
   public void insertWithDetails(PhieuMuon pm, List<Integer> idCuonSachList, Connection conn) throws SQLException {
+    lockAndValidateBorrowableCopies(idCuonSachList, conn);
+
     String sqlPM = "INSERT INTO phieumuon (id_NhanVien, id_TheThanhVien, NgayMuon, NgayHenTra, TrangThai, TongSoSachMuon) VALUES (?,?,?,?,?,?)";
     int idPhieuMuon;
     try (PreparedStatement ps = conn.prepareStatement(sqlPM, Statement.RETURN_GENERATED_KEYS)) {
@@ -163,7 +166,9 @@ public class PhieuMuonDAO {
       }
     }
     String sqlCT = "INSERT INTO chitietphieumuon (id_PhieuMuon, id_CuonSach, TinhTrangTra) VALUES (?,?,'ChuaTra')";
-    String sqlCS = "UPDATE cuonsach SET TrangThaiMuon = 'DangMuon' WHERE id_CuonSach = ?";
+    String sqlCS = "UPDATE cuonsach SET TrangThaiMuon = 'DangMuon' " +
+        "WHERE id_CuonSach = ? AND TrangThaiMuon = 'Ranh' AND TinhTrangSach = 'Tot' " +
+        "AND (DaHuy IS NULL OR DaHuy = 0)";
     for (int idCS : idCuonSachList) {
       try (PreparedStatement ps = conn.prepareStatement(sqlCT)) {
         ps.setInt(1, idPhieuMuon);
@@ -172,12 +177,51 @@ public class PhieuMuonDAO {
       }
       try (PreparedStatement ps = conn.prepareStatement(sqlCS)) {
         ps.setInt(1, idCS);
-        ps.executeUpdate();
+        if (ps.executeUpdate() != 1) {
+          throw new SQLException("Cuốn sách không còn đủ điều kiện để cho mượn.");
+        }
       }
     }
   }
 
-  public void updateChiTiet(ChiTietPhieuMuon ct, Connection conn) throws SQLException {
+  private void lockAndValidateBorrowableCopies(List<Integer> idCuonSachList, Connection conn) throws SQLException {
+    List<Integer> sortedIds = idCuonSachList.stream().distinct().sorted().toList();
+    if (sortedIds.size() != idCuonSachList.size()) {
+      throw new SQLException("Danh sách mượn có cuốn sách bị chọn trùng.");
+    }
+
+    String placeholders = String.join(",", java.util.Collections.nCopies(sortedIds.size(), "?"));
+    String sql = "SELECT s.id_Sach, s.HoatDong, c.id_CuonSach, c.TrangThaiMuon, " +
+        "c.TinhTrangSach, c.DaHuy " +
+        "FROM Sach s JOIN CuonSach c ON c.id_Sach = s.id_Sach " +
+        "WHERE c.id_CuonSach IN (" + placeholders + ") " +
+        "ORDER BY s.id_Sach, c.id_CuonSach FOR UPDATE";
+
+    int found = 0;
+    try (PreparedStatement statement = conn.prepareStatement(sql)) {
+      for (int i = 0; i < sortedIds.size(); i++) {
+        statement.setInt(i + 1, sortedIds.get(i));
+      }
+      try (ResultSet result = statement.executeQuery()) {
+        while (result.next()) {
+          found++;
+          if (!result.getBoolean("HoatDong")) {
+            throw new SQLException("Đầu sách đã ngừng phát hành, không thể lập phiếu mượn.");
+          }
+          boolean daHuy = result.getBoolean("DaHuy") && !result.wasNull();
+          if (daHuy || !"Ranh".equals(result.getString("TrangThaiMuon"))
+              || !"Tot".equals(result.getString("TinhTrangSach"))) {
+            throw new SQLException("Cuốn sách không còn đủ điều kiện để cho mượn.");
+          }
+        }
+      }
+    }
+    if (found != sortedIds.size()) {
+      throw new SQLException("Một hoặc nhiều cuốn sách không tồn tại.");
+    }
+  }
+
+  public void updateChiTietPhieuMuon(ChiTietPhieuMuon ct, Connection conn) throws SQLException {
     String sql = "UPDATE chitietphieumuon SET NgayTra=?, TinhTrangTra=? WHERE id_ChiTietPhieuMuon=?";
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setDate(1, Date.valueOf(ct.getNgayTra()));

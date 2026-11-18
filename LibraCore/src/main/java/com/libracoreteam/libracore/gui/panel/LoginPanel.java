@@ -131,6 +131,9 @@ public class LoginPanel extends JPanel {
         });
 
         loginCard.add(btnLogin, gbc);
+        txtUser.addActionListener(e -> btnLogin.doClick());
+        txtPass.addActionListener(e -> btnLogin.doClick());
+        parentFrame.getRootPane().setDefaultButton(btnLogin);
         rightPanel.add(loginCard);
         add(rightPanel);
     }

@@ -10,7 +10,7 @@ public class DBConnection {
 
     public static Connection getConnection() throws SQLException {
         String url = ConfigUtility.getConfig("db.url");
-        String user = ConfigUtility.getConfig("db.user");
+        String user = ConfigUtility.getConfig("db.username");
         String password = ConfigUtility.getConfig("db.password");
         return DriverManager.getConnection(url, user, password);
     }

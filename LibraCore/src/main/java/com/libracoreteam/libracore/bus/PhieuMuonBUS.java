@@ -2,6 +2,9 @@ package com.libracoreteam.libracore.bus;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -125,7 +128,7 @@ public class PhieuMuonBUS {
           ct.setIdChiTietPhieuMuon(item.idChiTietPhieuMuon);
           ct.setNgayTra(ngayTra);
           ct.setTinhTrangTra(dbTinhTrang);
-          phieuMuonDAO.updateChiTiet(ct, conn);
+          updateChiTiet(conn, ct);
 
           String tinhTrangSachMoi = mapTinhTrangSach(item.tinhTrangTra);
           phieuMuonDAO.updateCuonSachKhiTra(item.idCuonSach, tinhTrangSachMoi, conn);
@@ -199,6 +202,16 @@ public class PhieuMuonBUS {
       case "Hong", "Mat" -> "Hong";
       default -> treLan ? "TreHan" : "DaTra";
     };
+  }
+
+  private void updateChiTiet(Connection conn, ChiTietPhieuMuon ct) throws SQLException {
+    String sql = "UPDATE ChiTietPhieuMuon SET NgayTra = ?, TinhTrangTra = ? WHERE IdChiTietPhieuMuon = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setDate(1, ct.getNgayTra() != null ? Date.valueOf(ct.getNgayTra()) : null);
+      stmt.setString(2, ct.getTinhTrangTra());
+      stmt.setInt(3, ct.getIdChiTietPhieuMuon());
+      stmt.executeUpdate();
+    }
   }
 
   private String mapTinhTrangSach(String tinhTrangTra) {
