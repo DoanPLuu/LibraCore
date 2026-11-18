@@ -187,7 +187,7 @@ public class MainFrame extends javax.swing.JFrame {
                     break;
                 case "BOOK_1":
                     if (sachPanel != null)
-                        sachPanel.loadActiveToTable();
+                        sachPanel.loadAllToTable();
                     break;
                 case "BOOK_2":
                     if (cuonSachPanel != null)

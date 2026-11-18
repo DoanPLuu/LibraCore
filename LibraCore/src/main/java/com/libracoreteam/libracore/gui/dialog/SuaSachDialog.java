@@ -176,7 +176,6 @@ public class SuaSachDialog extends JDialog {
                     txtNamXB.getText(),
                     txtSoTrang.getText(),
                     txtMoTa.getText(),
-                    true,
                     tacGiaIds,
                     theLoaiIds
             );

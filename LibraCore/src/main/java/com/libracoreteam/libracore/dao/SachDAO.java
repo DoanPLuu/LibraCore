@@ -122,30 +122,30 @@ public class SachDAO {
                 "NamXuatBan = ?, " +
                 "TenSach = ?, " +
                 "MoTa = ?, " +
-                "SoTrang = ?, " +
-                "HoatDong = ? " +
+                "SoTrang = ? " +
                 "WHERE id_Sach = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            bindSachForUpsert(ps, s, true);
+            bindSachForUpdate(ps, s);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException("SachDAO.update failed", e);
         }
     }
 
-    public boolean softDelete(int idSach) {
-        String sql = "UPDATE Sach SET HoatDong = ? WHERE id_Sach = ?";
+    public boolean setHoatDong(int idSach, boolean expectedState, boolean newState) {
+        String sql = "UPDATE Sach SET HoatDong = ? WHERE id_Sach = ? AND HoatDong = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setBoolean(1, false);
+            ps.setBoolean(1, newState);
             ps.setInt(2, idSach);
+            ps.setBoolean(3, expectedState);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new RuntimeException("SachDAO.softDelete failed", e);
+            throw new RuntimeException("SachDAO.setHoatDong failed", e);
         }
     }
 
@@ -173,6 +173,51 @@ public class SachDAO {
             return list;
         } catch (SQLException e) {
             throw new RuntimeException("SachDAO.searchActive failed", e);
+        }
+    }
+
+    public List<Sach> searchAll(String keyword) {
+        String sql =
+                "SELECT id_Sach, id_NXB, NamXuatBan, TenSach, MoTa, SoTrang, HoatDong " +
+                "FROM Sach " +
+                "WHERE TenSach LIKE ? OR MoTa LIKE ? " +
+                "ORDER BY TenSach ASC";
+
+        String k = "%" + (keyword == null ? "" : keyword.trim()) + "%";
+        List<Sach> list = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, k);
+            ps.setString(2, k);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("SachDAO.searchAll failed", e);
+        }
+    }
+
+    public List<Sach> searchAllByTacGia(String keyword) {
+        String sql =
+                "SELECT DISTINCT s.id_Sach, s.id_NXB, s.NamXuatBan, s.TenSach, s.MoTa, s.SoTrang, s.HoatDong " +
+                "FROM Sach s " +
+                "JOIN Sach_TacGia st ON s.id_Sach = st.id_Sach " +
+                "JOIN TacGia tg ON st.id_TacGia = tg.id_TacGia " +
+                "WHERE tg.TenTacGia LIKE ? " +
+                "ORDER BY s.TenSach ASC";
+
+        String k = "%" + (keyword == null ? "" : keyword.trim()) + "%";
+        List<Sach> list = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, k);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("SachDAO.searchAllByTacGia failed", e);
         }
     }
     
@@ -291,8 +336,7 @@ public class SachDAO {
                 "NamXuatBan = ?, " +
                 "TenSach = ?, " +
                 "MoTa = ?, " +
-                "SoTrang = ?, " +
-                "HoatDong = ? " +
+                "SoTrang = ? " +
                 "WHERE id_Sach = ?";
 
         List<Integer> tgIds = tacGiaIds == null ? Collections.emptyList() : tacGiaIds;
@@ -303,7 +347,7 @@ public class SachDAO {
             conn.setAutoCommit(false);
             try {
                 try (PreparedStatement ps = conn.prepareStatement(sqlUpdateSach)) {
-                    bindSachForUpsert(ps, s, true);
+                    bindSachForUpdate(ps, s);
                     if (ps.executeUpdate() == 0) {
                         conn.rollback();
                         return false;
@@ -351,6 +395,21 @@ public class SachDAO {
         if (includeIdAtEnd) {
             ps.setInt(7, s.getIdSach());
         }
+    }
+
+    private void bindSachForUpdate(PreparedStatement ps, Sach s) throws SQLException {
+        if (s.getIdNXB() == null) ps.setNull(1, Types.INTEGER);
+        else ps.setInt(1, s.getIdNXB());
+
+        if (s.getNamXuatBan() == null) ps.setNull(2, Types.INTEGER);
+        else ps.setInt(2, s.getNamXuatBan());
+
+        ps.setString(3, s.getTenSach());
+        ps.setString(4, s.getMoTa());
+
+        if (s.getSoTrang() == null) ps.setNull(5, Types.INTEGER);
+        else ps.setInt(5, s.getSoTrang());
+        ps.setInt(6, s.getIdSach());
     }
 
     private Sach map(ResultSet rs) throws SQLException {

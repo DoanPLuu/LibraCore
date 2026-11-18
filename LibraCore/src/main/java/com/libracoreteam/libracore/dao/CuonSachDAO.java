@@ -19,6 +19,7 @@ public class CuonSachDAO{
                 "SELECT c.id_CuonSach, c.id_Sach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, c.id_ChiTietPhieuNhap, s.TenSach " +
                 "FROM CuonSach c " +
                 "JOIN Sach s ON s.id_Sach = c.id_Sach " +
+                "WHERE s.HoatDong = 1 " +
                 "ORDER BY c.id_CuonSach DESC";
         return queryList(sql, false, null);
     }
@@ -28,7 +29,7 @@ public class CuonSachDAO{
                 "SELECT c.id_CuonSach, c.id_Sach, c.MaCuonSach, c.TinhTrangSach, c.TrangThaiMuon, c.DaHuy, c.id_ChiTietPhieuNhap, s.TenSach " +
                 "FROM CuonSach c " +
                 "JOIN Sach s ON s.id_Sach = c.id_Sach " +
-                "WHERE c.MaCuonSach LIKE ? OR CAST(c.id_CuonSach AS CHAR) LIKE ? OR CAST(c.id_Sach AS CHAR) LIKE ? OR s.TenSach LIKE ? " +
+                "WHERE s.HoatDong = 1 AND (c.MaCuonSach LIKE ? OR CAST(c.id_CuonSach AS CHAR) LIKE ? OR CAST(c.id_Sach AS CHAR) LIKE ? OR s.TenSach LIKE ?) " +
                 "ORDER BY c.id_CuonSach DESC";
 
         String k = "%" + (keyword == null ? "" : keyword.trim()) + "%";

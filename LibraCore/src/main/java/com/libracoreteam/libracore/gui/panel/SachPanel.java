@@ -51,7 +51,7 @@ public class SachPanel extends javax.swing.JPanel {
         InnitButton();
         initTable();
         bindEvents();
-        loadActiveToTable();
+        loadAllToTable();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -70,7 +70,7 @@ public class SachPanel extends javax.swing.JPanel {
         jButtonNhap = new javax.swing.JButton();
         jButtonThem = new javax.swing.JButton();
         jButtonSua = new javax.swing.JButton();
-        jButtonXoa = new javax.swing.JButton();
+        jButtonChuyenTrangThai = new javax.swing.JButton();
         jPanelBoard = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSach = new javax.swing.JTable();
@@ -156,10 +156,10 @@ public class SachPanel extends javax.swing.JPanel {
         jButtonSua.addActionListener(this::jButtonSuaActionPerformed);
         jPanelNutThem.add(jButtonSua);
 
-        jButtonXoa.setText("Xoá");
-        jButtonXoa.setPreferredSize(new java.awt.Dimension(90, 40));
-        jButtonXoa.addActionListener(this::jButtonXoaActionPerformed);
-        jPanelNutThem.add(jButtonXoa);
+        jButtonChuyenTrangThai.setText("Khóa");
+        jButtonChuyenTrangThai.setPreferredSize(new java.awt.Dimension(90, 40));
+        jButtonChuyenTrangThai.addActionListener(this::jButtonChuyenTrangThaiActionPerformed);
+        jPanelNutThem.add(jButtonChuyenTrangThai);
 
         jPanelCongCu.add(jPanelNutThem, java.awt.BorderLayout.EAST);
 
@@ -359,14 +359,14 @@ public class SachPanel extends javax.swing.JPanel {
         startEditByRow(row);
     }//GEN-LAST:event_jButtonSuaActionPerformed
 
-    private void jButtonXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXoaActionPerformed
+    private void jButtonChuyenTrangThaiActionPerformed(java.awt.event.ActionEvent evt) {
         int row = jTableSach.getSelectedRow();
         if (row < 0 || row >= currentList.size()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sách để xoá.");
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một đầu sách.");
             return;
         }
-        deleteByRow(row);
-    }//GEN-LAST:event_jButtonXoaActionPerformed
+        changePublicationStatus(currentList.get(row));
+    }
 
     private void InnitButton() {
         int iconSize = 16;
@@ -381,13 +381,13 @@ public class SachPanel extends javax.swing.JPanel {
                 "Tìm kiếm");
 
         jButtonSua.setIcon(FontIcon.of(FontAwesomeSolid.EDIT, iconSize, new Color(13, 110, 253)));
-        jButtonXoa.setIcon(FontIcon.of(FontAwesomeSolid.TRASH, iconSize, new Color(220, 53, 69)));
+        jButtonChuyenTrangThai.setEnabled(false);
 
     }
 
     private void initTable() {
         tblModel = new DefaultTableModel(
-                new Object[] { "Mã", "Tên sách", "NXB", "Năm XB", "Số trang" },
+                new Object[] { "Mã", "Tên sách", "NXB", "Năm XB", "Số trang", "Trạng thái" },
                 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -411,11 +411,15 @@ public class SachPanel extends javax.swing.JPanel {
             if (isLoadingSelection)
                 return;
             int row = jTableSach.getSelectedRow();
-            if (row < 0 || row >= currentList.size())
+            if (row < 0 || row >= currentList.size()) {
+                currentSelected = null;
+                jButtonChuyenTrangThai.setEnabled(false);
                 return;
+            }
 
             currentSelected = currentList.get(row);
             fillDetail(currentSelected);
+            updatePublicationButton(currentSelected);
         });
         
         jTextFieldTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
@@ -428,15 +432,16 @@ public class SachPanel extends javax.swing.JPanel {
         });
     }
 
-    public void loadActiveToTable() {
+    public void loadAllToTable() {
         try {
-            currentList = sachBUS.getActive();
+            currentList = sachBUS.getAll();
             rebuildCaches();
             renderTable(currentList);
 
             jTableSach.clearSelection();
             clearDetail();
             currentSelected = null;
+            jButtonChuyenTrangThai.setEnabled(false);
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this, "Không tải được dữ liệu sách: " + ex.getMessage());
         }
@@ -486,7 +491,8 @@ public class SachPanel extends javax.swing.JPanel {
                     s.getTenSach(),
                     nxbText,
                     s.getNamXuatBan() != null ? s.getNamXuatBan() : "",
-                    s.getSoTrang() != null ? s.getSoTrang() : ""
+                    s.getSoTrang() != null ? s.getSoTrang() : "",
+                    s.isHoatDong() ? "Phát hành" : "Ngừng phát hành"
             });
         }
     }
@@ -532,6 +538,7 @@ public class SachPanel extends javax.swing.JPanel {
         jTextFieldSoTrang.setText("");
         jTextFieldNamXuatBan.setText("");
         jTextAreaMoTa.setText("");
+        jButtonChuyenTrangThai.setEnabled(false);
     }
 
     private String joinNamesByIds(List<Integer> ids, Map<Integer, String> map) {
@@ -566,6 +573,9 @@ public class SachPanel extends javax.swing.JPanel {
                 } finally {
                     isLoadingSelection = false;
                 }
+                currentSelected = currentList.get(i);
+                fillDetail(currentSelected);
+                updatePublicationButton(currentSelected);
                 return;
             }
         }
@@ -583,34 +593,54 @@ public class SachPanel extends javax.swing.JPanel {
 
         if (dialog.isSaved()) {
             int id = s.getIdSach();
-            loadActiveToTable();
+            loadAllToTable();
             selectRowById(id);
         }
     }
 
-    private void deleteByRow(int viewRow) {
-        if (viewRow < 0 || viewRow >= currentList.size())
-            return;
-        Sach s = currentList.get(viewRow);
+    private void updatePublicationButton(Sach sach) {
+        boolean dangPhatHanh = sach != null && sach.isHoatDong();
+        jButtonChuyenTrangThai.setText(dangPhatHanh ? "Khóa" : "Mở khóa");
+        jButtonChuyenTrangThai.setIcon(FontIcon.of(
+                dangPhatHanh ? FontAwesomeSolid.LOCK : FontAwesomeSolid.UNLOCK_ALT,
+                16,
+                dangPhatHanh ? new Color(220, 53, 69) : new Color(21, 110, 71)));
+        jButtonChuyenTrangThai.setEnabled(sach != null);
+    }
 
-        int choice = JOptionPane.showConfirmDialog(
-                this,
-                "Bạn có chắc muốn xoá (ngừng hoạt động) sách \"" + nullSafe(s.getTenSach()) + "\" không?",
-                "Xác nhận xoá",
-                JOptionPane.YES_NO_OPTION);
+    private void changePublicationStatus(Sach sach) {
+        if (sach == null)
+            return;
+
+        boolean dangPhatHanh = sach.isHoatDong();
+        String title = dangPhatHanh ? "Xác nhận khóa sách" : "Xác nhận mở khóa sách";
+        String message = dangPhatHanh
+                ? "Bạn có muốn khóa sách \"" + nullSafe(sach.getTenSach()) + "\" không?\n"
+                        + "Các phiếu mượn đang diễn ra vẫn được giữ nguyên; không thể tạo lượt mượn mới."
+                : "Bạn có muốn mở khóa sách \"" + nullSafe(sach.getTenSach()) + "\" không?\n"
+                        + "Các cuốn sách đủ điều kiện sẽ được tham gia nghiệp vụ mượn trở lại.";
+        int choice = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
         if (choice != JOptionPane.YES_OPTION)
             return;
 
         try {
-            boolean ok = sachBUS.softDelete(s.getIdSach());
+            boolean ok = sachBUS.setHoatDong(sach.getIdSach(), dangPhatHanh, !dangPhatHanh);
             if (!ok) {
-                JOptionPane.showMessageDialog(this, "Xoá thất bại.");
+                JOptionPane.showMessageDialog(this,
+                        "Trạng thái sách đã được thay đổi ở nơi khác. Danh sách sẽ được tải lại.",
+                        "Trạng thái đã thay đổi", JOptionPane.INFORMATION_MESSAGE);
+                jTextFieldTimKiem.setText("");
+                loadAllToTable();
                 return;
             }
-            JOptionPane.showMessageDialog(this, "Đã xoá (ngừng hoạt động).");
-            loadActiveToTable();
+            JOptionPane.showMessageDialog(this,
+                    dangPhatHanh ? "Đã ngừng phát hành sách." : "Đã kích hoạt lại sách.");
+            int idSach = sach.getIdSach();
+            jTextFieldTimKiem.setText("");
+            loadAllToTable();
+            selectRowById(idSach);
         } catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Không thể cập nhật trạng thái sách: " + ex.getMessage());
         }
     }
 
@@ -622,7 +652,7 @@ public class SachPanel extends javax.swing.JPanel {
         dialog.setVisible(true);
 
         if (dialog.isSaved()) {
-            loadActiveToTable();
+            loadAllToTable();
         }
     }
 
@@ -708,7 +738,7 @@ public class SachPanel extends javax.swing.JPanel {
 
     private void jButtonLamMoiActionPerformed(java.awt.event.ActionEvent evt) {
         jTextFieldTimKiem.setText("");
-        loadActiveToTable();
+        loadAllToTable();
     }
 
     private void jTextFieldTimKiemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -719,21 +749,22 @@ public class SachPanel extends javax.swing.JPanel {
         if (keyword != null) keyword = keyword.trim();
 
         if (keyword == null || keyword.isEmpty() || "Tìm kiếm...".equalsIgnoreCase(keyword)) {
-            loadActiveToTable();
+            loadAllToTable();
             return;
         }
 
         try {
             if (jComboBoxTimKiem.getSelectedIndex() == 0) {
-                currentList = sachBUS.searchActive(keyword);
+                currentList = sachBUS.searchAll(keyword);
             } else {
-                currentList = sachBUS.searchByTacGia(keyword); 
+                currentList = sachBUS.searchAllByTacGia(keyword);
             }
             
             renderTable(currentList);
             jTableSach.clearSelection();
             clearDetail();
             currentSelected = null;
+            jButtonChuyenTrangThai.setEnabled(false);
         } catch (RuntimeException ex) {
             System.out.println("Lỗi tìm kiếm: " + ex.getMessage());
         }
@@ -917,7 +948,7 @@ public class SachPanel extends javax.swing.JPanel {
             }
         }
 
-        loadActiveToTable();
+        loadAllToTable();
 
         JOptionPane.showMessageDialog(this,
                 "Nhập sách từ Excel hoàn tất.\n" +
@@ -961,7 +992,7 @@ public class SachPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonSua;
     private javax.swing.JButton jButtonThem;
     private javax.swing.JButton jButtonTimKiem;
-    private javax.swing.JButton jButtonXoa;
+    private javax.swing.JButton jButtonChuyenTrangThai;
     private javax.swing.JButton jButtonXuat;
     private javax.swing.JComboBox<String> jComboBoxTimKiem;
     private javax.swing.JLabel jLabelMaSach;
